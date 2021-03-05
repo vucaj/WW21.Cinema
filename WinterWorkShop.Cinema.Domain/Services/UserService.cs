@@ -10,80 +10,19 @@ namespace WinterWorkShop.Cinema.Domain.Services
 {
     public class UserService : IUserService
     {
-        private readonly IUsersRepository _usersRepository;
-
-        public UserService(IUsersRepository usersRepository)
+        public Task<IEnumerable<UserDomainModel>> GetAllAsync()
         {
-            _usersRepository = usersRepository;
+            throw new NotImplementedException();
         }
 
-        public async Task<IEnumerable<UserDomainModel>> GetAllAsync()
+        public Task<UserDomainModel> GetUserByIdAsync(Guid id)
         {
-            var data = await _usersRepository.GetAll();
-
-            if (data == null)
-            {
-                return null;
-            }
-
-            List<UserDomainModel> result = new List<UserDomainModel>();
-            UserDomainModel model;
-            foreach (var item in data)
-            {
-                model = new UserDomainModel
-                {
-                    Id = item.Id,
-                    FirstName = item.FirstName,
-                    LastName = item.LastName,
-                    UserName = item.UserName,
-                    IsAdmin = item.IsAdmin,
-                };
-                result.Add(model);
-            }
-
-            return result;
+            throw new NotImplementedException();
         }
 
-        public async Task<UserDomainModel> GetUserByIdAsync(Guid id)
+        public Task<UserDomainModel> GetUserByUserName(string username)
         {
-            var data = await _usersRepository.GetByIdAsync(id);
-
-            if (data == null)
-            {
-                return null;
-            }
-
-            UserDomainModel domainModel = new UserDomainModel
-            {
-                Id = data.Id,
-                FirstName = data.FirstName,
-                LastName = data.LastName,
-                UserName = data.UserName,
-                IsAdmin = data.IsAdmin,
-            };
-
-            return domainModel;
-        }
-
-        public async Task<UserDomainModel> GetUserByUserName(string username)
-        {
-            var data = _usersRepository.GetByUserName(username);
-
-            if (data == null)
-            {
-                return null;
-            }
-
-            UserDomainModel domainModel = new UserDomainModel
-            {
-                Id = data.Id,
-                FirstName = data.FirstName,
-                LastName = data.LastName,
-                UserName = data.UserName,
-                IsAdmin = data.IsAdmin,
-            };
-
-            return domainModel;
+            throw new NotImplementedException();
         }
     }
 }

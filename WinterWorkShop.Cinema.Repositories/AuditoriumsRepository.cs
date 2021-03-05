@@ -25,34 +25,34 @@ namespace WinterWorkShop.Cinema.Repositories
 
         public async Task<IEnumerable<Auditorium>> GetByAuditName(string name, int id)
         {
-            var data = await _cinemaContext.Auditoriums.Where(x => x.AuditName.Equals(name) && x.CinemaId.Equals(id)).ToListAsync();
+            var data = await _cinemaContext.Auditoria.Where(x => x.Name.Equals(name) && x.CinemaId.Equals(id)).ToListAsync();
 
             return data;
         }
 
         public Auditorium Delete(object id)
         {
-            Auditorium existing = _cinemaContext.Auditoriums.Find(id);
-            var result = _cinemaContext.Auditoriums.Remove(existing);
+            Auditorium existing = _cinemaContext.Auditoria.Find(id);
+            var result = _cinemaContext.Auditoria.Remove(existing);
 
             return result.Entity;
         }
 
         public async Task<IEnumerable<Auditorium>> GetAll()
         {
-            var data = await _cinemaContext.Auditoriums.ToListAsync();
+            var data = await _cinemaContext.Auditoria.ToListAsync();
 
             return data;
         }
 
         public async Task<Auditorium> GetByIdAsync(object id)
         {
-            return await _cinemaContext.Auditoriums.FindAsync(id);
+            return await _cinemaContext.Auditoria.FindAsync(id);
         }
 
         public Auditorium Insert(Auditorium obj)
         {
-            var data = _cinemaContext.Auditoriums.Add(obj).Entity;
+            var data = _cinemaContext.Auditoria.Add(obj).Entity;
 
             return data;
         }
@@ -64,7 +64,7 @@ namespace WinterWorkShop.Cinema.Repositories
 
         public Auditorium Update(Auditorium obj)
         {
-            var updatedEntry = _cinemaContext.Auditoriums.Attach(obj);
+            var updatedEntry = _cinemaContext.Auditoria.Attach(obj);
             _cinemaContext.Entry(obj).State = EntityState.Modified;
 
             return updatedEntry.Entity;

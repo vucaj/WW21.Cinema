@@ -52,7 +52,7 @@ namespace WinterWorkShop.Cinema.Repositories
         public IEnumerable<Movie> GetCurrentMovies()
         {
             var data = _cinemaContext.Movies
-                .Where(x => x.Current);            
+                .Where(x => x.IsActive);            
 
             return data;
         }
