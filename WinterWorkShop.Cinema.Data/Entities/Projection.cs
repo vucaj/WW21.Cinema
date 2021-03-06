@@ -9,7 +9,7 @@ namespace WinterWorkShop.Cinema.Data
     [Table("projection")]
     public class Projection
     {
-        [Key]
+        [Key, DatabaseGenerated(DatabaseGeneratedOption.Identity)]
         public Guid Id { get; set; }
         
         public DateTime DateTime { get; set; }

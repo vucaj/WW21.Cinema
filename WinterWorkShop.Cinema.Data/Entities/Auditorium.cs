@@ -9,7 +9,7 @@ namespace WinterWorkShop.Cinema.Data
     [Table("auditorium")]
     public class Auditorium
     {
-        [Key]
+        [Key,DatabaseGenerated(DatabaseGeneratedOption.Identity)]
         public Guid Id { get; set; }
         
         [MaxLength(30)]

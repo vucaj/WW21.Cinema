@@ -10,7 +10,7 @@ namespace WinterWorkShop.Cinema.Data
     [Table("seat")]
     public class Seat
     {
-        [Key]
+        [Key, DatabaseGenerated(DatabaseGeneratedOption.Identity)]
         public Guid Id { get; set; }
         
         [Range(0,150)]

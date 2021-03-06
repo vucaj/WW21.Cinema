@@ -49,9 +49,9 @@ namespace WinterWorkShop.Cinema.API.Controllers
         /// </summary>
         /// <param name="projectionModel"></param>
         /// <returns></returns>
-        [HttpPost]
-        [Authorize(Roles = "admin")]
-        public async Task<ActionResult<ProjectionDomainModel>> PostAsync(CreateProjectionModel projectionModel)
+        //[HttpPost]
+        //[Authorize(Roles = "admin")] 
+        /* public async Task<ActionResult<ProjectionDomainModel>> PostAsync(CreateProjectionModel projectionModel)
         {
             if (!ModelState.IsValid)
             {
@@ -64,11 +64,13 @@ namespace WinterWorkShop.Cinema.API.Controllers
                 return BadRequest(ModelState);
             }
 
+
             ProjectionDomainModel domainModel = new ProjectionDomainModel
             {
                 AuditoriumId = projectionModel.AuditoriumId,
                 MovieId = projectionModel.MovieId,
                 ProjectionTime = projectionModel.ProjectionTime
+
             };
 
             CreateProjectionResultModel createProjectionResultModel;
@@ -100,6 +102,6 @@ namespace WinterWorkShop.Cinema.API.Controllers
             }
 
             return Created("projections//" + createProjectionResultModel.Projection.Id, createProjectionResultModel.Projection);
-        }
+        }*/
     }
 }

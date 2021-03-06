@@ -20,7 +20,7 @@ namespace WinterWorkShop.Cinema.Tests.Controllers
         private Mock<IProjectionService> _projectionService;
 
 
-        [TestMethod]
+        /*[TestMethod]
         public void GetAsync_Return_All_Projections()
         {
             //Arrange
@@ -55,7 +55,7 @@ namespace WinterWorkShop.Cinema.Tests.Controllers
             Assert.AreEqual(projectionDomainModel.Id, projectionDomainModelResultList[0].Id);
             Assert.IsInstanceOfType(result, typeof(OkObjectResult));
             Assert.AreEqual(expectedStatusCode, ((OkObjectResult)result).StatusCode);
-        }
+        }*/
 
         [TestMethod]
         public void GetAsync_Return_NewList()
@@ -87,7 +87,7 @@ namespace WinterWorkShop.Cinema.Tests.Controllers
         // try  await _projectionService.CreateProjection(domainModel) - return valid mock
         // if (!createProjectionResultModel.IsSuccessful) - false
         // return Created
-        [TestMethod]
+        /*[TestMethod]
         public void PostAsync_Create_createProjectionResultModel_IsSuccessful_True_Projection() 
         {
             //Arrange
@@ -301,6 +301,6 @@ namespace WinterWorkShop.Cinema.Tests.Controllers
             Assert.AreEqual(expectedMessage, message[0]);
             Assert.IsInstanceOfType(result, typeof(BadRequestObjectResult));
             Assert.AreEqual(expectedStatusCode, resultResponse.StatusCode);
-        }
+        }*/
     }
 }

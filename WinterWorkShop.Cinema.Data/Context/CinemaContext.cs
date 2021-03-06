@@ -56,6 +56,9 @@ namespace WinterWorkShop.Cinema.Data
                 .HasForeignKey(x => x.CinemaId);
 
             modelBuilder.Entity<Cinema>()
+                .Property(x => x.Id).ValueGeneratedOnAdd();
+            
+            modelBuilder.Entity<Cinema>()
                 .HasMany(x => x.Auditoria)
                 .WithOne(x => x.Cinema);
 

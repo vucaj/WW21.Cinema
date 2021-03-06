@@ -10,7 +10,7 @@ using WinterWorkShop.Cinema.Data;
 namespace WinterWorkShop.Cinema.Data.Migrations
 {
     [DbContext(typeof(CinemaContext))]
-    [Migration("20210305133203_CinemaDB")]
+    [Migration("20210306135445_CinemaDB")]
     partial class CinemaDB
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)

@@ -10,7 +10,7 @@ namespace WinterWorkShop.Cinema.Data
     [Table("movie")]
     public class Movie
     {
-        [Key]
+        [Key, DatabaseGenerated(DatabaseGeneratedOption.Identity)]
         public Guid Id { get; set; }
         
         [MaxLength(30)]

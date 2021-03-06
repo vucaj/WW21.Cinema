@@ -7,7 +7,7 @@ namespace WinterWorkShop.Cinema.Data
     [Table("movieParticipant")]
     public class MovieParticipant
     {
-        [Key]
+        [Key, DatabaseGenerated(DatabaseGeneratedOption.Identity)]
         public Guid Id { get; set; }
 
         public Guid MovieId { get; set; }

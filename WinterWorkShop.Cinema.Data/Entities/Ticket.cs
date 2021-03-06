@@ -7,7 +7,7 @@ namespace WinterWorkShop.Cinema.Data
     [Table("ticket")]
     public class Ticket
     {
-        [Key]
+        [Key, DatabaseGenerated(DatabaseGeneratedOption.Identity)]
         public Guid Id { get; set; }
         
         public Guid SeatId { get; set; }

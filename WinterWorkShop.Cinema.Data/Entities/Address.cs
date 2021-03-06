@@ -7,7 +7,7 @@ namespace WinterWorkShop.Cinema.Data
     [Table("address")]
     public class Address
     {
-        [Key]
+        [Key, DatabaseGenerated(DatabaseGeneratedOption.Identity)] 
         public int Id { get; set; }
         
         [MaxLength(20)]

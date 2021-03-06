@@ -10,9 +10,9 @@ namespace WinterWorkShop.Cinema.Data
     [Table("user")]
     public class User
     {
-        [Key]
+        [Key, DatabaseGenerated(DatabaseGeneratedOption.Identity)]
         public Guid Id { get; set; }
-
+        
         [MaxLength(30)]
         public string FirstName { get; set; }
 
@@ -22,9 +22,9 @@ namespace WinterWorkShop.Cinema.Data
         [Column("userName")]
         [MinLength(5)]
         [MaxLength(20)]
-        [Required]
+        [Required] 
         public string UserName { get; set; }
-        
+
         [MinLength(8)]
         [MaxLength(20)]
         [Required]

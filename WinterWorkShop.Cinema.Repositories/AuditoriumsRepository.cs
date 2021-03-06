@@ -9,15 +9,15 @@ using WinterWorkShop.Cinema.Data;
 
 namespace WinterWorkShop.Cinema.Repositories
 {
-    public interface IAuditoriumsRepository : IRepository<Auditorium> 
+    public interface IAuditoriumRepository : IRepository<Auditorium> 
     {
         Task<IEnumerable<Auditorium>> GetByAuditName(string name, int id);
     }
-    public class AuditoriumsRepository : IAuditoriumsRepository
+    public class AuditoriumRepository : IAuditoriumRepository
     {
         private CinemaContext _cinemaContext;
 
-        public AuditoriumsRepository(CinemaContext cinemaContext)
+        public AuditoriumRepository(CinemaContext cinemaContext)
         {
             _cinemaContext = cinemaContext;
         }
@@ -38,7 +38,7 @@ namespace WinterWorkShop.Cinema.Repositories
             return result.Entity;
         }
 
-        public async Task<IEnumerable<Auditorium>> GetAll()
+        public async Task<IEnumerable<Auditorium>> GetAllAsync()
         {
             var data = await _cinemaContext.Auditoria.ToListAsync();
 
