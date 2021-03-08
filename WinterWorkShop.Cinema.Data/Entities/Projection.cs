@@ -26,8 +26,5 @@ namespace WinterWorkShop.Cinema.Data
         public Guid AuditoriumId { get; set; }
         public virtual Auditorium Auditorium { get; set; }
         
-        public Guid CinemaId { get; set; }
-        
-        public virtual Cinema Cinema { get; set; }
     }
 }
