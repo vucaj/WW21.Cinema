@@ -50,9 +50,9 @@ namespace WinterWorkShop.Cinema.API.Controllers
         /// </summary>
         /// <param name="createAuditoriumModel"></param>
         /// <returns></returns>
-        //[HttpPost]
+        [HttpPost]
         //[Authorize(Roles = "admin")]
-        /*public async Task<ActionResult<AuditoriumDomainModel>> PostAsync(CreateAuditoriumModel createAuditoriumModel) 
+        public async Task<ActionResult<AuditoriumDomainModel>> PostAsync([FromBody] CreateAuditoriumModel createAuditoriumModel) 
         {
             if (!ModelState.IsValid)
             {
@@ -61,15 +61,16 @@ namespace WinterWorkShop.Cinema.API.Controllers
 
             AuditoriumDomainModel auditoriumDomainModel = new AuditoriumDomainModel
             {
-                CinemaId = createAuditoriumModel.cinemaId,
-                Name = createAuditoriumModel.auditName
+                CinemaId = createAuditoriumModel.CinemaId,
+                Name = createAuditoriumModel.Name
+                
             };
 
             CreateAuditoriumResultModel createAuditoriumResultModel;
 
             try 
             {
-                createAuditoriumResultModel = await _auditoriumService.CreateAuditorium(auditoriumDomainModel, createAuditoriumModel.numberOfSeats, createAuditoriumModel.seatRows);
+                createAuditoriumResultModel = await _auditoriumService.CreateAuditorium(auditoriumDomainModel, createAuditoriumModel.SeatRows, createAuditoriumModel.NumberOfSeats);
             }
             catch (DbUpdateException e)
             {
@@ -94,6 +95,6 @@ namespace WinterWorkShop.Cinema.API.Controllers
             }
             
             return Created("auditoriums//" + createAuditoriumResultModel.Auditorium.Id, createAuditoriumResultModel);
-        }*/
+        }
     }
 }
