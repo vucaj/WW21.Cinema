@@ -14,16 +14,16 @@ using WinterWorkShop.Cinema.Domain.Models;
 
 namespace WinterWorkShop.Cinema.API.Controllers
 {
-    [Authorize]
+    //[Authorize]
     [ApiController]
     [Route("api/[controller]")]
     public class AuditoriumsController : ControllerBase
     {
         private readonly IAuditoriumService _auditoriumService;
 
-        public AuditoriumsController(IAuditoriumService auditoriumservice)
+        public AuditoriumsController(IAuditoriumService auditoriumService)
         {
-            _auditoriumService = auditoriumservice;
+            _auditoriumService = auditoriumService;
         }
 
         /// <summary>
@@ -31,7 +31,7 @@ namespace WinterWorkShop.Cinema.API.Controllers
         /// </summary>
         /// <returns></returns>
         [HttpGet]
-        public async Task<ActionResult<IEnumerable<AuditoriumDomainModel>>> GetAsync()
+        public async Task<ActionResult<IEnumerable<AuditoriumDomainModel>>> GetAllAsync()
         {
             IEnumerable<AuditoriumDomainModel> auditoriumDomainModels;
 
@@ -42,7 +42,7 @@ namespace WinterWorkShop.Cinema.API.Controllers
                 auditoriumDomainModels = new List<AuditoriumDomainModel>();
             }
 
-            return Ok(auditoriumDomainModels);
+            return Ok(auditoriumDomainModels); 
         }
 
         /// <summary>
@@ -50,9 +50,9 @@ namespace WinterWorkShop.Cinema.API.Controllers
         /// </summary>
         /// <param name="createAuditoriumModel"></param>
         /// <returns></returns>
-        [HttpPost]
-        [Authorize(Roles = "admin")]
-        public async Task<ActionResult<AuditoriumDomainModel>> PostAsync(CreateAuditoriumModel createAuditoriumModel) 
+        //[HttpPost]
+        //[Authorize(Roles = "admin")]
+        /*public async Task<ActionResult<AuditoriumDomainModel>> PostAsync(CreateAuditoriumModel createAuditoriumModel) 
         {
             if (!ModelState.IsValid)
             {
@@ -94,6 +94,6 @@ namespace WinterWorkShop.Cinema.API.Controllers
             }
             
             return Created("auditoriums//" + createAuditoriumResultModel.Auditorium.Id, createAuditoriumResultModel);
-        }
+        }*/
     }
 }

@@ -10,37 +10,9 @@ namespace WinterWorkShop.Cinema.Domain.Services
 {
     public class SeatService : ISeatService
     {
-        private readonly ISeatsRepository _seatsRepository;
-
-        public SeatService(ISeatsRepository seatsRepository)
+        public Task<IEnumerable<SeatDomainModel>> GetAllAsync()
         {
-            _seatsRepository = seatsRepository;
-        }
-
-        public async Task<IEnumerable<SeatDomainModel>> GetAllAsync()
-        {
-            var data = await _seatsRepository.GetAll();
-
-            if (data == null)
-            {
-                return null;
-            }
-
-            List<SeatDomainModel> result = new List<SeatDomainModel>();
-            SeatDomainModel model;
-            foreach (var item in data)
-            {
-                model = new SeatDomainModel
-                {
-                    Id = item.Id,
-                    AuditoriumId = item.AuditoriumId,
-                    Number = item.Number,
-                    Row = item.Row
-                };
-                result.Add(model);
-            }
-
-            return result;
+            throw new NotImplementedException();
         }
     }
 }

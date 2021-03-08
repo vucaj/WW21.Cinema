@@ -11,8 +11,17 @@ namespace WinterWorkShop.Cinema.Data
         public DbSet<Movie> Movies { get; set; }
         public DbSet<Projection> Projections { get; set; }
         public DbSet<Cinema> Cinemas { get; set; }
-        public DbSet<Auditorium> Auditoriums { get; set; }
+        
+        public DbSet<Auditorium> Auditoria { get; set; }
         public DbSet<Seat> Seats { get; set; }
+        
+        public DbSet<Address> Addresses { get; set; }
+        
+        public DbSet<MovieParticipant> MovieParticipants { get; set; }
+        
+        public DbSet<Participant> Participants { get; set; }
+        
+        public DbSet<Ticket> Tickets { get; set; }
 
         public CinemaContext(DbContextOptions options)
             : base(options)
@@ -22,85 +31,90 @@ namespace WinterWorkShop.Cinema.Data
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             base.OnModelCreating(modelBuilder);
-
-            /// <summary>
-            /// Seat -> Auditorium relation
-            /// </summary>
-            /// <returns></returns>
+            
             modelBuilder.Entity<Seat>()
                 .HasOne(x => x.Auditorium)
                 .WithMany(x => x.Seats)
                 .HasForeignKey(x => x.AuditoriumId)
                 .IsRequired();
 
-            /// <summary>
-            /// Auditorium -> Seat relation
-            /// </summary>
-            /// <returns></returns>
+            modelBuilder.Entity<Address>()
+                .HasMany(x => x.Cinemas)
+                .WithOne(x => x.Address);
+
             modelBuilder.Entity<Auditorium>()
                 .HasMany(x => x.Seats)
-                .WithOne(x => x.Auditorium)
-                .IsRequired();
+                .WithOne(x => x.Auditorium);
 
+            modelBuilder.Entity<Auditorium>()
+                .HasMany(x => x.Projections)
+                .WithOne(x => x.Auditorium);
 
-            /// <summary>
-            /// Cinema -> Auditorium relation
-            /// </summary>
-            /// <returns></returns>
-            modelBuilder.Entity<Cinema>()
-                .HasMany(x => x.Auditoriums)
-                .WithOne(x => x.Cinema)
-                .IsRequired();
-            
-            /// <summary>
-            /// Auditorium -> Cinema relation
-            /// </summary>
-            /// <returns></returns>
             modelBuilder.Entity<Auditorium>()
                 .HasOne(x => x.Cinema)
-                .WithMany(x => x.Auditoriums)
-                .HasForeignKey(x => x.CinemaId)
-                .IsRequired();
+                .WithMany(x => x.Auditoria)
+                .HasForeignKey(x => x.CinemaId);
 
+            modelBuilder.Entity<Cinema>()
+                .Property(x => x.Id).ValueGeneratedOnAdd();
+            
+            modelBuilder.Entity<Cinema>()
+                .HasMany(x => x.Auditoria)
+                .WithOne(x => x.Cinema);
 
-            /// <summary>
-            /// Auditorium -> Projection relation
-            /// </summary>
-            /// <returns></returns>
-            modelBuilder.Entity<Auditorium>()               
-               .HasMany(x => x.Projections)
-               .WithOne(x => x.Auditorium)
-               .IsRequired();
+            modelBuilder.Entity<Cinema>()
+                .HasOne(x => x.Address)
+                .WithMany(x => x.Cinemas)
+                .HasForeignKey(x => x.AddressId);
+            
+            modelBuilder.Entity<Movie>()
+                .HasMany(x => x.MovieParticipants)
+                .WithOne(x => x.Movie);
 
-            /// <summary>
-            /// Projection -> Auditorium relation
-            /// </summary>
-            /// <returns></returns>
+            modelBuilder.Entity<Movie>()
+                .HasMany(x => x.Projections)
+                .WithOne(x => x.Movie);
+
+            modelBuilder.Entity<MovieParticipant>()
+                .HasKey(x => x.Id);
+
+            modelBuilder.Entity<MovieParticipant>()
+                .HasOne(x => x.Movie)
+                .WithMany(x => x.MovieParticipants)
+                .HasForeignKey(x => x.MovieId);
+
+            modelBuilder.Entity<MovieParticipant>()
+                .HasOne(x => x.Participant)
+                .WithMany(x => x.MovieParticipants)
+                .HasForeignKey(x => x.ParticipantId);
+
+            modelBuilder.Entity<Participant>()
+                .HasMany(x => x.MovieParticipants)
+                .WithOne(x => x.Participant);
+
             modelBuilder.Entity<Projection>()
                 .HasOne(x => x.Auditorium)
                 .WithMany(x => x.Projections)
-                .HasForeignKey(x => x.AuditoriumId)
-                .IsRequired();
+                .HasForeignKey(x => x.AuditoriumId);
 
-
-            /// <summary>
-            /// Projection -> Movie relation
-            /// </summary>
-            /// <returns></returns>
             modelBuilder.Entity<Projection>()
                 .HasOne(x => x.Movie)
                 .WithMany(x => x.Projections)
-                .HasForeignKey(x => x.MovieId)
-                .IsRequired();
+                .HasForeignKey(x => x.MovieId);
 
-            /// <summary>
-            /// Movie -> Projection relation
-            /// </summary>
-            /// <returns></returns>
-            modelBuilder.Entity<Movie>()
-                .HasMany(x => x.Projections)
-                .WithOne(x => x.Movie)
-                .IsRequired();
+            modelBuilder.Entity<Ticket>()
+                .HasOne(x => x.Seat);
+
+            modelBuilder.Entity<Ticket>()
+                .HasOne(x => x.Projection)
+                .WithMany(x => x.Tickets)
+                .HasForeignKey(x => x.ProjectionId);
+
+            modelBuilder.Entity<Ticket>()
+                .HasOne(x => x.User)
+                .WithMany(x => x.Tickets)
+                .HasForeignKey(x => x.UserId);
+
         }
     }
 }
