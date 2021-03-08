@@ -50,5 +50,27 @@
         #region User
         public const string USER_NOT_FOUND = "User does not exist.";
         #endregion
+
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        #region Address
+        public const string ADDRESS_CREATION_ERROR = "Error occured while creating new address, please try again.";
+        public const string ADDRESS_GET_BY_ID = "Error occured while trying to get address by ID, please try again.";
+        public const string ADDRESS_NOT_FOUND = "Cannot find address with given Address ID, please try again";
+        public const string ADDRESS_UPDATE_ERROR = "Error occured while updating address.";
+        public const string ADDRESS_CITY_NAME_NOT_VALID = "The Address City name cannot be longer than 20 characters.";
+        public const string ADDRESS_COUNTRY_NOT_VALID = "The Address County name cannot be longer than 20 characters.";
+        public const string ADDRESS_STREET_NAME_NOT_VALID = "The Address Street name cannot be longer than 50 characters.";
+        public const string ADDRESS_LONGITUDE_NOT_VALID = "The Address longitude must be in range between -180.0 and 180.0";
+        public const string ADDRESS_LATITUDE_NOT_VALID = "The Address longitude must be in range between -90.0 and 90.0";
+        #endregion
     }
 }
