@@ -26,11 +26,10 @@ namespace WinterWorkShop.Cinema.API.Controllers
             _auditoriumService = auditoriumService;
         }
 
-        /// <summary>
         /// Gets all auditoriums
-        /// </summary>
-        /// <returns></returns>
+        
         [HttpGet]
+        [Route("getAll")]
         public async Task<ActionResult<IEnumerable<AuditoriumDomainModel>>> GetAllAsync()
         {
             IEnumerable<AuditoriumDomainModel> auditoriumDomainModels;
@@ -44,15 +43,14 @@ namespace WinterWorkShop.Cinema.API.Controllers
 
             return Ok(auditoriumDomainModels); 
         }
-
-        /// <summary>
+        
         /// Adds a new auditorium
-        /// </summary>
-        /// <param name="createAuditoriumModel"></param>
-        /// <returns></returns>
-        [HttpPost]
+
         //[Authorize(Roles = "admin")]
-        public async Task<ActionResult<AuditoriumDomainModel>> PostAsync([FromBody] CreateAuditoriumModel createAuditoriumModel) 
+        
+        [HttpPost]
+        [Route("create")]
+        public async Task<ActionResult<AuditoriumDomainModel>> CreateAuditoriumAsync ([FromBody] CreateAuditoriumModel createAuditoriumModel) 
         {
             if (!ModelState.IsValid)
             {
@@ -96,5 +94,53 @@ namespace WinterWorkShop.Cinema.API.Controllers
             
             return Created("auditoriums//" + createAuditoriumResultModel.Auditorium.Id, createAuditoriumResultModel);
         }
+
+        [HttpPost]
+        [Route("delete")]
+        public async Task<ActionResult> DeleteAuditorium([FromBody] DeleteAuditoriumModel deleteAuditoriumModel)
+        {
+            if (!ModelState.IsValid)
+            {
+                return BadRequest(ModelState);
+            }
+
+            AuditoriumDomainModel auditoriumDomainModel = new AuditoriumDomainModel
+            {
+                Id = deleteAuditoriumModel.AuditoriumId,
+                CinemaId = deleteAuditoriumModel.CinemaId
+            };
+
+            DeleteAuditoriumResultModel deleteAuditoriumResultModel;
+
+            try
+            {
+                deleteAuditoriumResultModel = await _auditoriumService.DeleteAuditorium(auditoriumDomainModel);
+            }
+            catch (DbUpdateException e)
+            {
+                ErrorResponseModel errorResponseModel = new ErrorResponseModel
+                {
+                    ErrorMessage = e.InnerException.Message ?? e.Message,
+                    StatusCode = System.Net.HttpStatusCode.BadRequest
+                };
+
+                return BadRequest(errorResponseModel);
+            }
+
+            if (!deleteAuditoriumResultModel.IsSuccessful)
+            {
+                ErrorResponseModel errorResponseModel = new ErrorResponseModel()
+                {
+                    ErrorMessage = deleteAuditoriumResultModel.ErrorMessage,
+                    StatusCode = System.Net.HttpStatusCode.BadRequest
+                };
+
+                return BadRequest(errorResponseModel);
+            }
+
+            return Ok("Deleted auditorium: " + auditoriumDomainModel.Id);
+
+        }
+        
     }
 }

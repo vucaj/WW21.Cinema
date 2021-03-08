@@ -2,13 +2,17 @@
 using Microsoft.EntityFrameworkCore.ChangeTracking;
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using WinterWorkShop.Cinema.Data;
 
 namespace WinterWorkShop.Cinema.Repositories
 {
-    public interface ISeatsRepository : IRepository<Seat> { }
+    public interface ISeatsRepository : IRepository<Seat>
+    {
+        public  Task<IEnumerable<Seat>> GetAllByAuditoriumIdAsync(Guid auditoriumId);
+    }
     public class SeatsRepository : ISeatsRepository
     {
         private CinemaContext _cinemaContext;
@@ -56,6 +60,15 @@ namespace WinterWorkShop.Cinema.Repositories
             _cinemaContext.Entry(obj).State = EntityState.Modified;
 
             return updatedEntry;
+        }
+
+        public async Task<IEnumerable<Seat>> GetAllByAuditoriumIdAsync(Guid auditoriumId)
+        {
+            List<Seat> allSeats = await _cinemaContext.Seats.ToListAsync();
+
+            List<Seat> filteredSeats = allSeats.Where(x => x.AuditoriumId == auditoriumId).ToList();
+
+            return filteredSeats;
         }
     }
 }
