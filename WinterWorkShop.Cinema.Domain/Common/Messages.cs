@@ -50,5 +50,13 @@
         #region User
         public const string USER_NOT_FOUND = "User does not exist.";
         #endregion
+
+        #region Participant
+        public const string PARTICIPANT_CREATION_ERROR = "Error occured while creating new participant, please try again.";
+        public const string PARTICIPANT_NOT_FOUND = "Cannot find participant with given Participant ID, please try again.";
+        public const string PARTICIPANT_UPDATE_ERROR = "Error occured while updating participant.";
+        public const string PARTICIPANT_FIRST_NAME_NOT_VALID = "The participant first name cannot be longer than 30 characters.";
+        public const string PARTICIPANT_LAST_NAME_NOT_VALID = "The participant last name cannot be longer than 30 characters.";
+        #endregion
     }
 }
