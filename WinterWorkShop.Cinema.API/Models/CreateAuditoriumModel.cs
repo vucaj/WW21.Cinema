@@ -10,19 +10,19 @@ namespace WinterWorkShop.Cinema.API.Models
     public class CreateAuditoriumModel
     {
         [Required]        
-        public int cinemaId { get; set; }
+        public Guid CinemaId { get; set; }
 
         [Required]
         [StringLength(50, ErrorMessage = Messages.AUDITORIUM_PROPERTIE_NAME_NOT_VALID)]
-        public string auditName { get; set; }
+        public string Name { get; set; }
 
         [Required]
         [Range(1,20, ErrorMessage = Messages.AUDITORIUM_PROPERTIE_SEATROWSNUMBER_NOT_VALID)]
-        public int seatRows { get; set; }
+        public int SeatRows { get; set; }
 
         [Required]
         [Range(1, 20, ErrorMessage = Messages.AUDITORIUM_PROPERTIE_SEATNUMBER_NOT_VALID)]
-        public int numberOfSeats { get; set; }
+        public int NumberOfSeats { get; set; }
 
     }
 }
