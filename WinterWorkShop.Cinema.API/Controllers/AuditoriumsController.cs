@@ -1,10 +1,12 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
 using System.Data.Common;
 using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.JsonPatch;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using WinterWorkShop.Cinema.API.Models;
@@ -141,6 +143,38 @@ namespace WinterWorkShop.Cinema.API.Controllers
             return Ok("Deleted auditorium: " + auditoriumDomainModel.Id);
 
         }
+
+        [HttpPut]
+        [Route("update")]
+        public async Task<ActionResult> UpdateAuditorium(
+            [FromBody] UpdateAuditoriumModel updateAuditoriumModel)
+        {
+            if (!ModelState.IsValid)
+            {
+                return BadRequest(ModelState);
+            }
+
+            var auditorium = await _auditoriumService.FindByAuditoriumId(new AuditoriumDomainModel
+            {
+                Id = updateAuditoriumModel.Id
+            });
+
+            auditorium.Name = updateAuditoriumModel.Name;
+            UpdateAuditoriumResultModel updateAuditoriumResultModel = await _auditoriumService.UpdateAuditorium(new AuditoriumDomainModel
+            {
+                Id = auditorium.Id,
+                Name = auditorium.Name,
+                CinemaId = auditorium.CinemaId
+            });
+
+            if (!updateAuditoriumResultModel.IsSuccessful)
+            {
+                return BadRequest();
+            }
+
+            return Ok();
+        }
+        
         
     }
 }

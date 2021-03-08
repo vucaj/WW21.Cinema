@@ -12,6 +12,8 @@ namespace WinterWorkShop.Cinema.Repositories
     public interface IAuditoriumsRepository : IRepository<Auditorium> 
     {
         Task<IEnumerable<Auditorium>> GetByAuditName(string name, int id);
+
+        Task<IEnumerable<Auditorium>> GetByCinemaId(Guid cinemaId);
     }
     public class AuditoriumsRepository : IAuditoriumsRepository
     {
@@ -26,6 +28,13 @@ namespace WinterWorkShop.Cinema.Repositories
         public async Task<IEnumerable<Auditorium>> GetByAuditName(string name, int id)
         {
             var data = await _cinemaContext.Auditoria.Where(x => x.Name.Equals(name) && x.CinemaId.Equals(id)).ToListAsync();
+
+            return data;
+        }
+
+        public async Task<IEnumerable<Auditorium>> GetByCinemaId(Guid cinemaId)
+        {
+            var data = await _cinemaContext.Auditoria.Where(x => x.CinemaId == cinemaId).ToListAsync();
 
             return data;
         }

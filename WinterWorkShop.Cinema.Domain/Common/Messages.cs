@@ -22,6 +22,7 @@
         public const string AUDITORIUM_DELTE_INVALID_CINEMAID =
             "Cannot delete auditorium, auditorium with given cinemaId does not exist.";
         public const string AUDITORIUM_NOT_FOUND = "Cannot find auditorium with given Auditorium ID.";
+        public const string AUDITORIUM_UPDATE_ERROR = "Error occured while updating auditorium.";
         
         
         #endregion

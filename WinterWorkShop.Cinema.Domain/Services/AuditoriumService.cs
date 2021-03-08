@@ -189,5 +189,67 @@ namespace WinterWorkShop.Cinema.Domain.Services
 
             return resultModel;
         }
+        
+        public async Task<IEnumerable<AuditoriumDomainModel>> GetAllByCinemaIdAsync(CinemaDomainModel domainModel)
+        {
+            var auditoria = await _auditoriumsRepository.GetByCinemaId(domainModel.Id);
+
+            return auditoria.Select(auditorium => new AuditoriumDomainModel
+            {
+                Id = auditorium.Id,
+                CinemaId = auditorium.CinemaId,
+                Name = auditorium.Name
+            });
+        }
+        
+        public async Task<UpdateAuditoriumResultModel> UpdateAuditorium(AuditoriumDomainModel domainModel)
+        {
+            var auditorium = await _auditoriumsRepository.GetByIdAsync(domainModel.Id);
+
+            if (auditorium == null)
+            {
+                return new UpdateAuditoriumResultModel
+                {
+                    IsSuccessful = false,
+                    ErrorMessage = Messages.AUDITORIUM_NOT_FOUND
+                };
+            }
+
+            auditorium.Name = domainModel.Name;
+
+            var updatedAuditorium = _auditoriumsRepository.Update(auditorium);
+
+            if (updatedAuditorium == null)
+            {
+                return new UpdateAuditoriumResultModel
+                {
+                    IsSuccessful = false,
+                    ErrorMessage = Messages.AUDITORIUM_UPDATE_ERROR
+                };
+            }
+            
+            _auditoriumsRepository.Save();
+
+            UpdateAuditoriumResultModel resultModel = new UpdateAuditoriumResultModel
+            {
+                IsSuccessful = true,
+                ErrorMessage = null
+            };
+
+            return resultModel;
+        }
+
+        public async Task<AuditoriumDomainModel> FindByAuditoriumId(AuditoriumDomainModel domainModel)
+        {
+            var auditorium = await _auditoriumsRepository.GetByIdAsync(domainModel.Id);
+
+            return new AuditoriumDomainModel
+            {
+                Id = auditorium.Id,
+                CinemaId = auditorium.CinemaId,
+                Name = auditorium.Name
+            };
+        }
+        
     }
 }
