@@ -77,6 +77,12 @@
         public const string ADDRESS_STREET_NAME_NOT_VALID = "The Address Street name cannot be longer than 50 characters.";
         public const string ADDRESS_LONGITUDE_NOT_VALID = "The Address longitude must be in range between -180.0 and 180.0";
         public const string ADDRESS_LATITUDE_NOT_VALID = "The Address longitude must be in range between -90.0 and 90.0";
+        #region Participant
+        public const string PARTICIPANT_CREATION_ERROR = "Error occured while creating new participant, please try again.";
+        public const string PARTICIPANT_NOT_FOUND = "Cannot find participant with given Participant ID, please try again.";
+        public const string PARTICIPANT_UPDATE_ERROR = "Error occured while updating participant.";
+        public const string PARTICIPANT_FIRST_NAME_NOT_VALID = "The participant first name cannot be longer than 30 characters.";
+        public const string PARTICIPANT_LAST_NAME_NOT_VALID = "The participant last name cannot be longer than 30 characters.";
         #endregion
     }
 }
