@@ -44,16 +44,12 @@ namespace WinterWorkShop.Cinema.API.Controllers
         [Route("getById")]
         public async Task<ActionResult<ParticipantDomainModel>> GetParticipantById([FromBody] ParticipantDomainModel domainModel)
         {
-            ParticipantDomainModel participantDomainModel;
-
-            participantDomainModel = await _participantService.GetParticipantByIdAsync(domainModel);
-
-            if (participantDomainModel == null)
+            var participantDomainModel = await _participantService.GetParticipantByIdAsync(new ParticipantDomainModel
             {
-                domainModel = new ParticipantDomainModel();
-            }
+                Id = domainModel.Id
+            });
 
-            return Ok(domainModel);
+            return Ok(participantDomainModel);
         }
 
         /// Adds a new participant
@@ -167,15 +163,15 @@ namespace WinterWorkShop.Cinema.API.Controllers
                 Id = updateParticipantModel.Id
             });
 
-            participant.FirstName = updateParticipantModel.FirstName;
-            participant.LastName = updateParticipantModel.LastName;
-            participant.ParticipantType = updateParticipantModel.ParticipantType;
+            participant.Participant.FirstName = updateParticipantModel.FirstName;
+            participant.Participant.LastName = updateParticipantModel.LastName;
+            participant.Participant.ParticipantType = updateParticipantModel.ParticipantType;
             UpdateParticipantResultModel updateParticipantResultModel = await _participantService.UpdateParticipant(new ParticipantDomainModel
             {
-                Id = participant.Id,
-                FirstName = participant.FirstName,
-                LastName = participant.LastName,
-                ParticipantType = participant.ParticipantType
+                Id = participant.Participant.Id,
+                FirstName = participant.Participant.FirstName,
+                LastName = participant.Participant.LastName,
+                ParticipantType = participant.Participant.ParticipantType
             });
 
             if (!updateParticipantResultModel.IsSuccessful)

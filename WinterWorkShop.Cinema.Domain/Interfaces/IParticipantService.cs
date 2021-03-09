@@ -9,7 +9,7 @@ namespace WinterWorkShop.Cinema.Domain.Interfaces
     public interface IParticipantService
     {
         Task<IEnumerable<ParticipantDomainModel>> GetAllParticipantsAsync();
-        Task<ParticipantDomainModel> GetParticipantByIdAsync(ParticipantDomainModel domainModel);
+        Task<CreateParticipantResultModel> GetParticipantByIdAsync(ParticipantDomainModel domainModel);
         Task<CreateParticipantResultModel> AddParticipant(ParticipantDomainModel newParticipant);
         Task<UpdateParticipantResultModel> UpdateParticipant(ParticipantDomainModel updateParticipant);
         Task<DeleteParticipantResultModel> DeleteParticipant(ParticipantDomainModel deleteParticipant);

@@ -103,22 +103,30 @@ namespace WinterWorkShop.Cinema.Domain.Services
             });
         }
 
-        public async Task<ParticipantDomainModel> GetParticipantByIdAsync(ParticipantDomainModel domainModel)
+        public async Task<CreateParticipantResultModel> GetParticipantByIdAsync(ParticipantDomainModel domainModel)
         {
             var participant = await _participantRepository.GetByIdAsync(domainModel.Id);
 
-            // Treba proveriti ako je null sta da vrati, treba da izbaci message kao kod prethodnih?
-/*            if(participant == null)
+            if (participant == null)
             {
-                
-            }*/
+                return new CreateParticipantResultModel
+                {
+                    IsSuccessful = false,
+                    ErrorMessage = Messages.PARTICIPANT_NOT_FOUND
+                };
+            }
 
-            return new ParticipantDomainModel
+            return new CreateParticipantResultModel
             {
-                Id = participant.Id,
-                FirstName = participant.FirstName,
-                LastName = participant.LastName,
-                ParticipantType = participant.ParticipantType
+                IsSuccessful = true,
+                ErrorMessage = null,
+                Participant = new ParticipantDomainModel
+                {
+                    Id = participant.Id,
+                    FirstName = participant.FirstName,
+                    LastName = participant.LastName,
+                    ParticipantType = participant.ParticipantType
+                }
             };
         }
 
