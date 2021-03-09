@@ -28,7 +28,12 @@
         #endregion
 
         #region Cinemas
+
         public const string CINEMA_GET_ALL_CINEMAS_ERROR = "Error occured while getting all cinemas, please try again";
+        public const string CINEMA_SAVE_ERROR = "Error occured while saving to database.";
+        public const string CINEMA_PROPERTY_NAME_NOT_VALID = "The Cinema Name must have between 2 and 30 characters.";
+        public const string CINEMA_NOT_FOUND = "The Cinema with given ID cannot be found.";
+        
         #endregion
 
         #region Movies        
