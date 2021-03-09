@@ -5,6 +5,7 @@ using System.Collections.Generic;
 using System.Data.Common;
 using System.Linq;
 using System.Threading.Tasks;
+using Microsoft.EntityFrameworkCore;
 using WinterWorkShop.Cinema.API.Models;
 using WinterWorkShop.Cinema.Domain.Common;
 using WinterWorkShop.Cinema.Domain.Interfaces;
@@ -12,7 +13,7 @@ using WinterWorkShop.Cinema.Domain.Models;
 
 namespace WinterWorkShop.Cinema.API.Controllers
 {
-    [Authorize]
+    //[Authorize]
     [ApiController]
     [Route("api/[controller]")]
     public class CinemasController : ControllerBase
@@ -24,11 +25,11 @@ namespace WinterWorkShop.Cinema.API.Controllers
             _cinemaService = cinemaService;
         }
 
-        /// <summary>
+
         /// Gets all cinemas
-        /// </summary>
-        /// <returns>List of cinemas</returns>
+
         [HttpGet]
+        [Route("getAll")]
         public async Task<ActionResult<IEnumerable<CinemaDomainModel>>> GetAsync()
         {
             IEnumerable<CinemaDomainModel> cinemaDomainModels;
@@ -41,6 +42,55 @@ namespace WinterWorkShop.Cinema.API.Controllers
             }
 
             return Ok(cinemaDomainModels);
+        }
+
+        [HttpPost]
+        [Route("create")]
+        public async Task<ActionResult<CinemaDomainModel>> CreateCinemaAsync([FromBody] CreateCinemaModel createCinemaModel)
+        {
+            //TODO: provertiti unetu adresu
+            
+            if (!ModelState.IsValid)
+            {
+                return BadRequest(ModelState);
+            }
+
+            CinemaDomainModel cinemaDomainModel = new CinemaDomainModel
+            {
+                Id = Guid.NewGuid(),
+                Name = createCinemaModel.Name,
+                AddressId = createCinemaModel.AddressId
+            };
+
+            CreateCinemaResultModel createCinemaResultModel;
+
+            try
+            {
+                createCinemaResultModel = await _cinemaService.Create(cinemaDomainModel);
+            }
+            catch (DbUpdateException e)
+            {
+                ErrorResponseModel errorResponse = new ErrorResponseModel
+                {
+                    ErrorMessage = e.InnerException.Message ?? e.Message,
+                    StatusCode = System.Net.HttpStatusCode.BadRequest
+                };
+
+                return BadRequest(errorResponse);
+            }
+
+            if (!createCinemaResultModel.IsSuccessful)
+            {
+                ErrorResponseModel errorResponseModel = new ErrorResponseModel
+                {
+                    ErrorMessage = createCinemaResultModel.ErrorMessage,
+                    StatusCode = System.Net.HttpStatusCode.BadRequest
+                };
+
+                return BadRequest(errorResponseModel);
+            }
+
+            return Created("Cinema//" + createCinemaResultModel.Cinema.Id, createCinemaResultModel);
         }
     }
 }
