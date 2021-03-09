@@ -3,6 +3,7 @@ using Microsoft.AspNetCore.Mvc;
 using System;
 using System.Collections.Generic;
 using System.Data.Common;
+using System.Diagnostics;
 using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.EntityFrameworkCore;
@@ -91,6 +92,35 @@ namespace WinterWorkShop.Cinema.API.Controllers
             }
 
             return Created("Cinema//" + createCinemaResultModel.Cinema.Id, createCinemaResultModel);
+        }
+
+        [HttpPost]
+        [Route("delete")]
+        public async Task<ActionResult> DeleteCinemaAsync([FromBody] DeleteCinemaModel deleteCinemaModel)
+        {
+            if (!ModelState.IsValid)
+            {
+                return BadRequest(ModelState);
+            }
+
+            CinemaDomainModel cinema = await _cinemaService.GetByCinemaId(new CinemaDomainModel
+            {
+                Id = deleteCinemaModel.Id
+            });
+
+            if (cinema == null)
+            {
+                return BadRequest();
+            }
+
+            DeleteCinemaResultModel resultModel = await _cinemaService.Delete(cinema);
+
+            if (!resultModel.isSuccessful)
+            {
+                return BadRequest(resultModel.ErrorMessage);
+            }
+
+            return Ok();
         }
     }
 }

@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Runtime.InteropServices.WindowsRuntime;
 using System.Text;
 using System.Threading.Tasks;
 using WinterWorkShop.Cinema.API.Models;
@@ -15,10 +16,14 @@ namespace WinterWorkShop.Cinema.Domain.Services
     public class CinemaService : ICinemaService
     {
         private readonly ICinemasRepository _cinemasRepository;
+        private readonly IAuditoriumsRepository _auditoriumsRepository;
+        private readonly ISeatsRepository _seatsRepository;
 
-        public CinemaService(ICinemasRepository cinemasRepository)
+        public CinemaService(ICinemasRepository cinemasRepository, IAuditoriumsRepository auditoriumsRepository, ISeatsRepository seatsRepository)
         {
             _cinemasRepository = cinemasRepository;
+            _auditoriumsRepository = auditoriumsRepository;
+            _seatsRepository = seatsRepository;
         }
         
         public async Task<IEnumerable<CinemaDomainModel>> GetAllAsync()
@@ -31,6 +36,18 @@ namespace WinterWorkShop.Cinema.Domain.Services
                 Name = cinema.Name,
                 AddressId = cinema.AddressId
             });
+        }
+
+        public async Task<CinemaDomainModel> GetByCinemaId(CinemaDomainModel cinemaDomainModel)
+        {
+            var cinema = await _cinemasRepository.GetByIdAsync(cinemaDomainModel.Id);
+
+            return new CinemaDomainModel
+            {
+                Id = cinema.Id,
+                AddressId = cinema.AddressId,
+                Name = cinema.Name
+            };
         }
 
         public async Task<CreateCinemaResultModel> Create(CinemaDomainModel domainModel)
@@ -70,6 +87,45 @@ namespace WinterWorkShop.Cinema.Domain.Services
             };
 
             return resultModel;
+        }
+
+        public async Task<DeleteCinemaResultModel> Delete(CinemaDomainModel domainModel)
+        {
+            var cinema = await _cinemasRepository.GetByIdAsync(domainModel.Id);
+            if (cinema == null)
+            {
+                return new DeleteCinemaResultModel
+                {
+                    isSuccessful = false,
+                    ErrorMessage = Messages.CINEMA_NOT_FOUND
+                };
+            }
+
+            var auditoria = await _auditoriumsRepository.GetByCinemaId(cinema.Id);
+
+            foreach (var auditorium in auditoria)
+            {
+                var seats = await _seatsRepository.GetAllByAuditoriumIdAsync(auditorium.Id);
+
+                foreach (var seat in seats)
+                {
+                    _seatsRepository.Delete(seat.Id);
+                }
+                _seatsRepository.Save();
+
+                _auditoriumsRepository.Delete(auditorium.Id);
+                _auditoriumsRepository.Save();
+            }
+
+            _cinemasRepository.Delete(cinema.Id);
+            _cinemasRepository.Save();
+
+            return new DeleteCinemaResultModel
+            {
+                isSuccessful = true,
+                ErrorMessage = null
+            };
+
         }
     }
 
