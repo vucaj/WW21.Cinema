@@ -36,7 +36,7 @@ namespace WinterWorkShop.Cinema.Repositories
 
         public async Task<Data.Cinema> GetByIdAsync(object id)
         {
-            var data = await _cinemaContext.Cinemas.FindAsync(id);
+            var data = await _cinemaContext.Cinemas.FindAsync((Guid) id);
 
             return data;
         }

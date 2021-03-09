@@ -1,10 +1,12 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
 using System.Data.Common;
 using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.JsonPatch;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using WinterWorkShop.Cinema.API.Models;
@@ -26,11 +28,10 @@ namespace WinterWorkShop.Cinema.API.Controllers
             _auditoriumService = auditoriumService;
         }
 
-        /// <summary>
         /// Gets all auditoriums
-        /// </summary>
-        /// <returns></returns>
+        
         [HttpGet]
+        [Route("getAll")]
         public async Task<ActionResult<IEnumerable<AuditoriumDomainModel>>> GetAllAsync()
         {
             IEnumerable<AuditoriumDomainModel> auditoriumDomainModels;
@@ -44,15 +45,14 @@ namespace WinterWorkShop.Cinema.API.Controllers
 
             return Ok(auditoriumDomainModels); 
         }
-
-        /// <summary>
+        
         /// Adds a new auditorium
-        /// </summary>
-        /// <param name="createAuditoriumModel"></param>
-        /// <returns></returns>
-        //[HttpPost]
+
         //[Authorize(Roles = "admin")]
-        /*public async Task<ActionResult<AuditoriumDomainModel>> PostAsync(CreateAuditoriumModel createAuditoriumModel) 
+        
+        [HttpPost]
+        [Route("create")]
+        public async Task<ActionResult<AuditoriumDomainModel>> CreateAuditoriumAsync ([FromBody] CreateAuditoriumModel createAuditoriumModel) 
         {
             if (!ModelState.IsValid)
             {
@@ -61,15 +61,16 @@ namespace WinterWorkShop.Cinema.API.Controllers
 
             AuditoriumDomainModel auditoriumDomainModel = new AuditoriumDomainModel
             {
-                CinemaId = createAuditoriumModel.cinemaId,
-                Name = createAuditoriumModel.auditName
+                CinemaId = createAuditoriumModel.CinemaId,
+                Name = createAuditoriumModel.Name
+                
             };
 
             CreateAuditoriumResultModel createAuditoriumResultModel;
 
             try 
             {
-                createAuditoriumResultModel = await _auditoriumService.CreateAuditorium(auditoriumDomainModel, createAuditoriumModel.numberOfSeats, createAuditoriumModel.seatRows);
+                createAuditoriumResultModel = await _auditoriumService.CreateAuditorium(auditoriumDomainModel, createAuditoriumModel.SeatRows, createAuditoriumModel.NumberOfSeats);
             }
             catch (DbUpdateException e)
             {
@@ -94,6 +95,86 @@ namespace WinterWorkShop.Cinema.API.Controllers
             }
             
             return Created("auditoriums//" + createAuditoriumResultModel.Auditorium.Id, createAuditoriumResultModel);
-        }*/
+        }
+
+        [HttpPost]
+        [Route("delete")]
+        public async Task<ActionResult> DeleteAuditorium([FromBody] DeleteAuditoriumModel deleteAuditoriumModel)
+        {
+            if (!ModelState.IsValid)
+            {
+                return BadRequest(ModelState);
+            }
+
+            AuditoriumDomainModel auditoriumDomainModel = new AuditoriumDomainModel
+            {
+                Id = deleteAuditoriumModel.AuditoriumId,
+                CinemaId = deleteAuditoriumModel.CinemaId
+            };
+
+            DeleteAuditoriumResultModel deleteAuditoriumResultModel;
+
+            try
+            {
+                deleteAuditoriumResultModel = await _auditoriumService.DeleteAuditorium(auditoriumDomainModel);
+            }
+            catch (DbUpdateException e)
+            {
+                ErrorResponseModel errorResponseModel = new ErrorResponseModel
+                {
+                    ErrorMessage = e.InnerException.Message ?? e.Message,
+                    StatusCode = System.Net.HttpStatusCode.BadRequest
+                };
+
+                return BadRequest(errorResponseModel);
+            }
+
+            if (!deleteAuditoriumResultModel.IsSuccessful)
+            {
+                ErrorResponseModel errorResponseModel = new ErrorResponseModel()
+                {
+                    ErrorMessage = deleteAuditoriumResultModel.ErrorMessage,
+                    StatusCode = System.Net.HttpStatusCode.BadRequest
+                };
+
+                return BadRequest(errorResponseModel);
+            }
+
+            return Ok("Deleted auditorium: " + auditoriumDomainModel.Id);
+
+        }
+
+        [HttpPut]
+        [Route("update")]
+        public async Task<ActionResult> UpdateAuditorium(
+            [FromBody] UpdateAuditoriumModel updateAuditoriumModel)
+        {
+            if (!ModelState.IsValid)
+            {
+                return BadRequest(ModelState);
+            }
+
+            var auditorium = await _auditoriumService.FindByAuditoriumId(new AuditoriumDomainModel
+            {
+                Id = updateAuditoriumModel.Id
+            });
+
+            auditorium.Name = updateAuditoriumModel.Name;
+            UpdateAuditoriumResultModel updateAuditoriumResultModel = await _auditoriumService.UpdateAuditorium(new AuditoriumDomainModel
+            {
+                Id = auditorium.Id,
+                Name = auditorium.Name,
+                CinemaId = auditorium.CinemaId
+            });
+
+            if (!updateAuditoriumResultModel.IsSuccessful)
+            {
+                return BadRequest();
+            }
+
+            return Ok();
+        }
+        
+        
     }
 }
