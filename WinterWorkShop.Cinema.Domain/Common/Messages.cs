@@ -56,6 +56,8 @@
 
         #region Seats
         public const string SEAT_GET_ALL_SEATS_ERROR = "Error occured while getting all seats, please try again.";
+        public const string SEAT_NOT_FOUND = "Error occured while getting seat by id, please try again.";
+        public const string SEAT_NOT_FOUND_BY_AUDITORIUM_ID = "Error occured while getting auditorium by id, please try again.";
         #endregion
 
         #region User
