@@ -83,5 +83,13 @@
         public const string PARTICIPANT_FIRST_NAME_NOT_VALID = "The participant first name cannot be longer than 30 characters.";
         public const string PARTICIPANT_LAST_NAME_NOT_VALID = "The participant last name cannot be longer than 30 characters.";
         #endregion
+
+        #region MovieParticipant
+        public const string MOVIEPARTICIPANT_NOT_FOUND_BY_MOVIE_ID = "Error occured while getting movie by id, please try again.";
+        public const string MOVIEPARTICIPANT_NOT_FOUND_BY_PARTICIPANT_ID = "Error occured while getting participant by id, please try again.";
+        public const string MOVIEPARTICIPANT_NOT_FOUND = "Error occured while getting movie participant by id, please try again.";
+        public const string MOVIEPARTICIPANT_SAVE_ERROR = "Error occured while saving to database.";
+        public const string MOVIEPARTICIPANT_UPDATE_ERROR = "Error occured while updating movie participant.";
+        #endregion
     }
 }
