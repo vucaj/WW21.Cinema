@@ -138,9 +138,9 @@ namespace WinterWorkShop.Cinema.API.Controllers
         /// <param name="id"></param>
         /// <param name="movieModel"></param>
         /// <returns></returns>
-        /*[Authorize(Roles = "admin")]
+        //[Authorize(Roles = "admin")]
         [HttpPut]
-        [Route("{id}")]
+        [Route("update/{id}")]
         public async Task<ActionResult> Put(Guid id, [FromBody]MovieModel movieModel)
         {
             if (!ModelState.IsValid)
@@ -148,9 +148,7 @@ namespace WinterWorkShop.Cinema.API.Controllers
                 return BadRequest(ModelState);
             }
 
-            MovieDomainModel movieToUpdate;
-
-            movieToUpdate = await _movieService.GetMovieByIdAsync(id);
+            MovieDomainModel movieToUpdate = await _movieService.GetMovieByIdAsync(id);
 
             if (movieToUpdate == null)
             {
@@ -162,11 +160,16 @@ namespace WinterWorkShop.Cinema.API.Controllers
 
                 return BadRequest(errorResponse);
             }
-
+            
             movieToUpdate.Title = movieModel.Title;
-            movieToUpdate.Current = movieModel.Current;
-            movieToUpdate.Year = movieModel.Year;
+            movieToUpdate.Description = movieModel.Description;
+            movieToUpdate.Genre = movieModel.Genre;
+            movieToUpdate.Duration = movieModel.Duration;
             movieToUpdate.Rating = movieModel.Rating;
+            movieToUpdate.Distributer = movieModel.Distributer;
+            movieToUpdate.Year = movieModel.Year;
+            movieToUpdate.IsActive = movieModel.IsActive;
+            movieToUpdate.NumberOfOscars = movieModel.NumberOfOscars;
 
             MovieDomainModel movieDomainModel;
             try
@@ -186,7 +189,7 @@ namespace WinterWorkShop.Cinema.API.Controllers
 
             return Accepted("movies//" + movieDomainModel.Id, movieDomainModel);
 
-        }*/
+        }
 
         /// <summary>
         /// Delete a movie by id

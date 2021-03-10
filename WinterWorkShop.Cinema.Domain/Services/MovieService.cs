@@ -123,7 +123,21 @@ namespace WinterWorkShop.Cinema.Domain.Services
                 return null;
             }
 
-            Movie data = _moviesRepository.Update(movie);
+            Movie movieToUpdate = new Movie()
+            {
+                Id = movie.Id,
+                Title = updateMovie.Title,
+                Description = updateMovie.Description,
+                Genre = updateMovie.Genre,
+                Duration = updateMovie.Duration,
+                Distributer = updateMovie.Distributer,
+                IsActive = updateMovie.IsActive,
+                NumberOfOscars = updateMovie.NumberOfOscars,
+                Rating = updateMovie.Rating,
+                Year = updateMovie.Year
+            };
+
+            Movie data = _moviesRepository.Update(movieToUpdate);
 
             if (data == null)
             {
