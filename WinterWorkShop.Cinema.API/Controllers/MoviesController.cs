@@ -16,7 +16,7 @@ using WinterWorkShop.Cinema.Repositories;
 
 namespace WinterWorkShop.Cinema.API.Controllers
 {
-    [Authorize]
+    //[Authorize]
     [ApiController]
     [Route("api/[controller]")]
     public class MoviesController : ControllerBase
@@ -37,7 +37,7 @@ namespace WinterWorkShop.Cinema.API.Controllers
         /// <param name="id"></param>
         /// <returns></returns>
         [HttpGet]
-        [Route("{id}")]
+        [Route("get-{id}")]
         public async Task<ActionResult<MovieDomainModel>> GetAsync(Guid id)
         {
             MovieDomainModel movie;
@@ -77,8 +77,9 @@ namespace WinterWorkShop.Cinema.API.Controllers
         /// </summary>
         /// <param name="movieModel"></param>
         /// <returns></returns>
-        [Authorize(Roles = "admin")]
+        //[Authorize(Roles = "admin")]
         [HttpPost]
+        [Route("create")]
         public async Task<ActionResult> Post([FromBody]MovieModel movieModel)
         {
             if (!ModelState.IsValid)
@@ -88,10 +89,16 @@ namespace WinterWorkShop.Cinema.API.Controllers
 
             MovieDomainModel domainModel = new MovieDomainModel
             {
-                Current = movieModel.Current,
-                Rating = movieModel.Rating,
+                Id = Guid.NewGuid(),
                 Title = movieModel.Title,
-                Year = movieModel.Year
+                Description = movieModel.Description,
+                Genre = movieModel.Genre,
+                Duration = movieModel.Duration,
+                Rating = movieModel.Rating,
+                Distributer = movieModel.Distributer,
+                Year = movieModel.Year,
+                IsActive = movieModel.IsActive,
+                NumberOfOscars = movieModel.NumberOfOscars
             };
 
             MovieDomainModel createMovie;
@@ -131,9 +138,9 @@ namespace WinterWorkShop.Cinema.API.Controllers
         /// <param name="id"></param>
         /// <param name="movieModel"></param>
         /// <returns></returns>
-        [Authorize(Roles = "admin")]
+        //[Authorize(Roles = "admin")]
         [HttpPut]
-        [Route("{id}")]
+        [Route("update/{id}")]
         public async Task<ActionResult> Put(Guid id, [FromBody]MovieModel movieModel)
         {
             if (!ModelState.IsValid)
@@ -141,9 +148,7 @@ namespace WinterWorkShop.Cinema.API.Controllers
                 return BadRequest(ModelState);
             }
 
-            MovieDomainModel movieToUpdate;
-
-            movieToUpdate = await _movieService.GetMovieByIdAsync(id);
+            MovieDomainModel movieToUpdate = await _movieService.GetMovieByIdAsync(id);
 
             if (movieToUpdate == null)
             {
@@ -155,11 +160,16 @@ namespace WinterWorkShop.Cinema.API.Controllers
 
                 return BadRequest(errorResponse);
             }
-
+            
             movieToUpdate.Title = movieModel.Title;
-            movieToUpdate.Current = movieModel.Current;
-            movieToUpdate.Year = movieModel.Year;
+            movieToUpdate.Description = movieModel.Description;
+            movieToUpdate.Genre = movieModel.Genre;
+            movieToUpdate.Duration = movieModel.Duration;
             movieToUpdate.Rating = movieModel.Rating;
+            movieToUpdate.Distributer = movieModel.Distributer;
+            movieToUpdate.Year = movieModel.Year;
+            movieToUpdate.IsActive = movieModel.IsActive;
+            movieToUpdate.NumberOfOscars = movieModel.NumberOfOscars;
 
             MovieDomainModel movieDomainModel;
             try
@@ -186,7 +196,7 @@ namespace WinterWorkShop.Cinema.API.Controllers
         /// </summary>
         /// <param name="id"></param>
         /// <returns></returns>
-        [Authorize(Roles = "admin")]
+        //[Authorize(Roles = "admin")]
         [HttpDelete]
         [Route("{id}")]
         public async Task<ActionResult> Delete(Guid id)
