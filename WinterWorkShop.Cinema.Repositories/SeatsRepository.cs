@@ -6,12 +6,19 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using WinterWorkShop.Cinema.Data;
+using WinterWorkShop.Cinema.Data.Enums;
 
 namespace WinterWorkShop.Cinema.Repositories
 {
     public interface ISeatsRepository : IRepository<Seat>
     {
-        public  Task<IEnumerable<Seat>> GetAllByAuditoriumIdAsync(Guid auditoriumId);
+        Task<IEnumerable<Seat>> GetAllByAuditoriumIdAsync(Guid auditoriumId);
+        Task<IEnumerable<Seat>> GetByAllSeatTypeAsync(SeatType seatType);
+    //        get all by audit id ----
+    //        get all free
+    //        get all reserved
+    //        get by type  -------
+    //        
     }
     public class SeatsRepository : ISeatsRepository
     {
@@ -39,7 +46,7 @@ namespace WinterWorkShop.Cinema.Repositories
 
         public async Task<Seat> GetByIdAsync(object id)
         {
-            return await _cinemaContext.Seats.FindAsync(id);
+            return await _cinemaContext.Seats.FindAsync((Guid)id);
         }
 
         public Seat Insert(Seat obj)
@@ -67,6 +74,15 @@ namespace WinterWorkShop.Cinema.Repositories
             List<Seat> allSeats = await _cinemaContext.Seats.ToListAsync();
 
             List<Seat> filteredSeats = allSeats.Where(x => x.AuditoriumId == auditoriumId).ToList();
+
+            return filteredSeats;
+        }
+
+        public async Task<IEnumerable<Seat>> GetByAllSeatTypeAsync(SeatType seatType)
+        {
+            List<Seat> allSeats = await _cinemaContext.Seats.ToListAsync();
+
+            List<Seat> filteredSeats = allSeats.Where(x => x.SeatType == seatType).ToList();
 
             return filteredSeats;
         }

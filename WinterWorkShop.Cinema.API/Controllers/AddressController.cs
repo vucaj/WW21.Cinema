@@ -35,6 +35,7 @@ namespace WinterWorkShop.Cinema.API.Controllers
             }
 
             return Ok(addressDomainModels);
+
         }
 
         [HttpPost]
