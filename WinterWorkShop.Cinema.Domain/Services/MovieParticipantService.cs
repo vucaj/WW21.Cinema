@@ -11,7 +11,7 @@ using WinterWorkShop.Cinema.Repositories;
 
 namespace WinterWorkShop.Cinema.Domain.Services
 {
-    class MovieParticipantService : IMovieParticipantService
+    public class MovieParticipantService : IMovieParticipantService
     {
         private readonly IMovieParticipantRepository _movieParticipantRepository;
         private readonly IParticipantRepository _participantRepository;
@@ -193,6 +193,9 @@ namespace WinterWorkShop.Cinema.Domain.Services
                     ErrorMessage = Messages.MOVIEPARTICIPANT_NOT_FOUND
                 };
             }
+
+            movieParticipant.MovieId = domainModel.MovieId;
+            movieParticipant.ParticipantId = domainModel.ParticipantId;
 
             var updatedMovieParticipant = _movieParticipantRepository.Update(movieParticipant);
 
