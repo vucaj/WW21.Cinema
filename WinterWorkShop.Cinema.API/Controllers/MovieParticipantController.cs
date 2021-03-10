@@ -17,10 +17,12 @@ namespace WinterWorkShop.Cinema.API.Controllers
     public class MovieParticipantController : ControllerBase
     {
         private readonly IMovieParticipantService _movieParticipantService;
+        private readonly IMovieService _movieService;
 
-        public MovieParticipantController(IMovieParticipantService movieParticipantService)
+        public MovieParticipantController(IMovieParticipantService movieParticipantService, IMovieService movieService)
         {
             _movieParticipantService = movieParticipantService;
+            _movieService = movieService;
         }
 
         [HttpGet]
@@ -84,6 +86,13 @@ namespace WinterWorkShop.Cinema.API.Controllers
                 return BadRequest(ModelState);
             }
 
+            var participantId = await _movieParticipantService.GetByParticipantIdAsync(createMovieParticipantModel.ParticipantId);
+            var movieId = await _movieService.GetMovieByIdAsync(createMovieParticipantModel.MovieId);
+
+            if (participantId == null || movieId == null)
+            {
+                return NotFound();
+            }
 
             MovieParticipantDomainModel movieParticipantDomainModel = new MovieParticipantDomainModel
             {
@@ -91,14 +100,6 @@ namespace WinterWorkShop.Cinema.API.Controllers
                 MovieId = createMovieParticipantModel.MovieId,
                 ParticipantId = createMovieParticipantModel.ParticipantId
             };
-
-            // todo: dodati i proveru za movie, isto kao sto je uradjen za participant
-            var participantId = await _movieParticipantService.GetByParticipantIdAsync(movieParticipantDomainModel.ParticipantId);
-
-            if(participantId == null)
-            {
-                return NotFound();
-            }
 
             CreateMovieParticipantResultModel createMovieParticipantResultModel;
 
