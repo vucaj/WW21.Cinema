@@ -25,7 +25,7 @@ namespace WinterWorkShop.Cinema.Data
         public int Duration { get; set; }
         
         [Range(1.0, 10.0)]
-        public double? Rating { get; set; }
+        public double Rating { get; set; }
         
         [MaxLength(30)]
         public string Distributer { get; set; }
