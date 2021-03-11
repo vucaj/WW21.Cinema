@@ -182,7 +182,7 @@ namespace WinterWorkShop.Cinema.Tests.Controllers
             Assert.AreEqual(expectedMessage, errorResult.ErrorMessage);
             Assert.IsInstanceOfType(result, typeof(BadRequestObjectResult));
             Assert.AreEqual(expectedStatusCode, resultResponse.StatusCode);
-        }
+        }*/
 
 /*
         // if (!ModelState.IsValid) - false

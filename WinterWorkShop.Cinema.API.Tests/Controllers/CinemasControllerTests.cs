@@ -10,6 +10,8 @@ using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Moq;
 using WinterWorkShop.Cinema.API.Controllers;
 using WinterWorkShop.Cinema.API.Models;
+using WinterWorkShop.Cinema.Data;
+using WinterWorkShop.Cinema.Domain.Common;
 using WinterWorkShop.Cinema.Domain.Interfaces;
 using WinterWorkShop.Cinema.Domain.Models;
 
@@ -171,6 +173,51 @@ namespace WinterWorkShop.Cinema.Tests.Controllers
             var resultResponse = (BadRequestObjectResult) result;
             var badObjectResult = ((BadRequestObjectResult) result).Value;
             var errorResult = (ErrorResponseModel) badObjectResult;
+            //Assert
+            Assert.IsNotNull(resultResponse);
+            Assert.AreEqual(expectedMessage, errorResult.ErrorMessage);
+            Assert.IsInstanceOfType(result, typeof(BadRequestObjectResult));
+            Assert.AreEqual(expectedStatusCode, resultResponse.StatusCode);
+        }
+
+        [TestMethod]
+        public void PostAsync_Create_createCinemaResultModel_IsSuccessful_False_Return_BadRequest()
+        {
+            //Arrange
+            string expectedMessage = "Error occured while saving to database.";
+            int expectedStatusCode = 400;
+
+            CreateCinemaModel createCinemaModel = new CreateCinemaModel()
+            {
+                Name = "ime1",
+                AddressId = 1
+            };
+
+            CreateCinemaResultModel createCinemaResultModel = new CreateCinemaResultModel()
+            {
+                IsSuccessful = false,
+                ErrorMessage = Messages.CINEMA_SAVE_ERROR,
+                Cinema = new CinemaDomainModel()
+                {
+                    Id = Guid.NewGuid(),
+                    Name = "ime1",
+                    AddressId = 1
+                }
+            };
+
+            Task<CreateCinemaResultModel> responseTask = Task.FromResult(createCinemaResultModel);
+
+            _cinemaService = new Mock<ICinemaService>();
+            _cinemaService.Setup(x => x.Create(It.IsAny<CinemaDomainModel>())).Returns(responseTask);
+            CinemasController cinemasController = new CinemasController(_cinemaService.Object);
+            
+            //Act
+            var result = cinemasController.CreateCinemaAsync(createCinemaModel).ConfigureAwait(false).GetAwaiter()
+                .GetResult().Result;
+            var resultResponse = (BadRequestObjectResult) result;
+            var badObjectResult = ((BadRequestObjectResult) result).Value;
+            var errorResult = (ErrorResponseModel) badObjectResult;
+
             //Assert
             Assert.IsNotNull(resultResponse);
             Assert.AreEqual(expectedMessage, errorResult.ErrorMessage);
