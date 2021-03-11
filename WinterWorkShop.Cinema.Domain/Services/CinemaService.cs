@@ -123,6 +123,12 @@ namespace WinterWorkShop.Cinema.Domain.Services
             return new DeleteCinemaResultModel
             {
                 isSuccessful = true,
+                Cinema = new CinemaDomainModel
+                {
+                    Id = cinema.Id,
+                    Name = cinema.Name,
+                    AddressId = cinema.AddressId
+                },
                 ErrorMessage = null
             };
 

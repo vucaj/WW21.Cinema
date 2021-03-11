@@ -91,12 +91,12 @@ namespace WinterWorkShop.Cinema.API.Controllers
                 return BadRequest(errorResponseModel);
             }
 
-            return Created("Cinema//" + createCinemaResultModel.Cinema.Id, createCinemaResultModel);
+            return Created("Cinema//" + createCinemaResultModel.Cinema.Id, createCinemaResultModel.Cinema);
         }
 
         [HttpPost]
         [Route("delete")]
-        public async Task<ActionResult> DeleteCinemaAsync([FromBody] DeleteCinemaModel deleteCinemaModel)
+        public async Task<ActionResult<CinemaDomainModel>> DeleteCinemaAsync([FromBody] DeleteCinemaModel deleteCinemaModel)
         {
             if (!ModelState.IsValid)
             {
@@ -117,10 +117,16 @@ namespace WinterWorkShop.Cinema.API.Controllers
 
             if (!resultModel.isSuccessful)
             {
+                ErrorResponseModel errorResponseModel = new ErrorResponseModel
+                {
+                    ErrorMessage = resultModel.ErrorMessage,
+                    StatusCode = System.Net.HttpStatusCode.BadRequest
+                };
+                
                 return BadRequest(resultModel.ErrorMessage);
             }
 
-            return Ok();
+            return Accepted("Cinema//" + resultModel.Cinema.Id, resultModel.Cinema);
         }
     }
 }

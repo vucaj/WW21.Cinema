@@ -87,7 +87,8 @@ namespace WinterWorkShop.Cinema.Tests.Controllers
         // try  await _projectionService.CreateProjection(domainModel) - return valid mock
         // if (!createProjectionResultModel.IsSuccessful) - false
         // return Created
-        /*[TestMethod]
+        //[TestMethod]
+        /*
         public void PostAsync_Create_createProjectionResultModel_IsSuccessful_True_Projection() 
         {
             //Arrange
@@ -129,7 +130,7 @@ namespace WinterWorkShop.Cinema.Tests.Controllers
             Assert.AreEqual(createProjectionModel.MovieId, projectionDomainModel.MovieId);
             Assert.IsInstanceOfType(result, typeof(CreatedResult));
             Assert.AreEqual(expectedStatusCode, ((CreatedResult)result).StatusCode);
-        }
+        }*/
 
         // if (!ModelState.IsValid) - false
         // if (projectionModel.ProjectionTime < DateTime.Now) - false
@@ -182,7 +183,7 @@ namespace WinterWorkShop.Cinema.Tests.Controllers
             Assert.AreEqual(expectedStatusCode, resultResponse.StatusCode);
         }
 
-
+/*
         // if (!ModelState.IsValid) - false
         // if (projectionModel.ProjectionTime < DateTime.Now) - false
         // try  await _projectionService.CreateProjection(domainModel) - return valid mock
