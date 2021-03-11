@@ -6,6 +6,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.TagHelpers.Cache;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Diagnostics;
+using Microsoft.VisualStudio.TestPlatform.ObjectModel.Utilities;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Moq;
 using WinterWorkShop.Cinema.API.Controllers;
@@ -221,6 +222,38 @@ namespace WinterWorkShop.Cinema.Tests.Controllers
             //Assert
             Assert.IsNotNull(resultResponse);
             Assert.AreEqual(expectedMessage, errorResult.ErrorMessage);
+            Assert.IsInstanceOfType(result, typeof(BadRequestObjectResult));
+            Assert.AreEqual(expectedStatusCode, resultResponse.StatusCode);
+        }
+
+        [TestMethod]
+        public void PostAsync_With_Invalid_ModelState_Return_BadReques()
+        {
+            //Arrange
+            string expectedMessage = "Invalid Model State";
+            int expectedStatusCode = 400;
+
+            CreateCinemaModel createProjectionModel = new CreateCinemaModel()
+            {
+                Name = "Ime1",
+                AddressId = 0
+            };
+
+            _cinemaService = new Mock<ICinemaService>();
+            CinemasController cinemasController = new CinemasController(_cinemaService.Object);
+            cinemasController.ModelState.AddModelError("key", "Invalid Model State");
+
+            //Act
+            var result = cinemasController.CreateCinemaAsync(createProjectionModel).ConfigureAwait(false).GetAwaiter()
+                .GetResult().Result;
+            var resultResponse = (BadRequestObjectResult) result;
+            var createdResult = ((BadRequestObjectResult) result).Value;
+            var errorResponse = ((SerializableError) createdResult).GetValueOrDefault("key");
+            var message = (string[]) errorResponse;
+            
+            //Assert
+            Assert.IsNotNull(resultResponse);
+            Assert.AreEqual(expectedMessage, message[0]);
             Assert.IsInstanceOfType(result, typeof(BadRequestObjectResult));
             Assert.AreEqual(expectedStatusCode, resultResponse.StatusCode);
         }
