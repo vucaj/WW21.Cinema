@@ -136,6 +136,7 @@ namespace WinterWorkShop.Cinema.Tests.Controllers
         // if (projectionModel.ProjectionTime < DateTime.Now) - false
         // try  await _projectionService.CreateProjection(domainModel) - throw DbUpdateException
         // return BadRequest
+        /*
         [TestMethod]
         public void PostAsync_Create_Throw_DbException_Projection()
         {

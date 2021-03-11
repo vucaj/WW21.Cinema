@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.TagHelpers.Cache;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Diagnostics;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Moq;
@@ -133,12 +134,56 @@ namespace WinterWorkShop.Cinema.Tests.Controllers
         }
 
         [TestMethod]
+        public void PostAsync_CreateCinema_Throw_DbException_Cinema()
+        {
+            //Arrange
+            string expectedMessage = "Inner exception error message.";
+            int expectedStatusCode = 400;
+
+            CreateCinemaModel createCinemaModel = new CreateCinemaModel()
+            {
+                Name = "Ime1",
+                AddressId = 1
+            };
+
+            CreateCinemaResultModel createCinemaResultModel = new CreateCinemaResultModel()
+            {
+                IsSuccessful = true,
+                Cinema = new CinemaDomainModel()
+                {
+                    Id = Guid.NewGuid(),
+                    Name = "Ime1",
+                    AddressId = 1
+                }
+            };
+
+            Task<CreateCinemaResultModel> responseTask = Task.FromResult(createCinemaResultModel);
+            Exception exception = new Exception("Inner exception error message.");
+            DbUpdateException dbUpdateException = new DbUpdateException("Error.", exception);
+
+            _cinemaService = new Mock<ICinemaService>();
+            _cinemaService.Setup(x => x.Create(It.IsAny<CinemaDomainModel>())).Throws(dbUpdateException);
+            CinemasController cinemasController = new CinemasController(_cinemaService.Object);
+
+            //Act
+            var result = cinemasController.CreateCinemaAsync(createCinemaModel).ConfigureAwait(false).GetAwaiter()
+                .GetResult().Result;
+            var resultResponse = (BadRequestObjectResult) result;
+            var badObjectResult = ((BadRequestObjectResult) result).Value;
+            var errorResult = (ErrorResponseModel) badObjectResult;
+            //Assert
+            Assert.IsNotNull(resultResponse);
+            Assert.AreEqual(expectedMessage, errorResult.ErrorMessage);
+            Assert.IsInstanceOfType(result, typeof(BadRequestObjectResult));
+            Assert.AreEqual(expectedStatusCode, resultResponse.StatusCode);
+        }
 
         /*[TestMethod]
         public void PostAsync_DeleteCinema_Cinema()
         {
             //Arrange
             List<CinemaDomainModel> cinemaDomainModelsList = new List<CinemaDomainModel>();
+            
             
             CinemaDomainModel cinemaDomainModel1 = new CinemaDomainModel
             {
