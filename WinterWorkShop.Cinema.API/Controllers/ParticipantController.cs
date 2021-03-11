@@ -100,7 +100,7 @@ namespace WinterWorkShop.Cinema.API.Controllers
                 return BadRequest(errorResponse);
             }
 
-            return Created("participants//" + createParticipantResultModel.Participant.Id, createParticipantResultModel);
+            return Created("participants//" + createParticipantResultModel.Participant.Id, createParticipantResultModel.Participant);
         }
 
 
