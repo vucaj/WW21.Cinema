@@ -55,6 +55,37 @@ namespace WinterWorkShop.Cinema.Tests.Controllers
             Assert.AreEqual(expectedStatusCode, ((OkObjectResult)result).StatusCode);
         }
 
+/*        [TestMethod]
+        public void GetParticipantById_Return_ParticipantById()
+        {
+            // Arrange
+            ParticipantDomainModel participantDomainModel = new ParticipantDomainModel()
+            {
+                Id = Guid.NewGuid(),
+                FirstName = "Ime",
+                LastName = "Prezime",
+                ParticipantType = ParticipantType.ACTOR
+            };
+            Task<ParticipantDomainModel> responseTask = Task.FromResult(participantDomainModel);
+            int expectedResultCount = 1;
+            int expectedStatusCode = 200;
+
+            _participantService = new Mock<IParticipantService>();
+            _participantService.Setup(x => x.GetParticipantByIdAsync(participantDomainModel));
+            ParticipantController participantController = new ParticipantController(_participantService.Object);
+
+            // Act
+            var result = participantController.GetParticipantById(participantDomainModel).ConfigureAwait(false).GetAwaiter().GetResult().Result;
+            var oneResult = ((OkObjectResult)result).Value;
+            var participantDomainModelResult = (ParticipantDomainModel)oneResult;
+
+            // Assert
+            Assert.IsNotNull(participantDomainModelResult);
+            Assert.AreEqual(expectedResultCount, participantDomainModelResult);
+            Assert.IsInstanceOfType(result, typeof(OkObjectResult));
+            Assert.AreEqual(expectedStatusCode, ((OkObjectResult)result).StatusCode);
+        }
+*/
         [TestMethod]
         public void GetAllParticipants_Return_NewList()
         {
@@ -79,6 +110,36 @@ namespace WinterWorkShop.Cinema.Tests.Controllers
             Assert.IsInstanceOfType(result, typeof(OkObjectResult));
             Assert.AreEqual(expectedStatusCode, ((OkObjectResult)result).StatusCode);
         }
+
+        /*[TestMethod]
+        public async void GetParticipantById_Return_ParticipantById()
+        {
+            // Arrange
+            var expectedParticipant = new ParticipantDomainModel();
+            var expectedId = Guid.NewGuid();
+            var participant = new ParticipantDomainModel()
+            { 
+                Id = expectedId
+            };
+
+            // proveriti zasto ne radi!!!!!!!!
+            _participantService.Setup(srvc => srvc.GetParticipantByIdAsync(participant)).ReturnsAsync(expectedParticipant);
+
+            var participantController = new ParticipantController(_participantService.Object);
+
+            // Act
+            var test = await participantController.GetParticipantById(participant);
+            _participantService
+                .Verify(srvc => srvc.GetParticipantByIdAsync(participant), Times.Exactly(1));
+            // Assert
+            Assert.IsInstanceOfType(test, typeof(ActionResult<ParticipantDomainModel>));
+            Assert.IsInstanceOfType(test.Result, typeof(OkObjectResult));
+
+            var okResult = ((OkObjectResult)test.Result).Value;
+            var participant1 = (ParticipantDomainModel)okResult;
+
+            Assert.AreSame(participant1, expectedParticipant);
+        }*/
 
         [TestMethod]
         public void CreateParticipantAsync_Create_createParticipantResultModel_IsSuccessful_True_Participant()

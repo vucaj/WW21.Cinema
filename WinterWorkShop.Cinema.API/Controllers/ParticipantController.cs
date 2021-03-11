@@ -5,6 +5,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using WinterWorkShop.Cinema.API.Models;
+using WinterWorkShop.Cinema.Domain.Common;
 using WinterWorkShop.Cinema.Domain.Interfaces;
 using WinterWorkShop.Cinema.Domain.Models;
 
@@ -49,7 +50,12 @@ namespace WinterWorkShop.Cinema.API.Controllers
                 Id = domainModel.Id
             });
 
-            return Ok(participantDomainModel);
+            if (participantDomainModel == null)
+            {
+                return NotFound(Messages.PARTICIPANT_DOES_NOT_EXIST);
+            }
+
+            return Ok(participantDomainModel.Participant);
         }
 
         /// Adds a new participant
