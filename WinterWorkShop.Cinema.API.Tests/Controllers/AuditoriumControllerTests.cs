@@ -51,5 +51,32 @@ namespace WinterWorkShop.Cinema.Tests.Controllers
             Assert.IsInstanceOfType(result, typeof(OkObjectResult));
             Assert.AreEqual(exepectedStatusCode, ((OkObjectResult) result).StatusCode);
         }
+
+        [TestMethod]
+        public void GetAsync_Return_NewList()
+        {
+            //Arrange
+            IEnumerable<AuditoriumDomainModel> auditoriumDomainModels = null;
+            Task<IEnumerable<AuditoriumDomainModel>> responseTask = Task.FromResult(auditoriumDomainModels);
+
+            int expectedResultCount = 0;
+            int expectedStatusCode = 200;
+
+            _auditoriumService = new Mock<IAuditoriumService>();
+            _auditoriumService.Setup(x => x.GetAllAsync()).Returns(responseTask);
+            AuditoriumsController auditoriumsController = new AuditoriumsController(_auditoriumService.Object);
+
+            //Act
+            var result = auditoriumsController.GetAllAsync().ConfigureAwait(false).GetAwaiter().GetResult().Result;
+            var resultList = ((OkObjectResult) result).Value;
+            var auditoriumDomainModelResultList = (List<AuditoriumDomainModel>) resultList;
+
+            //Asset
+            Assert.IsNotNull(auditoriumDomainModelResultList);
+            Assert.AreEqual(expectedResultCount, auditoriumDomainModelResultList.Count);
+            Assert.IsInstanceOfType(result, typeof(OkObjectResult));
+            Assert.AreEqual(expectedStatusCode, ((OkObjectResult) result).StatusCode);
+            
+        }
     }
 }
