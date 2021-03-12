@@ -91,36 +91,55 @@ namespace WinterWorkShop.Cinema.API.Controllers
                 return BadRequest(errorResponseModel);
             }
 
-            return Created("Cinema//" + createCinemaResultModel.Cinema.Id, createCinemaResultModel);
+            return Created("Cinema//" + createCinemaResultModel.Cinema.Id, createCinemaResultModel.Cinema);
         }
 
         [HttpPost]
         [Route("delete")]
-        public async Task<ActionResult> DeleteCinemaAsync([FromBody] DeleteCinemaModel deleteCinemaModel)
+        public async Task<ActionResult<CinemaDomainModel>> DeleteCinemaAsync([FromBody] DeleteCinemaModel deleteCinemaModel)
         {
             if (!ModelState.IsValid)
             {
                 return BadRequest(ModelState);
             }
 
-            CinemaDomainModel cinema = await _cinemaService.GetByCinemaId(new CinemaDomainModel
+            CinemaDomainResultModel cinema = await _cinemaService.GetByCinemaId(new CinemaDomainModel
             {
                 Id = deleteCinemaModel.Id
             });
 
-            if (cinema == null)
+            if (!cinema.IsSuccessful)
             {
-                return BadRequest();
+                ErrorResponseModel errorResponseModel = new ErrorResponseModel
+                {
+                    ErrorMessage = cinema.ErrorMessage,
+                    StatusCode = System.Net.HttpStatusCode.BadRequest
+                };
+                
+                return BadRequest(errorResponseModel);
             }
 
-            DeleteCinemaResultModel resultModel = await _cinemaService.Delete(cinema);
+            CinemaDomainModel cinemaDomainModel = new CinemaDomainModel()
+            {
+                Id = cinema.Cinema.Id,
+                AddressId = cinema.Cinema.AddressId,
+                Name = cinema.Cinema.Name
+            };
+
+            DeleteCinemaResultModel resultModel = await _cinemaService.Delete(cinemaDomainModel);
 
             if (!resultModel.isSuccessful)
             {
-                return BadRequest(resultModel.ErrorMessage);
+                ErrorResponseModel errorResponseModel = new ErrorResponseModel
+                {
+                    ErrorMessage = resultModel.ErrorMessage,
+                    StatusCode = System.Net.HttpStatusCode.BadRequest
+                };
+                
+                return BadRequest(errorResponseModel);
             }
 
-            return Ok();
+            return Accepted("Cinema//" + resultModel.Cinema.Id, resultModel.Cinema);
         }
     }
 }

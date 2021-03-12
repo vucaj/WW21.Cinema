@@ -7,5 +7,7 @@ namespace WinterWorkShop.Cinema.Domain.Models
         public bool isSuccessful { get; set; }
 
         public string ErrorMessage { get; set; }
+        
+        public CinemaDomainModel Cinema { get; set; }
     }
 }

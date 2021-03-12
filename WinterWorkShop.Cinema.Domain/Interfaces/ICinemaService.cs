@@ -11,7 +11,7 @@ namespace WinterWorkShop.Cinema.Domain.Interfaces
     {
         Task<IEnumerable<CinemaDomainModel>> GetAllAsync();
 
-        Task<CinemaDomainModel> GetByCinemaId(CinemaDomainModel cinemaDomainModel);
+        Task<CinemaDomainResultModel> GetByCinemaId(CinemaDomainModel cinemaDomainModel);
 
         Task<CreateCinemaResultModel> Create(CinemaDomainModel domainModel);
 
