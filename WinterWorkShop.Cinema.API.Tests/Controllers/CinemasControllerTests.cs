@@ -258,7 +258,7 @@ namespace WinterWorkShop.Cinema.Tests.Controllers
             Assert.AreEqual(expectedStatusCode, resultResponse.StatusCode);
         }
 
-        /*[TestMethod]
+        [TestMethod]
         public void PostAsync_DeleteCinema_Cinema()
         {
             //Arrange
@@ -293,11 +293,13 @@ namespace WinterWorkShop.Cinema.Tests.Controllers
             };
             
             Task<DeleteCinemaResultModel> responseTask = Task.FromResult(deleteCinemaResultModel);
+            Task<CinemaDomainModel> responseTask2 = Task.FromResult<CinemaDomainModel>(cinemaDomainModel1);
             
-            int expectedStatusCode = 201;
+            int expectedStatusCode = 202;
 
             _cinemaService = new Mock<ICinemaService>();
             _cinemaService.Setup(x => x.Delete(It.IsAny<CinemaDomainModel>())).Returns(responseTask);
+            _cinemaService.Setup(x => x.GetByCinemaId(It.IsAny<CinemaDomainModel>())).Returns(responseTask2);
             CinemasController cinemasController = new CinemasController(_cinemaService.Object);
 
             
@@ -311,8 +313,8 @@ namespace WinterWorkShop.Cinema.Tests.Controllers
             Assert.IsNotNull(cinemaDomainModel);
             Assert.AreEqual(deleteCinemaModel.Id, cinemaDomainModel.Id);
             Assert.IsInstanceOfType(result, typeof(AcceptedResult));
-            Assert.AreEqual(expectedStatusCode, ((CreatedResult) result).StatusCode);
-        }*/
+            Assert.AreEqual(expectedStatusCode, ((AcceptedResult) result).StatusCode);
+        }
         
         
     }
