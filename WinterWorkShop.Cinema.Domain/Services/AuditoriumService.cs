@@ -125,7 +125,7 @@ namespace WinterWorkShop.Cinema.Domain.Services
             
             _auditoriumsRepository.Save();
 
-            CreateAuditoriumResultModel resultModel = new CreateAuditoriumResultModel
+            return new CreateAuditoriumResultModel()
             {
                 IsSuccessful = true,
                 ErrorMessage = null,
@@ -136,8 +136,6 @@ namespace WinterWorkShop.Cinema.Domain.Services
                     CinemaId = insertedAuditorium.CinemaId,
                 }
             };
-
-            return resultModel;
         }
 
         public async Task<DeleteAuditoriumResultModel> DeleteAuditorium(AuditoriumDomainModel domainModel)
