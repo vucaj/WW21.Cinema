@@ -51,7 +51,7 @@ namespace WinterWorkShop.Cinema.API.Controllers
         /// <returns></returns>
         //[HttpPost]
         //[Authorize(Roles = "admin")] 
-        /* public async Task<ActionResult<ProjectionDomainModel>> PostAsync(CreateProjectionModel projectionModel)
+        /*public async Task<ActionResult<ProjectionDomainModel>> PostAsync(CreateProjectionModel projectionModel)
         {
             if (!ModelState.IsValid)
             {
