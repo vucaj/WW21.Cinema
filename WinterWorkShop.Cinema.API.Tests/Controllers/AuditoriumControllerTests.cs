@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore.Diagnostics;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Moq;
 using WinterWorkShop.Cinema.API.Controllers;
@@ -223,7 +224,40 @@ namespace WinterWorkShop.Cinema.Tests.Controllers
             Assert.AreEqual(expectedStatusCode, resultResponse.StatusCode);
             
         }
-        
-        
+
+        [TestMethod]
+        public void PostAsync_With_Invalid_ModelState_Return_BadRequest()
+        {
+            // Arrange
+            string expectedMessage = "Invalid Model State";
+            int expectedStatusCode = 400;
+
+            CreateAuditoriumModel createAuditoriumModel = new CreateAuditoriumModel()
+            {
+                CinemaId = Guid.NewGuid(),
+                Name = "Sala1",
+                NumberOfSeats = 5,
+                SeatRows = 5
+            };
+
+            _auditoriumService = new Mock<IAuditoriumService>();
+            AuditoriumsController auditoriumsController = new AuditoriumsController(_auditoriumService.Object);
+            auditoriumsController.ModelState.AddModelError("key", "Invalid Model State");
+            
+            // Act
+            var result = auditoriumsController.CreateAuditoriumAsync(createAuditoriumModel).ConfigureAwait(false)
+                .GetAwaiter().GetResult().Result;
+            var resultResponse = (BadRequestObjectResult) result;
+            var createdResult = ((BadRequestObjectResult) result).Value;
+            var errorResponse = ((SerializableError) createdResult).GetValueOrDefault("key");
+            var message = (string[]) errorResponse;
+            
+            // Assert
+            Assert.IsNotNull(resultResponse);
+            Assert.AreEqual(expectedMessage, message[0]);
+            Assert.IsInstanceOfType(result, typeof(BadRequestObjectResult));
+            Assert.AreEqual(expectedStatusCode, resultResponse.StatusCode);
+            
+        }
     }
 }
