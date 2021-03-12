@@ -8,6 +8,7 @@ using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Moq;
 using WinterWorkShop.Cinema.API.Controllers;
 using WinterWorkShop.Cinema.API.Models;
+using WinterWorkShop.Cinema.Domain.Common;
 using WinterWorkShop.Cinema.Domain.Interfaces;
 using WinterWorkShop.Cinema.Domain.Models;
 
@@ -80,7 +81,6 @@ namespace WinterWorkShop.Cinema.Tests.Controllers
             Assert.AreEqual(expectedStatusCode, ((OkObjectResult) result).StatusCode);
             
         }
-
         
         [TestMethod]
         public void PostAsync_Create_createAuditoriumResultModel_IsSuccessful_True_Auditorium()
@@ -129,7 +129,7 @@ namespace WinterWorkShop.Cinema.Tests.Controllers
         [TestMethod]
         public void PostAsync_Create_Throw_DbException_Auditorium()
         {
-            //Arrange
+            // Arrange
             string expectedMessage = "Inner exception error message.";
             int expectedStatusCode = 400;
 
@@ -161,18 +161,69 @@ namespace WinterWorkShop.Cinema.Tests.Controllers
                 .Throws(dbUpdateException);
             AuditoriumsController auditoriumsController = new AuditoriumsController(_auditoriumService.Object);
 
-            //Act
+            // Act
             var result = auditoriumsController.CreateAuditoriumAsync(createAuditoriumModel).ConfigureAwait(false)
                 .GetAwaiter().GetResult().Result;
             var resultResponse = (BadRequestObjectResult) result;
             var badObjectResult = ((BadRequestObjectResult) result).Value;
             var errorResult = (ErrorResponseModel) badObjectResult;
 
-            //Assert
+            // Assert
             Assert.IsNotNull(resultResponse);
             Assert.AreEqual(expectedMessage, errorResult.ErrorMessage);
             Assert.IsInstanceOfType(result, typeof(BadRequestObjectResult));
             Assert.AreEqual(expectedStatusCode, resultResponse.StatusCode);
         }
+
+        [TestMethod]
+        public void PostAsync_Create_createAuditoriumResultModel_IsSuccessful_False_Return_BadRequest()
+        {
+            // Arrange
+            string expectedMessage = "Error occured while creating new auditorium, please try again.";
+            int expectedStatusCode = 400;
+
+            CreateAuditoriumModel createAuditoriumModel = new CreateAuditoriumModel()
+            {
+                CinemaId = Guid.NewGuid(),
+                Name = "Sala1",
+                NumberOfSeats = 5,
+                SeatRows = 5
+            };
+
+            CreateAuditoriumResultModel createAuditoriumResultModel = new CreateAuditoriumResultModel()
+            {
+                Auditorium = new AuditoriumDomainModel()
+                {
+                    CinemaId = createAuditoriumModel.CinemaId,
+                    Id = Guid.NewGuid(),
+                    Name = "Sala1"
+                },
+                IsSuccessful = false,
+                ErrorMessage = Messages.AUDITORIUM_CREATION_ERROR
+            };
+
+            Task<CreateAuditoriumResultModel> responseTask = Task.FromResult(createAuditoriumResultModel);
+
+            _auditoriumService = new Mock<IAuditoriumService>();
+            _auditoriumService.Setup(x => x.CreateAuditorium(It.IsAny<AuditoriumDomainModel>(), 5, 5))
+                .Returns(responseTask);
+            AuditoriumsController auditoriumsController = new AuditoriumsController(_auditoriumService.Object);
+
+            // Act
+            var result = auditoriumsController.CreateAuditoriumAsync(createAuditoriumModel).ConfigureAwait(false)
+                .GetAwaiter().GetResult().Result;
+            var resultResponse = (BadRequestObjectResult) result;
+            var badObjectResult = ((BadRequestObjectResult) result).Value;
+            var errorResult = (ErrorResponseModel) badObjectResult;
+
+            // Assert
+            Assert.IsNotNull(resultResponse);
+            Assert.AreEqual(expectedMessage, errorResult.ErrorMessage);
+            Assert.IsInstanceOfType(result, typeof(BadRequestObjectResult));
+            Assert.AreEqual(expectedStatusCode, resultResponse.StatusCode);
+            
+        }
+        
+        
     }
 }
