@@ -227,7 +227,7 @@ namespace WinterWorkShop.Cinema.Tests.Controllers
         }
 
         [TestMethod]
-        public void PostAsync_With_Invalid_ModelState_Return_BadReques()
+        public void PostAsync_With_Invalid_ModelState_Return_BadRequest()
         {
             //Arrange
             string expectedMessage = "Invalid Model State";
@@ -272,6 +272,13 @@ namespace WinterWorkShop.Cinema.Tests.Controllers
                 AddressId = 1
             };
             
+            CinemaDomainResultModel cinemaDomainResultModel = new CinemaDomainResultModel()
+            {
+                IsSuccessful = true,
+                Cinema = cinemaDomainModel1,
+                ErrorMessage = null
+            };
+            
             cinemaDomainModelsList.Add(cinemaDomainModel1);
 
             
@@ -293,7 +300,7 @@ namespace WinterWorkShop.Cinema.Tests.Controllers
             };
             
             Task<DeleteCinemaResultModel> responseTask = Task.FromResult(deleteCinemaResultModel);
-            Task<CinemaDomainModel> responseTask2 = Task.FromResult<CinemaDomainModel>(cinemaDomainModel1);
+            Task<CinemaDomainResultModel> responseTask2 = Task.FromResult(cinemaDomainResultModel);
             
             int expectedStatusCode = 202;
 
@@ -315,7 +322,65 @@ namespace WinterWorkShop.Cinema.Tests.Controllers
             Assert.IsInstanceOfType(result, typeof(AcceptedResult));
             Assert.AreEqual(expectedStatusCode, ((AcceptedResult) result).StatusCode);
         }
-        
+
+        [TestMethod]
+        public void PostAsync_DeleteCinema_BadRequest()
+        {
+            // Arrange
+
+            string expectedMessage = Messages.CINEMA_NOT_FOUND;
+            int expectedStatusCode = 400;
+            
+            List<CinemaDomainModel> cinemaDomainModelsList = new List<CinemaDomainModel>();
+            
+            CinemaDomainModel cinemaDomainModel1 = new CinemaDomainModel
+            {
+                Id = Guid.NewGuid(),
+                Name = "Ime1",
+                AddressId = 1
+            };
+            
+            cinemaDomainModelsList.Add(cinemaDomainModel1);
+            
+            DeleteCinemaResultModel deleteCinemaResultModel = new DeleteCinemaResultModel()
+            {
+                isSuccessful = false,
+                ErrorMessage = Messages.CINEMA_NOT_FOUND,
+                Cinema = null
+            };
+
+            CinemaDomainResultModel cinemaDomainResultModel = new CinemaDomainResultModel()
+            {
+                IsSuccessful = false,
+                Cinema = null,
+                ErrorMessage = Messages.CINEMA_NOT_FOUND
+            };
+
+            DeleteCinemaModel deleteCinemaModel = new DeleteCinemaModel()
+            {
+                Id = Guid.NewGuid()
+            };
+            
+            Task<DeleteCinemaResultModel> responseTask = Task.FromResult(deleteCinemaResultModel);
+            Task<CinemaDomainResultModel> responseTask2 = Task.FromResult(cinemaDomainResultModel);
+            
+            _cinemaService = new Mock<ICinemaService>();
+            _cinemaService.Setup(x => x.Delete(cinemaDomainModel1)).Returns(responseTask);
+            _cinemaService.Setup(x => x.GetByCinemaId(It.IsAny<CinemaDomainModel>())).Returns(responseTask2);
+            CinemasController cinemasController = new CinemasController(_cinemaService.Object);
+            
+            // Act
+            var result = cinemasController.DeleteCinemaAsync(deleteCinemaModel).ConfigureAwait(false).GetAwaiter().GetResult().Result;
+            var resultResponse = (BadRequestObjectResult) result;
+            var badObjectResult = ((BadRequestObjectResult) result).Value;
+            var errorResult = (ErrorResponseModel) badObjectResult;
+
+            // Assert
+            Assert.IsNotNull(resultResponse);
+            Assert.AreEqual(expectedMessage, errorResult.ErrorMessage);
+            Assert.IsInstanceOfType(result, typeof(BadRequestObjectResult));
+            Assert.AreEqual(expectedStatusCode, resultResponse.StatusCode);
+        }
         
     }
 }

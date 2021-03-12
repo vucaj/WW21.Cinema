@@ -103,17 +103,30 @@ namespace WinterWorkShop.Cinema.API.Controllers
                 return BadRequest(ModelState);
             }
 
-            CinemaDomainModel cinema = await _cinemaService.GetByCinemaId(new CinemaDomainModel
+            CinemaDomainResultModel cinema = await _cinemaService.GetByCinemaId(new CinemaDomainModel
             {
                 Id = deleteCinemaModel.Id
             });
 
-            if (cinema == null)
+            if (!cinema.IsSuccessful)
             {
-                return BadRequest();
+                ErrorResponseModel errorResponseModel = new ErrorResponseModel
+                {
+                    ErrorMessage = cinema.ErrorMessage,
+                    StatusCode = System.Net.HttpStatusCode.BadRequest
+                };
+                
+                return BadRequest(errorResponseModel);
             }
 
-            DeleteCinemaResultModel resultModel = await _cinemaService.Delete(cinema);
+            CinemaDomainModel cinemaDomainModel = new CinemaDomainModel()
+            {
+                Id = cinema.Cinema.Id,
+                AddressId = cinema.Cinema.AddressId,
+                Name = cinema.Cinema.Name
+            };
+
+            DeleteCinemaResultModel resultModel = await _cinemaService.Delete(cinemaDomainModel);
 
             if (!resultModel.isSuccessful)
             {
@@ -123,7 +136,7 @@ namespace WinterWorkShop.Cinema.API.Controllers
                     StatusCode = System.Net.HttpStatusCode.BadRequest
                 };
                 
-                return BadRequest(resultModel.ErrorMessage);
+                return BadRequest(errorResponseModel);
             }
 
             return Accepted("Cinema//" + resultModel.Cinema.Id, resultModel.Cinema);

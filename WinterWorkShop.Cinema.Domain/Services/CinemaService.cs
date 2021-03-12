@@ -4,6 +4,7 @@ using System.Linq;
 using System.Runtime.InteropServices.WindowsRuntime;
 using System.Text;
 using System.Threading.Tasks;
+using Microsoft.AspNetCore.Mvc;
 using WinterWorkShop.Cinema.API.Models;
 using WinterWorkShop.Cinema.Data;
 using WinterWorkShop.Cinema.Domain.Common;
@@ -38,15 +39,29 @@ namespace WinterWorkShop.Cinema.Domain.Services
             });
         }
 
-        public async Task<CinemaDomainModel> GetByCinemaId(CinemaDomainModel cinemaDomainModel)
+        public async Task<CinemaDomainResultModel> GetByCinemaId(CinemaDomainModel cinemaDomainModel)
         {
             var cinema = await _cinemasRepository.GetByIdAsync(cinemaDomainModel.Id);
 
-            return new CinemaDomainModel
+            if (cinema == null)
             {
-                Id = cinema.Id,
-                AddressId = cinema.AddressId,
-                Name = cinema.Name
+                return new CinemaDomainResultModel()
+                {
+                    IsSuccessful = false,
+                    ErrorMessage = Messages.CINEMA_NOT_FOUND,
+                    Cinema = null
+                };
+            }
+
+            return new CinemaDomainResultModel()
+            {
+                IsSuccessful = true,
+                Cinema = new CinemaDomainModel()
+                {
+                    Id = cinema.Id,
+                    AddressId = cinema.AddressId,
+                    Name = cinema.Name
+                }
             };
         }
 
