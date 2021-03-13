@@ -35,7 +35,7 @@ namespace WinterWorkShop.Cinema.Domain.Services
             {
                 Id = projection.Id,
                 AuditoriumId = projection.AuditoriumId,
-                CinemaId = projection.Auditorium.CinemaId,
+                CinemaId = projection.CinemaId,
                 DateTime = projection.DateTime,
                 MovieId = projection.MovieId,
                 TicketPrice = projection.TicketPrice
@@ -71,10 +71,9 @@ namespace WinterWorkShop.Cinema.Domain.Services
             Projection newProjection = new Projection()
             {
                 Id = Guid.NewGuid(),
-                Auditorium = auditorium,
+                CinemaId = domainModel.CinemaId,
                 AuditoriumId = auditorium.Id,
                 DateTime = domainModel.DateTime,
-                Movie = movie,
                 MovieId = movie.Id,
                 TicketPrice = domainModel.TicketPrice,
                 Tickets = new List<Ticket>()
@@ -101,7 +100,7 @@ namespace WinterWorkShop.Cinema.Domain.Services
                 {
                     Id = insertedProjection.Id,
                     AuditoriumId = insertedProjection.AuditoriumId,
-                    CinemaId = insertedProjection.Auditorium.CinemaId,
+                    CinemaId = insertedProjection.CinemaId,
                     DateTime = insertedProjection.DateTime,
                     MovieId = insertedProjection.MovieId,
                     TicketPrice = insertedProjection.TicketPrice
@@ -135,7 +134,7 @@ namespace WinterWorkShop.Cinema.Domain.Services
                 {
                     Id = projection.Id,
                     AuditoriumId = projection.AuditoriumId,
-                    CinemaId = projection.Auditorium.CinemaId,
+                    CinemaId = projection.CinemaId,
                     DateTime = projection.DateTime,
                     MovieId = projection.MovieId,
                     TicketPrice = projection.TicketPrice
