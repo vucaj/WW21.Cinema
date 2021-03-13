@@ -109,9 +109,38 @@ namespace WinterWorkShop.Cinema.Domain.Services
             };
         }
 
-        public Task<DeleteProjectionResultModel> DeleteProjection(ProjectionDomainModel domainModel)
+        public async Task<DeleteProjectionResultModel> DeleteProjection(ProjectionDomainModel domainModel)
         {
-            throw new NotImplementedException();
+            var projection = await _projectionsRepository.GetByIdAsync(domainModel.Id);
+
+            //TODO: proveriti da li postoji ticket za projekciju.
+            
+            if (projection == null)
+            {
+                return new DeleteProjectionResultModel()
+                {
+                    IsSuccessful = false,
+                    ErrorMessage = Messages.PROJECTION_NOT_FOUND
+                };
+            }
+
+            _projectionsRepository.Delete(projection.Id);
+            _projectionsRepository.Save();
+
+            return new DeleteProjectionResultModel()
+            {
+                IsSuccessful = true,
+                ErrorMessage = null,
+                Projection = new ProjectionDomainModel()
+                {
+                    Id = projection.Id,
+                    AuditoriumId = projection.AuditoriumId,
+                    CinemaId = projection.Auditorium.CinemaId,
+                    DateTime = projection.DateTime,
+                    MovieId = projection.MovieId,
+                    TicketPrice = projection.TicketPrice
+                }
+            };
         }
     }
 }
