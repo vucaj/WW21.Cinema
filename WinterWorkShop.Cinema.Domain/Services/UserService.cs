@@ -100,11 +100,22 @@ namespace WinterWorkShop.Cinema.Domain.Services
 
         public async Task<UserDomainResultModel> CreateUser(UserDomainModel domainModel)
         {
+            User user = _usersRepository.GetByUserName(domainModel.UserName);
+            if (user != null)
+            {
+                return new UserDomainResultModel()
+                {
+                    IsSuccessful = false,
+                    ErrorMessage = Messages.USER_USERNAME_ALREADY_EXIST,
+                    user = null
+                };
+            }
+            
             User newUser = new User()
             {
                 Id = domainModel.Id,
                 BonusPoints = 0,
-                FirstName = domainModel.UserName,
+                FirstName = domainModel.FirstName,
                 LastName = domainModel.LastName,
                 Password = domainModel.Password,
                 Role = domainModel.Role,
