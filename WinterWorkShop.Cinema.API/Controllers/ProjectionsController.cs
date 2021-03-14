@@ -13,7 +13,7 @@ using WinterWorkShop.Cinema.Domain.Models;
 
 namespace WinterWorkShop.Cinema.API.Controllers
 {
-    [Authorize]
+    //[Authorize]
     [ApiController]
     [Route("api/[controller]")]
     public class ProjectionsController : ControllerBase
@@ -30,6 +30,7 @@ namespace WinterWorkShop.Cinema.API.Controllers
         /// </summary>
         /// <returns></returns>
         [HttpGet]
+        [Route("getAll")]
         public async Task<ActionResult<IEnumerable<ProjectionDomainModel>>> GetAsync()
         {
             IEnumerable<ProjectionDomainModel> projectionDomainModels;
@@ -49,28 +50,33 @@ namespace WinterWorkShop.Cinema.API.Controllers
         /// </summary>
         /// <param name="projectionModel"></param>
         /// <returns></returns>
-        //[HttpPost]
+        [HttpPost]
+        [Route("create")]
         //[Authorize(Roles = "admin")] 
-        /* public async Task<ActionResult<ProjectionDomainModel>> PostAsync(CreateProjectionModel projectionModel)
+        public async Task<ActionResult<ProjectionDomainModel>> PostAsync(CreateProjectionModel projectionModel)
         {
             if (!ModelState.IsValid)
             {
                 return BadRequest(ModelState);
             }
 
-            if (projectionModel.ProjectionTime < DateTime.Now)
+            DateTime dateTime = DateTime.Parse(projectionModel.DateTime);
+
+            if (dateTime < DateTime.Now)
             {
-                ModelState.AddModelError(nameof(projectionModel.ProjectionTime), Messages.PROJECTION_IN_PAST);
+                ModelState.AddModelError(nameof(projectionModel.DateTime), Messages.PROJECTION_IN_PAST);
                 return BadRequest(ModelState);
             }
 
 
             ProjectionDomainModel domainModel = new ProjectionDomainModel
             {
+                Id = Guid.NewGuid(),
                 AuditoriumId = projectionModel.AuditoriumId,
+                CinemaId = projectionModel.CinemaId,
+                DateTime = dateTime,
                 MovieId = projectionModel.MovieId,
-                ProjectionTime = projectionModel.ProjectionTime
-
+                TicketPrice = projectionModel.TicketPrice
             };
 
             CreateProjectionResultModel createProjectionResultModel;
@@ -102,6 +108,33 @@ namespace WinterWorkShop.Cinema.API.Controllers
             }
 
             return Created("projections//" + createProjectionResultModel.Projection.Id, createProjectionResultModel.Projection);
-        }*/
+        }
+
+        [HttpDelete]
+        [Route("delete")]
+        public async Task<ActionResult<ProjectionDomainModel>> DeleteProjectionAsync([FromBody] DeleteProjectionModel deleteProjectionModel)
+        {
+            if (!ModelState.IsValid)
+            {
+                return BadRequest(ModelState);
+            }
+
+            ProjectionDomainResultModel projection =
+                await _projectionService.GetById(deleteProjectionModel.ProjectionId);
+
+            if (!projection.IsSuccessful)
+            {
+                return BadRequest(new ProjectionDomainResultModel
+                {
+                  IsSuccessful  = false,
+                  ErrorMessage = Messages.PROJECTION_NOT_FOUND,
+                  Projection = null
+                });
+            }
+
+            await _projectionService.DeleteProjection(projection.Projection);
+
+            return Accepted("projections//" + projection.Projection.Id, projection.Projection);
+        }
     }
 }

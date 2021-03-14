@@ -9,13 +9,18 @@ namespace WinterWorkShop.Cinema.API.Models
     public class CreateProjectionModel
     {
         [Required]
-        [Range(1, Int32.MaxValue)]
-        public int AuditoriumId { get; set; }
-
+        public Guid AuditoriumId { get; set; }
+        
         [Required]
-        public DateTime ProjectionTime { get; set; }
-
+        public Guid CinemaId { get; set; }
+        
+        [Required]
+        public String DateTime { get; set; }
+        
         [Required]
         public Guid MovieId { get; set; }
+        
+        [Required]
+        public double TicketPrice { get; set; }
     }
 }
