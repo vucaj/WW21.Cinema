@@ -68,6 +68,7 @@ namespace WinterWorkShop.Cinema.API
             services.AddTransient<IAddressService, AddressService>();
             services.AddTransient<IParticipantService, ParticipantService>();
             services.AddTransient<IMovieParticipantService, MovieParticipantService>();
+            services.AddTransient<ITicketService, TicketService>();
 
             // Allow Cors for client app
             services.AddCors(options => {
