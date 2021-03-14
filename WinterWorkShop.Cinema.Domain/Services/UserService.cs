@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using WinterWorkShop.Cinema.Domain.Common;
 using WinterWorkShop.Cinema.Domain.Interfaces;
 using WinterWorkShop.Cinema.Domain.Models;
 using WinterWorkShop.Cinema.Repositories;
@@ -34,9 +35,35 @@ namespace WinterWorkShop.Cinema.Domain.Services
             });
         }
 
-        public Task<UserDomainModel> GetUserByIdAsync(Guid id)
+        public async Task<UserDomainResultModel> GetUserByIdAsync(Guid id)
         {
-            throw new NotImplementedException();
+            var user = await _usersRepository.GetByIdAsync(id);
+
+            if (user == null)
+            {
+                return new UserDomainResultModel()
+                {
+                    IsSuccessful = false,
+                    ErrorMessage = Messages.USER_NOT_FOUND,
+                    user = null
+                };
+            }
+
+            return new UserDomainResultModel()
+            {
+                IsSuccessful = true,
+                ErrorMessage = null,
+                user = new UserDomainModel()
+                {
+                    Id = user.Id,
+                    BonusPoints = user.BonusPoints,
+                    FirstName = user.FirstName,
+                    LastName = user.LastName,
+                    Password = "",
+                    UserName = user.UserName,
+                    Role = user.Role
+                }
+            };
         }
 
         public Task<UserDomainModel> GetUserByUserName(string username)

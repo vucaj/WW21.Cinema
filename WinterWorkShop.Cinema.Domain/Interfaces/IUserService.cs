@@ -19,7 +19,7 @@ namespace WinterWorkShop.Cinema.Domain.Interfaces
         /// </summary>
         /// <param name="id"></param>
         /// <returns>User</returns>
-        Task<UserDomainModel> GetUserByIdAsync(Guid id);
+        Task<UserDomainResultModel> GetUserByIdAsync(Guid id);
 
         /// <summary>
         /// Get a user by username
