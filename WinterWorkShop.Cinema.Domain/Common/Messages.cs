@@ -66,6 +66,8 @@
 
         #region User
         public const string USER_NOT_FOUND = "User does not exist.";
+        public const string USER_CREATE_ERROR = "Error occured while creating new user, please try again.";
+        public const string USER_USERNAME_ALREADY_EXIST = "User with given username already exist.";
         #endregion
         
         #region Address
