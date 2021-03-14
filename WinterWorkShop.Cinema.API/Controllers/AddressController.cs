@@ -39,7 +39,7 @@ namespace WinterWorkShop.Cinema.API.Controllers
         }
 
         [HttpPost]
-        [Route("byId")]
+        [Route("getById}")]
         public async Task<ActionResult<AddressDomainModel>> GetAddressByIdAsync([FromBody]AddressDomainModel domainModel)
         {
             var addressById = await _addressService.GetAddressByIdAsync(new AddressDomainModel
@@ -105,54 +105,58 @@ namespace WinterWorkShop.Cinema.API.Controllers
                 return BadRequest(errorResponse);
             }
 
-            return Created("addresses//" + createAddressResultModel.Address.Id, createAddressResultModel);
+            return Created("addresses//" + createAddressResultModel.Address.Id, createAddressResultModel.Address);
         }
 
         [HttpPost]
         [Route("delete")]
-        public async Task<ActionResult> DeleteAddress([FromBody] DeleteAddressModel deleteAddressModel)
+        public async Task<ActionResult<AddressDomainModel>> DeleteAddress([FromBody] DeleteAddressModel deleteAddressModel)
         {
             if (!ModelState.IsValid)
             {
                 return BadRequest(ModelState);
             }
 
-            AddressDomainModel addressDomainModel = new AddressDomainModel
+            CreateAddressResultModel address = await _addressService.GetAddressByIdAsync(new AddressDomainModel
             {
                 Id = deleteAddressModel.AddressId
-            };
+            });
 
-            DeleteAddressResultModel deleteAddressResultModel;
-
-            try
-            {
-                deleteAddressResultModel = await _addressService.DeleteAddress(addressDomainModel);
-            }
-            catch (DbUpdateException e)
+            if (!address.IsSuccessful)
             {
                 ErrorResponseModel errorResponseModel = new ErrorResponseModel
                 {
-                    ErrorMessage = e.InnerException.Message ?? e.Message,
+                    ErrorMessage = address.ErrorMessage,
                     StatusCode = System.Net.HttpStatusCode.BadRequest
                 };
-
                 return BadRequest(errorResponseModel);
             }
 
-            if (!deleteAddressResultModel.IsSuccessful)
+            AddressDomainModel addressDomainModel = new AddressDomainModel()
             {
-                ErrorResponseModel errorResponseModel = new ErrorResponseModel()
+                Id = address.Address.Id,
+                StreetName = address.Address.StreetName,
+                CityName = address.Address.CityName,
+                Country = address.Address.Country,
+                Latitude = address.Address.Latitude,
+                Longitude = address.Address.Longitude
+            };
+
+            DeleteAddressResultModel resultModel = await _addressService.DeleteAddress(addressDomainModel);
+
+            if (!resultModel.IsSuccessful)
+            {
+                ErrorResponseModel errorResponseModel = new ErrorResponseModel
                 {
-                    ErrorMessage = deleteAddressResultModel.ErrorMessage,
+                    ErrorMessage = resultModel.ErrorMessage,
                     StatusCode = System.Net.HttpStatusCode.BadRequest
                 };
-
                 return BadRequest(errorResponseModel);
             }
 
-            return Ok("Deleted address: " + addressDomainModel.Id);
-
+            return Accepted("Address//" + resultModel.Address.Id, resultModel.Address);
         }
+        
         [HttpPut]
         [Route("update")]
         public async Task<ActionResult> UpdateAddress([FromBody] UpdateAddressModel updateAddressModel)

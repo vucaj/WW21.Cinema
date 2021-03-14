@@ -73,12 +73,20 @@ namespace WinterWorkShop.Cinema.Domain.Services
 
             _addressRepository.Save();
 
-            DeleteAddressResultModel resultModel = new DeleteAddressResultModel
+            return  new DeleteAddressResultModel
             {
                 IsSuccessful = true,
+                Address = new AddressDomainModel
+                {
+                    Id = addressToDelete.Id,
+                    StreetName = addressToDelete.StreetName,
+                    CityName = addressToDelete.CityName,
+                    Country = addressToDelete.Country,
+                    Latitude = addressToDelete.Latitude,
+                    Longitude = addressToDelete.Longitude
+                },
                 ErrorMessage = null
             };
-            return resultModel;
         }
 
         public async Task<CreateAddressResultModel> GetAddressByIdAsync(AddressDomainModel newAddress)
