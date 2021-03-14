@@ -66,9 +66,35 @@ namespace WinterWorkShop.Cinema.Domain.Services
             };
         }
 
-        public Task<UserDomainModel> GetUserByUserName(string username)
+        public async Task<UserDomainResultModel> GetUserByUserName(string username)
         {
-            throw new NotImplementedException();
+            var user = _usersRepository.GetByUserName(username);
+
+            if (user == null)
+            {
+                return new UserDomainResultModel()
+                {
+                    IsSuccessful = false,
+                    ErrorMessage = Messages.USER_NOT_FOUND,
+                    user = null
+                };
+            }
+
+            return new UserDomainResultModel()
+            {
+                IsSuccessful = true,
+                ErrorMessage = null,
+                user = new UserDomainModel()
+                {
+                    Id = user.Id,
+                    BonusPoints = user.BonusPoints,
+                    FirstName = user.FirstName,
+                    LastName = user.LastName,
+                    Password = "",
+                    UserName = user.UserName,
+                    Role = user.Role
+                }
+            };
         }
     }
 }
