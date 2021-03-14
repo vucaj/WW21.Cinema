@@ -1,11 +1,19 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections;
+using System.Collections.Generic;
+using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.EntityFrameworkCore;
 using WinterWorkShop.Cinema.Data;
 
 namespace WinterWorkShop.Cinema.Repositories
 {
-    public interface ITicketRepostory: IRepository<Ticket>{}
+    public interface ITicketRepostory : IRepository<Ticket>
+    {
+        public Task<IEnumerable<Ticket>> GetByProjectionId(Guid projectionId);
+
+        public Task<IEnumerable<Ticket>> GetByUserId(Guid userId);
+    }
     
     
     public class TicketRespository: ITicketRepostory
@@ -55,6 +63,20 @@ namespace WinterWorkShop.Cinema.Repositories
             _cinemaContext.Entry(obj).State = EntityState.Modified;
 
             return updatedEntry.Entity;
+        }
+
+        public async Task<IEnumerable<Ticket>> GetByProjectionId(Guid ProjectionId)
+        {
+            var tickets = await _cinemaContext.Tickets.Where(x => x.ProjectionId == ProjectionId).ToListAsync();
+
+            return tickets;
+        }
+
+        public async Task<IEnumerable<Ticket>> GetByUserId(Guid userId)
+        {
+            var tickets = await _cinemaContext.Tickets.Where(x => x.UserId == userId).ToListAsync();
+
+            return tickets;
         }
     }
 }

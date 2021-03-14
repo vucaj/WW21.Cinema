@@ -97,5 +97,11 @@
         public const string MOVIEPARTICIPANT_SAVE_ERROR = "Error occured while saving to database.";
         public const string MOVIEPARTICIPANT_UPDATE_ERROR = "Error occured while updating movie participant.";
         #endregion
+        
+        #region Ticket
+
+        public const string TICKET_NOT_FOUND = "Ticket with given ID not found.";
+        
+        #endregion
     }
 }
