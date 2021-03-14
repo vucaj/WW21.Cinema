@@ -42,6 +42,36 @@ namespace WinterWorkShop.Cinema.Domain.Services
             });
         }
 
+        public async Task<ProjectionDomainResultModel> GetById(Guid id)
+        {
+            var projection = await _projectionsRepository.GetByIdAsync(id);
+
+            if (projection == null)
+            {
+                return new ProjectionDomainResultModel()
+                {
+                    IsSuccessful = false,
+                    ErrorMessage = Messages.PROJECTION_NOT_FOUND,
+                    Projection = null
+                };
+            }
+
+            return new ProjectionDomainResultModel()
+            {
+                IsSuccessful = true,
+                ErrorMessage = null,
+                Projection = new ProjectionDomainModel()
+                {
+                    Id = projection.Id,
+                    AuditoriumId = projection.AuditoriumId,
+                    CinemaId = projection.CinemaId,
+                    DateTime = projection.DateTime,
+                    MovieId = projection.MovieId,
+                    TicketPrice = projection.TicketPrice
+                }
+            };
+        }
+
         public async Task<CreateProjectionResultModel> CreateProjection(ProjectionDomainModel domainModel)
         {
             var cinema = await _cinemasRepository.GetByIdAsync(domainModel.CinemaId);
@@ -58,6 +88,8 @@ namespace WinterWorkShop.Cinema.Domain.Services
                 };
             }
 
+            // TODO: proveriti da li u tom auditoriumu postoji projekcija koja se poklapa sa novom projekcijom
+            
             if (domainModel.DateTime.CompareTo(DateTime.Now.AddDays(2)) < 0)
             {
                 return new CreateProjectionResultModel()

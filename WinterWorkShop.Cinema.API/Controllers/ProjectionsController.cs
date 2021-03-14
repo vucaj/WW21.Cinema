@@ -109,5 +109,32 @@ namespace WinterWorkShop.Cinema.API.Controllers
 
             return Created("projections//" + createProjectionResultModel.Projection.Id, createProjectionResultModel.Projection);
         }
+
+        [HttpDelete]
+        [Route("delete")]
+        public async Task<ActionResult<ProjectionDomainModel>> DeleteProjectionAsync([FromBody] DeleteProjectionModel deleteProjectionModel)
+        {
+            if (!ModelState.IsValid)
+            {
+                return BadRequest(ModelState);
+            }
+
+            ProjectionDomainResultModel projection =
+                await _projectionService.GetById(deleteProjectionModel.ProjectionId);
+
+            if (!projection.IsSuccessful)
+            {
+                return BadRequest(new ProjectionDomainResultModel
+                {
+                  IsSuccessful  = false,
+                  ErrorMessage = Messages.PROJECTION_NOT_FOUND,
+                  Projection = null
+                });
+            }
+
+            await _projectionService.DeleteProjection(projection.Projection);
+
+            return Accepted("projections//" + projection.Projection.Id, projection.Projection);
+        }
     }
 }
