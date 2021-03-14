@@ -1,5 +1,6 @@
 ﻿using System.Collections.Generic;
 using System.Threading.Tasks;
+using Microsoft.EntityFrameworkCore;
 using WinterWorkShop.Cinema.Data;
 
 namespace WinterWorkShop.Cinema.Repositories
@@ -18,32 +19,42 @@ namespace WinterWorkShop.Cinema.Repositories
         
         public Ticket Delete(object id)
         {
-            throw new System.NotImplementedException();
+            Ticket existing = _cinemaContext.Tickets.Find(id);
+            var result = _cinemaContext.Tickets.Remove(existing);
+
+            return result.Entity;
         }
 
-        public Task<IEnumerable<Ticket>> GetAllAsync()
+        public async Task<IEnumerable<Ticket>> GetAllAsync()
         {
-            throw new System.NotImplementedException();
+            var data = await _cinemaContext.Tickets.ToListAsync();
+
+            return data;
         }
 
-        public Task<Ticket> GetByIdAsync(object id)
+        public async Task<Ticket> GetByIdAsync(object id)
         {
-            throw new System.NotImplementedException();
+            var data = await _cinemaContext.Tickets.FindAsync(id);
+
+            return data;
         }
 
         public Ticket Insert(Ticket obj)
         {
-            throw new System.NotImplementedException();
+            return _cinemaContext.Tickets.Add(obj).Entity;
         }
 
         public void Save()
         {
-            throw new System.NotImplementedException();
+            _cinemaContext.SaveChanges();
         }
 
         public Ticket Update(Ticket obj)
         {
-            throw new System.NotImplementedException();
+            var updatedEntry = _cinemaContext.Tickets.Attach(obj);
+            _cinemaContext.Entry(obj).State = EntityState.Modified;
+
+            return updatedEntry.Entity;
         }
     }
 }
