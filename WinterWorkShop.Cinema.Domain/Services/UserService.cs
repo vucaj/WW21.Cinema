@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using WinterWorkShop.Cinema.Data;
 using WinterWorkShop.Cinema.Domain.Common;
 using WinterWorkShop.Cinema.Domain.Interfaces;
 using WinterWorkShop.Cinema.Domain.Models;
@@ -95,6 +96,52 @@ namespace WinterWorkShop.Cinema.Domain.Services
                     Role = user.Role
                 }
             };
+        }
+
+        public async Task<UserDomainResultModel> CreateUser(UserDomainModel domainModel)
+        {
+            User newUser = new User()
+            {
+                Id = domainModel.Id,
+                BonusPoints = 0,
+                FirstName = domainModel.UserName,
+                LastName = domainModel.LastName,
+                Password = domainModel.Password,
+                Role = domainModel.Role,
+                UserName = domainModel.UserName,
+                Tickets = new List<Ticket>()
+            };
+
+            User insertedUser = _usersRepository.Insert(newUser);
+
+            if (insertedUser == null)
+            {
+                return new UserDomainResultModel()
+                {
+                    IsSuccessful = false,
+                    ErrorMessage = Messages.USER_CREATE_ERROR,
+                    user = null
+                };
+            }
+            
+            _usersRepository.Save();
+
+            return new UserDomainResultModel()
+            {
+                IsSuccessful = true,
+                ErrorMessage = null,
+                user = new UserDomainModel()
+                {
+                    Id = insertedUser.Id,
+                    BonusPoints = insertedUser.BonusPoints,
+                    FirstName = insertedUser.UserName,
+                    LastName = insertedUser.LastName,
+                    Password = insertedUser.Password,
+                    Role = insertedUser.Role,
+                    UserName = insertedUser.UserName,
+                }
+            };
+
         }
     }
 }

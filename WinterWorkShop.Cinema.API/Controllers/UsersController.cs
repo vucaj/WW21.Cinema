@@ -50,11 +50,9 @@ namespace WinterWorkShop.Cinema.API.Controllers
         [Route("{id}")]
         public async Task<ActionResult<UserDomainModel>> GetbyIdAsync(Guid id)
         {
-            UserDomainModel model;
+            var model = await _userService.GetUserByIdAsync(id);
 
-            model = await _userService.GetUserByIdAsync(id);
-
-            if (model == null)
+            if (!model.IsSuccessful)
             {
                 return NotFound(Messages.USER_NOT_FOUND);
             }
@@ -71,11 +69,9 @@ namespace WinterWorkShop.Cinema.API.Controllers
         [Route("{username}")]
         public async Task<ActionResult<UserDomainModel>> GetbyUserNameAsync(string username)
         {
-            UserDomainModel model;
+            var model = await _userService.GetUserByUserName(username);
 
-            model = await _userService.GetUserByUserName(username);
-
-            if (model == null)
+            if (!model.IsSuccessful)
             {
                 return NotFound(Messages.USER_NOT_FOUND);
             }
