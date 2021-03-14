@@ -101,7 +101,8 @@
         #region Ticket
 
         public const string TICKET_NOT_FOUND = "Ticket with given ID not found.";
-        
+        public const string TICKET_CREATE_ERROR = "Error occured while creating new ticket, please try again.";
+        public const string TICKET_SAVE_ERROR = "Error occured while saving to database.";
         #endregion
     }
 }

@@ -14,6 +14,8 @@ namespace WinterWorkShop.Cinema.Domain.Interfaces
 
         Task<IEnumerable<TicketDomainModel>> GetByUserId(Guid userId);
 
-        Task<TicketDomainResultModel> GetById(Guid d);
+        Task<CreateTicketDomainResultModel> GetById(Guid d);
+
+        Task<CreateTicketDomainResultModel> CreateTicket(TicketDomainModel domainModel);
     }
 }

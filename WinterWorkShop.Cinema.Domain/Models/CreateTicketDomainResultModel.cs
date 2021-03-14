@@ -1,6 +1,6 @@
 ﻿namespace WinterWorkShop.Cinema.Domain.Models
 {
-    public class TicketDomainResultModel
+    public class CreateTicketDomainResultModel
     {
         public bool IsSuccessful { get; set; }
         public string ErrorMessage { get; set; }
