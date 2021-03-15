@@ -377,5 +377,251 @@ namespace WinterWorkShop.Cinema.Tests.Controllers
             Assert.IsInstanceOfType(result, typeof(BadRequestObjectResult));
             Assert.AreEqual(expectedStatusCode, resultResponse.StatusCode);
         }
+        [TestMethod]
+        public void GetAddressById_Return_Participant()
+        {
+            // Arrange
+            AddressDomainModel addressDomdainModel = new AddressDomainModel
+            {
+                Id = It.IsAny<int>(),
+                StreetName = "ImeUlice",
+                CityName = "ImeGrada",
+                Country = "ImeDrzave",
+                Latitude = 1,
+                Longitude = 1
+            };
+
+            CreateAddressResultModel createAddressResultModel = new CreateAddressResultModel()
+            {
+                IsSuccessful = true,
+                ErrorMessage = null,
+                Address = new AddressDomainModel
+                {
+                    Id = addressDomdainModel.Id,
+                    StreetName = addressDomdainModel.StreetName,
+                    CityName = addressDomdainModel.CityName,
+                    Country = addressDomdainModel.Country,
+                    Longitude = addressDomdainModel.Longitude,
+                    Latitude = addressDomdainModel.Latitude
+                }
+            };
+
+            Task<CreateAddressResultModel> responseTask = Task.FromResult(createAddressResultModel);
+            int expectedResultCount = 1;
+            int expectedStatusCode = 200;
+
+            _addressService = new Mock<IAddressService>();
+            _addressService.Setup(x => x.GetAddressByIdAsync(It.IsAny<AddressDomainModel>())).Returns(responseTask);
+            AddressController addressController = new AddressController(_addressService.Object);
+
+            // Act
+            var result = addressController.GetAddressByIdAsync(addressDomdainModel).ConfigureAwait(false).GetAwaiter().GetResult().Result;
+            var resultList = ((OkObjectResult)result).Value;
+            var addressDomainModelResultList = (CreateAddressResultModel)resultList;
+
+            // Assert
+            Assert.IsNotNull(addressDomainModelResultList);
+            Assert.IsInstanceOfType(result, typeof(OkObjectResult));
+            Assert.AreEqual(expectedStatusCode, ((OkObjectResult)result).StatusCode);
+        }
+
+        [TestMethod]
+        public async Task GetAddressById_WhenAddresstIsNull_ReturnsNotFound_Tests()
+        {
+            // Arrange
+            AddressDomainModel addressDomainModel = new AddressDomainModel
+            {
+                Id = It.IsAny<int>(),
+                StreetName = "ImeUlice",
+                CityName = "ImeGrada",
+                Country = "ImeDrzave",
+                Latitude = 1,
+                Longitude = 1
+            };
+
+            CreateAddressResultModel createAddressResultModel = new CreateAddressResultModel()
+            {
+                IsSuccessful = true,
+                ErrorMessage = null,
+                Address = new AddressDomainModel
+                {
+                    Id = addressDomainModel.Id,
+                    StreetName = addressDomainModel.StreetName,
+                    CityName = addressDomainModel.CityName,
+                    Country = addressDomainModel.Country,
+                    Latitude = addressDomainModel.Latitude,
+                    Longitude = addressDomainModel.Longitude
+                }
+            };
+
+            Task<CreateAddressResultModel> responseTask = Task.FromResult(createAddressResultModel);
+            _addressService = new Mock<IAddressService>();
+            _addressService.Setup(x => x.GetAddressByIdAsync(addressDomainModel)).Returns(responseTask);
+
+            AddressController addressController = new AddressController(_addressService.Object);
+
+            // Act
+            var test = await addressController.GetAddressByIdAsync(addressDomainModel);
+
+            // Assert
+            Assert.IsInstanceOfType(test.Result, typeof(NotFoundResult));
+        }
+        [TestMethod]
+        public void PostAsync_UpdateAddress_Address()
+        {
+            // Arrange
+            List<AddressDomainModel> addressDomainModelsList = new List<AddressDomainModel>();
+
+            AddressDomainModel addressDomainModel = new AddressDomainModel
+            {
+                Id = It.IsAny<int>(),
+                StreetName = "ImeUlice",
+                CityName = "ImeGrada",
+                Country = "ImeDrzave",
+                Latitude = 1,
+                Longitude = 1
+
+            };
+
+            CreateAddressResultModel createAddressResultModel = new CreateAddressResultModel()
+            {
+                IsSuccessful = true,
+                ErrorMessage = null,
+                Address = addressDomainModel
+            };
+
+            addressDomainModelsList.Add(addressDomainModel);
+
+            UpdateAddressModel updateAddressModel = new UpdateAddressModel()
+            {
+                Id = addressDomainModel.Id
+            };
+
+            UpdateAddressResultModel updateAddressResultModel = new UpdateAddressResultModel()
+            {
+                IsSuccessful = true,
+                ErrorMessage = null,
+                Address = new AddressDomainModel
+                {
+                    Id = addressDomainModel.Id,
+                    StreetName = addressDomainModel.StreetName,
+                    CityName = addressDomainModel.CityName,
+                    Country = addressDomainModel.Country,
+                    Latitude = addressDomainModel.Latitude,
+                    Longitude = addressDomainModel.Longitude
+                }
+            };
+
+            Task<UpdateAddressResultModel> responseTask = Task.FromResult(updateAddressResultModel);
+            Task<CreateAddressResultModel> responseTask2 = Task.FromResult(createAddressResultModel);
+
+            int expectedStatusCode = 200;
+
+            _addressService = new Mock<IAddressService>();
+            _addressService.Setup(x => x.UpdateAddress(It.IsAny<AddressDomainModel>())).Returns(responseTask);
+            _addressService.Setup(x => x.GetAddressByIdAsync(It.IsAny<AddressDomainModel>())).Returns(responseTask2);
+            AddressController addressController = new AddressController(_addressService.Object);
+
+            // Act
+            var result = addressController.UpdateAddress(updateAddressModel).ConfigureAwait(false).GetAwaiter().GetResult().Result;
+            var updateResult = ((OkObjectResult)result).Value;
+            var addressDomainModels = (UpdateAddressResultModel)updateResult;
+
+            // Assert
+            Assert.IsNotNull(addressDomainModels);
+            Assert.AreEqual(updateAddressModel.Id, addressDomainModels.Address.Id);
+            Assert.IsInstanceOfType(result, typeof(OkObjectResult));
+            Assert.AreEqual(expectedStatusCode, ((OkObjectResult)result).StatusCode);
+        }
+
+        [TestMethod]
+        public void UpdateAddressAsync_With_Invalid_ModelState_Return_BadRequest()
+        {
+            // Arrange
+            string expectedMessage = "Invalid Model State";
+            int expectedStatusCode = 400;
+
+            UpdateAddressModel updateAddressModel = new UpdateAddressModel()
+            {
+                Id = It.IsAny<int>(),
+                StreetName = "ImeUlice",
+                CityName = "ImeGrada",
+                Country = "ImeDrzave",
+                Latitude = 1,
+                Longitude = 1
+            };
+
+            _addressService = new Mock<IAddressService>();
+            AddressController addressController = new AddressController(_addressService.Object);
+            addressController.ModelState.AddModelError("key", "Invalid Model State");
+
+            // Act
+            var result = addressController.UpdateAddress(updateAddressModel).ConfigureAwait(false).GetAwaiter().GetResult().Result;
+            var resultResponse = (BadRequestObjectResult)result;
+            var createResult = ((BadRequestObjectResult)result).Value;
+            var errorResponse = ((SerializableError)createResult).GetValueOrDefault("key");
+            var message = (string[])errorResponse;
+
+            // Assert
+            Assert.IsNotNull(resultResponse);
+            Assert.AreEqual(expectedMessage, message[0]);
+            Assert.IsInstanceOfType(result, typeof(BadRequestObjectResult));
+            Assert.AreEqual(expectedStatusCode, resultResponse.StatusCode);
+        }  
+
+        //not working
+    /*    [TestMethod]
+        public void PostAsync_UpdateAddress_BadRequest()
+        {
+            // Arrange
+            string expectedMessage = "Error occured while updating address.";
+            int expectedStatusCode = 400;
+
+            UpdateAddressModel updateAddressModel = new UpdateAddressModel()
+            {
+                Id = It.IsAny<int>(),
+                StreetName = "ImeUlice",
+                CityName = "ImeGrada",
+                Country = "ImeDrzave",
+                Latitude = 1,
+                Longitude = 1
+            };
+
+            UpdateAddressResultModel updateAddressResultModel = new UpdateAddressResultModel()
+            {
+                Address = null,
+                IsSuccessful = false,
+                ErrorMessage = Messages.ADDRESS_UPDATE_ERROR
+            };
+
+            CreateAddressResultModel createAddressResultModel = new CreateAddressResultModel()
+            {
+                IsSuccessful = false,
+                ErrorMessage = Messages.ADDRESS_UPDATE_ERROR,
+                Address = null
+            };
+
+            Task<UpdateAddressResultModel> responseTask = Task.FromResult(updateAddressResultModel);
+            Task<CreateAddressResultModel> responseTask1 = Task.FromResult(createAddressResultModel);
+
+            _addressService = new Mock<IAddressService>();
+            _addressService.Setup(x => x.GetAddressByIdAsync(It.IsAny<AddressDomainModel>())).Returns(responseTask1);
+            _addressService.Setup(x => x.UpdateAddress(It.IsAny<AddressDomainModel>())).Returns(responseTask);
+            AddressController addressController = new AddressController(_addressService.Object);
+
+
+            // Act
+                    // Object reference not set to an instance of an object.
+            var result = addressController.UpdateAddress(updateAddressModel).ConfigureAwait(false).GetAwaiter().GetResult().Result;
+            var resultResponse = (BadRequestObjectResult)result;
+            var badObjectResult = ((BadRequestObjectResult)result).Value;
+            var errorResult = (ErrorResponseModel)badObjectResult;
+
+            // Assert
+            Assert.IsNotNull(resultResponse);
+            Assert.AreEqual(expectedMessage, errorResult.ErrorMessage);
+            Assert.IsInstanceOfType(result, typeof(BadRequestObjectResult));
+            Assert.AreEqual(expectedStatusCode, resultResponse.StatusCode);
+        } */
     }
 }
