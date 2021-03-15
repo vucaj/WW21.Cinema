@@ -39,7 +39,7 @@ namespace WinterWorkShop.Cinema.API.Controllers
         }
 
         [HttpPost]
-        [Route("getById}")]
+        [Route("getById")]
         public async Task<ActionResult<AddressDomainModel>> GetAddressByIdAsync([FromBody]AddressDomainModel domainModel)
         {
             var addressById = await _addressService.GetAddressByIdAsync(new AddressDomainModel
@@ -159,7 +159,7 @@ namespace WinterWorkShop.Cinema.API.Controllers
         
         [HttpPut]
         [Route("update")]
-        public async Task<ActionResult> UpdateAddress([FromBody] UpdateAddressModel updateAddressModel)
+        public async Task<ActionResult<AddressDomainModel>> UpdateAddress([FromBody] UpdateAddressModel updateAddressModel)
         {
             if (!ModelState.IsValid)
             {
@@ -190,10 +190,15 @@ namespace WinterWorkShop.Cinema.API.Controllers
 
             if (!updateAddressResultModel.IsSuccessful)
             {
-                return BadRequest();
+                ErrorResponseModel errorResponseModel = new ErrorResponseModel
+                {
+                    ErrorMessage = updateAddressResultModel.ErrorMessage,
+                    StatusCode = System.Net.HttpStatusCode.BadRequest
+                };
+                return BadRequest(errorResponseModel);
             }
 
-            return Ok();
+            return Ok(updateAddressResultModel);
         }
 
     }
