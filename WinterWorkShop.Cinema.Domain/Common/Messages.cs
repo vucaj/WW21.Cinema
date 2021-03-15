@@ -52,6 +52,10 @@
         public const string PROJECTION_CREATION_ERROR = "Error occured while creating new projection, please try again.";
         public const string PROJECTIONS_AT_SAME_TIME = "Cannot create new projection, there are projections at same time alredy.";
         public const string PROJECTION_IN_PAST = "Projection time cannot be in past.";
+        public const string PROJECTION_NOT_FOUND = "Projection with given ID cannot be found.";
+        public const string PROJECTION_DELETE_ERROR = "Projection cannot be deleted.";
+
+        public const string PROJECTION_DELETE_ERROR_HAS_SOLD_TICKETS = "Projection cannot be deleted because it has sold tickets.";
         #endregion
 
         #region Seats
@@ -62,6 +66,8 @@
 
         #region User
         public const string USER_NOT_FOUND = "User does not exist.";
+        public const string USER_CREATE_ERROR = "Error occured while creating new user, please try again.";
+        public const string USER_USERNAME_ALREADY_EXIST = "User with given username already exist.";
         #endregion
         
         #region Address

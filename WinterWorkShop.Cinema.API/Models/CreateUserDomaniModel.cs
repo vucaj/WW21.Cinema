@@ -1,24 +1,27 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
+﻿using System.ComponentModel.DataAnnotations;
 using WinterWorkShop.Cinema.Data.Enums;
 
-namespace WinterWorkShop.Cinema.Domain.Models
+namespace WinterWorkShop.Cinema.API.Models
 {
-    public class UserDomainModel
+    public class CreateUserDomaniModel
     {
-        public Guid Id { get; set; }
-
+        [Required]
         public string FirstName { get; set; }
         
+        [Required]
         public string LastName { get; set; }
         
-        public string UserName { get; set; }
+        [Required]
+        public string Username { get; set; }
         
+        [Required]
         public string Password { get; set; }
         
+        [Required]
         public UserRole Role { get; set; }
-        
+
         public int BonusPoints { get; set; }
+        
+        
     }
 }
