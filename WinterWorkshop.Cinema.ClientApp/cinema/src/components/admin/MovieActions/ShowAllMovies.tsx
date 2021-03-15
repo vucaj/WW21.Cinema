@@ -94,7 +94,7 @@ const ShowAllMovies: React.FC = (props: any) => {
       },
     };
 
-    fetch(`${serviceConfig.baseURL}/api/movies/${movieId}`, requestOptions)
+    fetch(`${serviceConfig.baseURL}/api/movies/id/${movieId}`, requestOptions)
       .then((response) => {
         if (!response.ok) {
           return Promise.reject(response);
