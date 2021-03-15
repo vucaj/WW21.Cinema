@@ -40,9 +40,14 @@ const EditProjection: React.FC = (props: any) => {
       {
         id: "",
         bannerUrl: "",
-        rating: 0,
         title: "",
-        year: "",
+        year: 0,
+        isActive: false,
+        duration: 0,
+        distributer: "",
+        description: "",
+        genre: 0,
+        rating: 0
       },
     ],
     auditoriums: [

@@ -1,3 +1,3 @@
 export const serviceConfig = {
-    baseURL: "https://winterworkshopapi.azurewebsites.net",
+    baseURL: "http://localhost:3000",
 };
