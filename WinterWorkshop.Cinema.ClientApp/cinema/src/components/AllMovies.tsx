@@ -18,8 +18,13 @@ const AllMovies: React.FC = (props: any) => {
         id: "",
         bannerUrl: "",
         title: "",
-        year: "",
-        rating: 0,
+        year: 0,
+        isActive: false,
+        duration: 0,
+        distributer: "",
+        description: "",
+        genre: 0,
+        rating: 0
       },
     ],
   });
