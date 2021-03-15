@@ -161,7 +161,7 @@ namespace WinterWorkShop.Cinema.API.Controllers
 
         [HttpPut]
         [Route("update")]
-        public async Task<ActionResult> UpdateParticipant([FromBody] UpdateParticipantModel updateParticipantModel)
+        public async Task<ActionResult<ParticipantDomainModel>> UpdateParticipant([FromBody] UpdateParticipantModel updateParticipantModel)
         {
             if (!ModelState.IsValid)
             {
@@ -173,6 +173,7 @@ namespace WinterWorkShop.Cinema.API.Controllers
                 Id = updateParticipantModel.Id
             });
 
+            // na ovoj liniji ispod baci error kada se pokrene test
             participant.Participant.FirstName = updateParticipantModel.FirstName;
             participant.Participant.LastName = updateParticipantModel.LastName;
             participant.Participant.ParticipantType = updateParticipantModel.ParticipantType;
@@ -186,10 +187,15 @@ namespace WinterWorkShop.Cinema.API.Controllers
 
             if (!updateParticipantResultModel.IsSuccessful)
             {
-                return BadRequest();
+                ErrorResponseModel errorResponseModel = new ErrorResponseModel
+                {
+                    ErrorMessage = updateParticipantResultModel.ErrorMessage,
+                    StatusCode = System.Net.HttpStatusCode.BadRequest
+                };
+                return BadRequest(errorResponseModel);
             }
 
-            return Ok();
+            return Ok(updateParticipantResultModel);
         }
     }
 }

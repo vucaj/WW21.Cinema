@@ -175,7 +175,14 @@ namespace WinterWorkShop.Cinema.Domain.Services
             UpdateParticipantResultModel resultModel = new UpdateParticipantResultModel
             {
                 IsSuccessful = true,
-                ErrorMessage = null
+                ErrorMessage = null,
+                Participant = new ParticipantDomainModel
+                {
+                    Id = updatedParticipant.Id,
+                    FirstName = updatedParticipant.FirstName,
+                    LastName = updatedParticipant.LastName,
+                    ParticipantType = updatedParticipant.ParticipantType
+                }
             };
 
             return resultModel;

@@ -39,7 +39,7 @@ namespace WinterWorkShop.Cinema.API.Controllers
         }
 
         [HttpPost]
-        [Route("getById}")]
+        [Route("getById")]
         public async Task<ActionResult<AddressDomainModel>> GetAddressByIdAsync([FromBody]AddressDomainModel domainModel)
         {
             var addressById = await _addressService.GetAddressByIdAsync(new AddressDomainModel

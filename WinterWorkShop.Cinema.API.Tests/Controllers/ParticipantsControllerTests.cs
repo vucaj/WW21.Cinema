@@ -82,52 +82,88 @@ namespace WinterWorkShop.Cinema.Tests.Controllers
         }
 
         // treba da se popravi
-/*        [TestMethod]
-        public async Task GetParticipantById_Return_Participant()
+        [TestMethod]
+        public void GetParticipantById_Return_Participant()
         {
             // Arrange
-            var expectedParticipant = new ParticipantDomainModel();
-            var expectedId = Guid.NewGuid();
+            ParticipantDomainModel participantDomainModel = new ParticipantDomainModel
+            {
+                Id = Guid.NewGuid(),
+                FirstName = "Ime",
+                LastName = "Prezime",
+                ParticipantType = ParticipantType.ACTOR
+            };
+
+            GetParticipantResultModel getParticipantResultModel = new GetParticipantResultModel()
+            {
+                IsSuccessful = true,
+                ErrorMessage = null,
+                Participant = new ParticipantDomainModel
+                {
+                    Id = participantDomainModel.Id,
+                    FirstName = participantDomainModel.FirstName,
+                    LastName = participantDomainModel.LastName,
+                    ParticipantType = participantDomainModel.ParticipantType
+                }
+            };
+
+            Task<GetParticipantResultModel> responseTask = Task.FromResult(getParticipantResultModel);
+            int expectedResultCount = 1;
+            int expectedStatusCode = 200;
 
             _participantService = new Mock<IParticipantService>();
-            _participantService.Setup(x => x.GetParticipantByIdAsync(expectedId)).ReturnsAsync(expectedParticipant);
-
-            var participantController = new ParticipantController(_participantService.Object);
+            _participantService.Setup(x => x.GetParticipantByIdAsync(It.IsAny<ParticipantDomainModel>())).Returns(responseTask);
+            ParticipantController participantController = new ParticipantController(_participantService.Object);
 
             // Act
-            var test = await participantController.GetParticipantById(expectedId);
-            _participantService
-                .Verify(x => x.GetParticipantByIdAsync(expectedId), Times.Exactly(1));
+            var result = participantController.GetParticipantById(participantDomainModel).ConfigureAwait(false).GetAwaiter().GetResult().Result;
+            var resultList = ((OkObjectResult)result).Value;
+            var participantDomainModelResultList = (GetParticipantResultModel)resultList;
 
             // Assert
-            Assert.IsInstanceOfType(test, typeof(ActionResult<ParticipantDomainModel>));
-            Assert.IsInstanceOfType(test.Result, typeof(OkObjectResult));
-
-            var okResult = ((OkObjectResult)test.Result).Value;
-            var participant = (ParticipantDomainModel)okResult;
-
-            Assert.AreSame(participant, expectedParticipant);
-        }*/
-/*      
- *      // treba da se popravi
+            Assert.IsNotNull(participantDomainModelResultList);
+            Assert.IsInstanceOfType(result, typeof(OkObjectResult));
+            Assert.AreEqual(expectedStatusCode, ((OkObjectResult)result).StatusCode);
+        }
+              
+        // treba da se popravi
         [TestMethod]
-        public async Task GetParticipantById_WhenMovieIsNull_ReturnsNotFound_Tests()
+        public async Task GetParticipantById_WhenParticipantIsNull_ReturnsNotFound_Tests()
         {
             // Arrange
-            var expectedId = Guid.NewGuid();
+            ParticipantDomainModel participantDomainModel = new ParticipantDomainModel
+            {
+                Id = Guid.NewGuid(),
+                FirstName = "Ime",
+                LastName = "Prezime",
+                ParticipantType = ParticipantType.ACTOR
+            };
 
+            GetParticipantResultModel getParticipantResultModel = new GetParticipantResultModel()
+            {
+                IsSuccessful = true,
+                ErrorMessage = null,
+                Participant = new ParticipantDomainModel
+                {
+                    Id = participantDomainModel.Id,
+                    FirstName = participantDomainModel.FirstName,
+                    LastName = participantDomainModel.LastName,
+                    ParticipantType = participantDomainModel.ParticipantType
+                }
+            };
+
+            Task<GetParticipantResultModel> responseTask = Task.FromResult(getParticipantResultModel);
             _participantService = new Mock<IParticipantService>();
-            _participantService.Setup(x => x.GetParticipantByIdAsync(expectedId))
-                .ReturnsAsync(default(ParticipantDomainModel));
+            _participantService.Setup(x => x.GetParticipantByIdAsync(participantDomainModel)).Returns(responseTask);
 
             var participantController = new ParticipantController(_participantService.Object);
 
             // Act
-            var test = await participantController.GetParticipantById(expectedId);
+            var test = await participantController.GetParticipantById(participantDomainModel);
 
             // Assert
             Assert.IsInstanceOfType(test.Result, typeof(NotFoundObjectResult));
-        }*/
+        }
 
         [TestMethod]
         public void CreateParticipantAsync_Create_createParticipantResultModel_IsSuccessful_True_Participant()
@@ -321,7 +357,7 @@ namespace WinterWorkShop.Cinema.Tests.Controllers
                 ParticipantId = participantDomainModel.Id
             };
 
-            DeleteParticipantResultModel deleteCinemaResultModel = new DeleteParticipantResultModel()
+            DeleteParticipantResultModel deleteParticipantResultModel = new DeleteParticipantResultModel()
             {
                 IsSuccessful = true,
                 ErrorMessage = null,
@@ -334,7 +370,7 @@ namespace WinterWorkShop.Cinema.Tests.Controllers
                 }
             };
 
-            Task<DeleteParticipantResultModel> responseTask = Task.FromResult(deleteCinemaResultModel);
+            Task<DeleteParticipantResultModel> responseTask = Task.FromResult(deleteParticipantResultModel);
             Task<GetParticipantResultModel> responseTask2 = Task.FromResult(getParticipantResultModel);
 
             int expectedStatusCode = 202;
@@ -414,5 +450,152 @@ namespace WinterWorkShop.Cinema.Tests.Controllers
             Assert.IsInstanceOfType(result, typeof(BadRequestObjectResult));
             Assert.AreEqual(expectedStatusCode, resultResponse.StatusCode);
         }
+
+        [TestMethod]
+        public void PostAsync_UpdateParticipant_Participant()
+        {
+            // Arrange
+            List<ParticipantDomainModel> participantDomainModelsList = new List<ParticipantDomainModel>();
+
+            ParticipantDomainModel participantDomainModel = new ParticipantDomainModel
+            {
+                Id = Guid.NewGuid(),
+                FirstName = "Ime",
+                LastName = "Prezime",
+                ParticipantType = ParticipantType.ACTOR
+            };
+
+            GetParticipantResultModel getParticipantResultModel = new GetParticipantResultModel()
+            {
+                IsSuccessful = true,
+                ErrorMessage = null,
+                Participant = participantDomainModel
+            };
+
+            participantDomainModelsList.Add(participantDomainModel);
+
+            UpdateParticipantModel updateParticipantModel = new UpdateParticipantModel()
+            {
+                Id = participantDomainModel.Id
+            };
+
+            UpdateParticipantResultModel updateParticipantResultModel = new UpdateParticipantResultModel()
+            {
+                IsSuccessful = true,
+                ErrorMessage = null,
+                Participant = new ParticipantDomainModel
+                {
+                    Id = participantDomainModel.Id,
+                    FirstName = participantDomainModel.FirstName,
+                    LastName = participantDomainModel.LastName,
+                    ParticipantType = participantDomainModel.ParticipantType
+                }
+            };
+
+            Task<UpdateParticipantResultModel> responseTask = Task.FromResult(updateParticipantResultModel);
+            Task<GetParticipantResultModel> responseTask2 = Task.FromResult(getParticipantResultModel);
+
+            int expectedStatusCode = 200;
+
+            _participantService = new Mock<IParticipantService>();
+            _participantService.Setup(x => x.UpdateParticipant(It.IsAny<ParticipantDomainModel>())).Returns(responseTask);
+            _participantService.Setup(x => x.GetParticipantByIdAsync(It.IsAny<ParticipantDomainModel>())).Returns(responseTask2);
+            ParticipantController participantController = new ParticipantController(_participantService.Object);
+
+            // Act
+            var result = participantController.UpdateParticipant(updateParticipantModel).ConfigureAwait(false).GetAwaiter().GetResult().Result;
+            var updateResult = ((OkObjectResult)result).Value;
+            var participantDomainModel1 = (UpdateParticipantResultModel)updateResult;
+
+            // Assert
+            Assert.IsNotNull(participantDomainModel1);
+            Assert.AreEqual(updateParticipantModel.Id, participantDomainModel1.Participant.Id);
+            Assert.IsInstanceOfType(result, typeof(OkObjectResult));
+            Assert.AreEqual(expectedStatusCode, ((OkObjectResult)result).StatusCode);
+        }
+
+        [TestMethod]
+        public void UpdateParticipantAsync_With_UnValid_ModelState_Return_BadRequest()
+        {
+            // Arrange
+            string expectedMessage = "Invalid Model State";
+            int expectedStatusCode = 400;
+
+            UpdateParticipantModel updateParticipantModel = new UpdateParticipantModel()
+            {
+                FirstName = "Ime",
+                LastName = "Prezime",
+                ParticipantType = ParticipantType.ACTOR
+            };
+
+            _participantService = new Mock<IParticipantService>();
+            ParticipantController participantController = new ParticipantController(_participantService.Object);
+            participantController.ModelState.AddModelError("key", "Invalid Model State");
+
+            // Act
+            var result = participantController.UpdateParticipant(updateParticipantModel).ConfigureAwait(false).GetAwaiter().GetResult().Result;
+            var resultResponse = (BadRequestObjectResult)result;
+            var createResult = ((BadRequestObjectResult)result).Value;
+            var errorResponse = ((SerializableError)createResult).GetValueOrDefault("key");
+            var message = (string[])errorResponse;
+
+            // Assert
+            Assert.IsNotNull(resultResponse);
+            Assert.AreEqual(expectedMessage, message[0]);
+            Assert.IsInstanceOfType(result, typeof(BadRequestObjectResult));
+            Assert.AreEqual(expectedStatusCode, resultResponse.StatusCode);
+        }
+
+        /*[TestMethod]
+        public void PostAsync_UpdateParticipant_BadRequest()
+        {
+            // Arrange
+            string expectedMessage = "Error occured while updating participant.";
+            int expectedStatusCode = 400;
+
+            UpdateParticipantModel updateParticipantModel = new UpdateParticipantModel()
+            {
+                Id = Guid.NewGuid(),
+                FirstName = "Ime",
+                LastName = "Prezime",
+                ParticipantType = ParticipantType.ACTOR
+            };
+
+            UpdateParticipantResultModel updateParticipantResultModel = new UpdateParticipantResultModel()
+            {
+                Participant = null,
+                IsSuccessful = false,
+                ErrorMessage = Messages.PARTICIPANT_UPDATE_ERROR
+            };
+
+            GetParticipantResultModel getParticipantResultModel = new GetParticipantResultModel()
+            {
+                IsSuccessful = false,
+                ErrorMessage = Messages.PARTICIPANT_NOT_FOUND,
+                Participant = null
+            };
+
+            Task<UpdateParticipantResultModel> responseTask = Task.FromResult(updateParticipantResultModel);
+            Task<GetParticipantResultModel> responseTask1 = Task.FromResult(getParticipantResultModel);
+
+            _participantService = new Mock<IParticipantService>();
+            _participantService.Setup(x => x.GetParticipantByIdAsync(It.IsAny<ParticipantDomainModel>())).Returns(responseTask1);
+            _participantService.Setup(x => x.UpdateParticipant(It.IsAny<ParticipantDomainModel>())).Returns(responseTask);
+            ParticipantController participantController = new ParticipantController(_participantService.Object);
+
+
+            // Act
+            // Object reference not set to an instance of an object.
+            var result = participantController.UpdateParticipant(updateParticipantModel).ConfigureAwait(false).GetAwaiter().GetResult().Result;
+            var resultResponse = (BadRequestObjectResult)result;
+            var badObjectResult = ((BadRequestObjectResult)result).Value;
+            var errorResult = (ErrorResponseModel)badObjectResult;
+
+            // Assert
+            Assert.IsNotNull(resultResponse);
+            Assert.AreEqual(expectedMessage, errorResult.ErrorMessage);
+            Assert.IsInstanceOfType(result, typeof(BadRequestObjectResult));
+            Assert.AreEqual(expectedStatusCode, resultResponse.StatusCode);
+        }*/
     }
 }
