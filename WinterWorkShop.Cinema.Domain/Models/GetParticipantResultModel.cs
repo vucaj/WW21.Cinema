@@ -4,7 +4,7 @@ using System.Text;
 
 namespace WinterWorkShop.Cinema.Domain.Models
 {
-    public class DeleteParticipantResultModel
+    public class GetParticipantResultModel
     {
         public bool IsSuccessful { get; set; }
 

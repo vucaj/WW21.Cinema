@@ -55,7 +55,7 @@ namespace WinterWorkShop.Cinema.API.Controllers
                 return NotFound(Messages.PARTICIPANT_DOES_NOT_EXIST);
             }
 
-            return Ok(participantDomainModel.Participant);
+            return Ok(participantDomainModel);
         }
 
         /// Adds a new participant
@@ -112,47 +112,51 @@ namespace WinterWorkShop.Cinema.API.Controllers
 
         [HttpPost]
         [Route("delete")]
-        public async Task<ActionResult> DeleteParticipant([FromBody] DeleteParticipantModel deleteParticipantModel)
+        public async Task<ActionResult<ParticipantDomainModel>> DeleteParticipant([FromBody] DeleteParticipantModel deleteParticipantModel)
         {
             if (!ModelState.IsValid)
             {
                 return BadRequest(ModelState);
             }
 
-            ParticipantDomainModel participantDomainModel = new ParticipantDomainModel
+            GetParticipantResultModel participant = await _participantService.GetParticipantByIdAsync(new ParticipantDomainModel
             {
                 Id = deleteParticipantModel.ParticipantId
-            };
+            });
 
-            DeleteParticipantResultModel deleteParticipantResultModel;
-
-            try
-            {
-                deleteParticipantResultModel = await _participantService.DeleteParticipant(participantDomainModel);
-            }
-            catch (DbUpdateException e)
+            if (!participant.IsSuccessful)
             {
                 ErrorResponseModel errorResponseModel = new ErrorResponseModel
                 {
-                    ErrorMessage = e.InnerException.Message ?? e.Message,
+                    ErrorMessage = participant.ErrorMessage,
                     StatusCode = System.Net.HttpStatusCode.BadRequest
                 };
 
                 return BadRequest(errorResponseModel);
             }
 
-            if (!deleteParticipantResultModel.IsSuccessful)
+            ParticipantDomainModel participantDomainModel = new ParticipantDomainModel()
             {
-                ErrorResponseModel errorResponseModel = new ErrorResponseModel()
+                Id = participant.Participant.Id,
+                FirstName = participant.Participant.FirstName,
+                LastName = participant.Participant.LastName,
+                ParticipantType = participant.Participant.ParticipantType
+            };
+
+            DeleteParticipantResultModel resultModel = await _participantService.DeleteParticipant(participantDomainModel);
+
+            if (!resultModel.IsSuccessful)
+            {
+                ErrorResponseModel errorResponseModel = new ErrorResponseModel
                 {
-                    ErrorMessage = deleteParticipantResultModel.ErrorMessage,
+                    ErrorMessage = resultModel.ErrorMessage,
                     StatusCode = System.Net.HttpStatusCode.BadRequest
                 };
 
                 return BadRequest(errorResponseModel);
             }
 
-            return Ok("Deleted participant: " + participantDomainModel.Id);
+            return Accepted("Participant//" + resultModel.Participant.Id, resultModel.Participant);
         }
 
         [HttpPut]

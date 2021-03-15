@@ -55,37 +55,7 @@ namespace WinterWorkShop.Cinema.Tests.Controllers
             Assert.AreEqual(expectedStatusCode, ((OkObjectResult)result).StatusCode);
         }
 
-/*        [TestMethod]
-        public void GetParticipantById_Return_ParticipantById()
-        {
-            // Arrange
-            ParticipantDomainModel participantDomainModel = new ParticipantDomainModel()
-            {
-                Id = Guid.NewGuid(),
-                FirstName = "Ime",
-                LastName = "Prezime",
-                ParticipantType = ParticipantType.ACTOR
-            };
-            Task<ParticipantDomainModel> responseTask = Task.FromResult(participantDomainModel);
-            int expectedResultCount = 1;
-            int expectedStatusCode = 200;
 
-            _participantService = new Mock<IParticipantService>();
-            _participantService.Setup(x => x.GetParticipantByIdAsync(participantDomainModel));
-            ParticipantController participantController = new ParticipantController(_participantService.Object);
-
-            // Act
-            var result = participantController.GetParticipantById(participantDomainModel).ConfigureAwait(false).GetAwaiter().GetResult().Result;
-            var oneResult = ((OkObjectResult)result).Value;
-            var participantDomainModelResult = (ParticipantDomainModel)oneResult;
-
-            // Assert
-            Assert.IsNotNull(participantDomainModelResult);
-            Assert.AreEqual(expectedResultCount, participantDomainModelResult);
-            Assert.IsInstanceOfType(result, typeof(OkObjectResult));
-            Assert.AreEqual(expectedStatusCode, ((OkObjectResult)result).StatusCode);
-        }
-*/
         [TestMethod]
         public void GetAllParticipants_Return_NewList()
         {
@@ -111,34 +81,52 @@ namespace WinterWorkShop.Cinema.Tests.Controllers
             Assert.AreEqual(expectedStatusCode, ((OkObjectResult)result).StatusCode);
         }
 
-        /*[TestMethod]
-        public async void GetParticipantById_Return_ParticipantById()
+        // treba da se popravi
+/*        [TestMethod]
+        public async Task GetParticipantById_Return_Participant()
         {
             // Arrange
             var expectedParticipant = new ParticipantDomainModel();
             var expectedId = Guid.NewGuid();
-            var participant = new ParticipantDomainModel()
-            { 
-                Id = expectedId
-            };
 
-            // proveriti zasto ne radi!!!!!!!!
-            _participantService.Setup(srvc => srvc.GetParticipantByIdAsync(participant)).ReturnsAsync(expectedParticipant);
+            _participantService = new Mock<IParticipantService>();
+            _participantService.Setup(x => x.GetParticipantByIdAsync(expectedId)).ReturnsAsync(expectedParticipant);
 
             var participantController = new ParticipantController(_participantService.Object);
 
             // Act
-            var test = await participantController.GetParticipantById(participant);
+            var test = await participantController.GetParticipantById(expectedId);
             _participantService
-                .Verify(srvc => srvc.GetParticipantByIdAsync(participant), Times.Exactly(1));
+                .Verify(x => x.GetParticipantByIdAsync(expectedId), Times.Exactly(1));
+
             // Assert
             Assert.IsInstanceOfType(test, typeof(ActionResult<ParticipantDomainModel>));
             Assert.IsInstanceOfType(test.Result, typeof(OkObjectResult));
 
             var okResult = ((OkObjectResult)test.Result).Value;
-            var participant1 = (ParticipantDomainModel)okResult;
+            var participant = (ParticipantDomainModel)okResult;
 
-            Assert.AreSame(participant1, expectedParticipant);
+            Assert.AreSame(participant, expectedParticipant);
+        }*/
+/*      
+ *      // treba da se popravi
+        [TestMethod]
+        public async Task GetParticipantById_WhenMovieIsNull_ReturnsNotFound_Tests()
+        {
+            // Arrange
+            var expectedId = Guid.NewGuid();
+
+            _participantService = new Mock<IParticipantService>();
+            _participantService.Setup(x => x.GetParticipantByIdAsync(expectedId))
+                .ReturnsAsync(default(ParticipantDomainModel));
+
+            var participantController = new ParticipantController(_participantService.Object);
+
+            // Act
+            var test = await participantController.GetParticipantById(expectedId);
+
+            // Assert
+            Assert.IsInstanceOfType(test.Result, typeof(NotFoundObjectResult));
         }*/
 
         [TestMethod]
@@ -301,6 +289,128 @@ namespace WinterWorkShop.Cinema.Tests.Controllers
             // Assert
             Assert.IsNotNull(resultResponse);
             Assert.AreEqual(expectedMessage, message[0]);
+            Assert.IsInstanceOfType(result, typeof(BadRequestObjectResult));
+            Assert.AreEqual(expectedStatusCode, resultResponse.StatusCode);
+        }
+
+        [TestMethod]
+        public void PostAsync_DeleteParticipant_Participant()
+        {
+            // Arrange
+            List<ParticipantDomainModel> participantDomainModelsList = new List<ParticipantDomainModel>();
+
+            ParticipantDomainModel participantDomainModel = new ParticipantDomainModel
+            {
+                Id = Guid.NewGuid(),
+                FirstName = "Ime",
+                LastName = "Prezime",
+                ParticipantType = ParticipantType.ACTOR
+            };
+
+            GetParticipantResultModel getParticipantResultModel = new GetParticipantResultModel()
+            {
+                IsSuccessful = true,
+                ErrorMessage = null,
+                Participant = participantDomainModel
+            };
+
+            participantDomainModelsList.Add(participantDomainModel);
+
+            DeleteParticipantModel deleteParticipantModel = new DeleteParticipantModel()
+            {
+                ParticipantId = participantDomainModel.Id
+            };
+
+            DeleteParticipantResultModel deleteCinemaResultModel = new DeleteParticipantResultModel()
+            {
+                IsSuccessful = true,
+                ErrorMessage = null,
+                Participant = new ParticipantDomainModel()
+                {
+                    Id = participantDomainModel.Id,
+                    FirstName = "Ime",
+                    LastName = "Prezime",
+                    ParticipantType = ParticipantType.ACTOR
+                }
+            };
+
+            Task<DeleteParticipantResultModel> responseTask = Task.FromResult(deleteCinemaResultModel);
+            Task<GetParticipantResultModel> responseTask2 = Task.FromResult(getParticipantResultModel);
+
+            int expectedStatusCode = 202;
+
+            _participantService = new Mock<IParticipantService>();
+            _participantService.Setup(x => x.DeleteParticipant(It.IsAny<ParticipantDomainModel>())).Returns(responseTask);
+            _participantService.Setup(x => x.GetParticipantByIdAsync(It.IsAny<ParticipantDomainModel>())).Returns(responseTask2);
+            ParticipantController participantController = new ParticipantController(_participantService.Object);
+
+            // Act
+            var result = participantController.DeleteParticipant(deleteParticipantModel).ConfigureAwait(false).GetAwaiter().GetResult().Result;
+            var deletedResult = ((AcceptedResult)result).Value;
+            var participantDomainModel1 = (ParticipantDomainModel)deletedResult;
+
+            // Assert
+            Assert.IsNotNull(participantDomainModel1);
+            Assert.AreEqual(deleteParticipantModel.ParticipantId, participantDomainModel1.Id);
+            Assert.IsInstanceOfType(result, typeof(AcceptedResult));
+            Assert.AreEqual(expectedStatusCode, ((AcceptedResult)result).StatusCode);
+        }
+
+        [TestMethod]
+        public void PostAsync_DeleteParticipant_BadRequest()
+        {
+            // Arrange
+            string expectedMessage = Messages.PARTICIPANT_NOT_FOUND;
+            int expectedStatusCode = 400;
+
+            List<ParticipantDomainModel> participantDomainModelsList = new List<ParticipantDomainModel>();
+
+            ParticipantDomainModel participantDomainModel1 = new ParticipantDomainModel
+            {
+                Id = Guid.NewGuid(),
+                FirstName = "Ime",
+                LastName = "Prezime",
+                ParticipantType = ParticipantType.ACTOR
+            };
+
+            participantDomainModelsList.Add(participantDomainModel1);
+
+            DeleteParticipantResultModel deleteParticipantResultModel = new DeleteParticipantResultModel()
+            {
+                IsSuccessful = false,
+                ErrorMessage = Messages.PARTICIPANT_NOT_FOUND,
+                Participant = null
+            };
+
+            GetParticipantResultModel participantDomainResultModel = new GetParticipantResultModel()
+            {
+                IsSuccessful = false,
+                ErrorMessage = Messages.PARTICIPANT_NOT_FOUND,
+                Participant = null
+            };
+
+            DeleteParticipantModel deleteParticipantModel = new DeleteParticipantModel()
+            {
+                ParticipantId = Guid.NewGuid()
+            };
+
+            Task<DeleteParticipantResultModel> responseTask = Task.FromResult(deleteParticipantResultModel);
+            Task<GetParticipantResultModel> responseTaks2 = Task.FromResult(participantDomainResultModel);
+
+            _participantService = new Mock<IParticipantService>();
+            _participantService.Setup(x => x.DeleteParticipant(participantDomainModel1)).Returns(responseTask);
+            _participantService.Setup(x => x.GetParticipantByIdAsync(It.IsAny<ParticipantDomainModel>())).Returns(responseTaks2);
+            ParticipantController participantController = new ParticipantController(_participantService.Object);
+
+            // Act
+            var result = participantController.DeleteParticipant(deleteParticipantModel).ConfigureAwait(false).GetAwaiter().GetResult().Result;
+            var resultResponse = (BadRequestObjectResult)result;
+            var badObjectResult = ((BadRequestObjectResult)result).Value;
+            var errorResult = (ErrorResponseModel)badObjectResult;
+
+            // Assert
+            Assert.IsNotNull(resultResponse);
+            Assert.AreEqual(expectedMessage, errorResult.ErrorMessage);
             Assert.IsInstanceOfType(result, typeof(BadRequestObjectResult));
             Assert.AreEqual(expectedStatusCode, resultResponse.StatusCode);
         }

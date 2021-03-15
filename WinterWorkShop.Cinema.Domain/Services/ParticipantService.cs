@@ -84,7 +84,14 @@ namespace WinterWorkShop.Cinema.Domain.Services
             DeleteParticipantResultModel resultModel = new DeleteParticipantResultModel
             {
                 IsSuccessful = true,
-                ErrorMessage = null
+                ErrorMessage = null,
+                Participant = new ParticipantDomainModel
+                {
+                    Id = domainModel.Id,
+                    FirstName = domainModel.FirstName,
+                    LastName = domainModel.LastName,
+                    ParticipantType = domainModel.ParticipantType
+                }
             };
 
             return resultModel;
@@ -93,6 +100,11 @@ namespace WinterWorkShop.Cinema.Domain.Services
         public async Task<IEnumerable<ParticipantDomainModel>> GetAllParticipantsAsync()
         {
             var participant = await _participantRepository.GetAllAsync();
+
+            if (participant == null)
+            {
+                return null;
+            }
 
             return participant.Select(participant => new ParticipantDomainModel
             {
@@ -103,20 +115,20 @@ namespace WinterWorkShop.Cinema.Domain.Services
             });
         }
 
-        public async Task<CreateParticipantResultModel> GetParticipantByIdAsync(ParticipantDomainModel domainModel)
+        public async Task<GetParticipantResultModel> GetParticipantByIdAsync(ParticipantDomainModel domainModel)
         {
             var participant = await _participantRepository.GetByIdAsync(domainModel.Id);
 
             if (participant == null)
             {
-                return new CreateParticipantResultModel
+                return new GetParticipantResultModel
                 {
                     IsSuccessful = false,
                     ErrorMessage = Messages.PARTICIPANT_NOT_FOUND
                 };
             }
 
-            return new CreateParticipantResultModel
+            return new GetParticipantResultModel
             {
                 IsSuccessful = true,
                 ErrorMessage = null,
