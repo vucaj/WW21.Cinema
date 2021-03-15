@@ -44,9 +44,13 @@ const ShowAllMovies: React.FC = (props: any) => {
         id: "",
         bannerUrl: "",
         title: "",
-        year: "",
-        current: false,
-        rating: 0,
+        year: 0,
+        isActive: false,
+        duration: 0,
+        distributer: "",
+        description: "",
+        genre: 0,
+        rating: 0
       },
     ],
     tags: [
@@ -90,7 +94,7 @@ const ShowAllMovies: React.FC = (props: any) => {
       },
     };
 
-    fetch(`${serviceConfig.baseURL}/api/movies/${movieId}`, requestOptions)
+    fetch(`${serviceConfig.baseURL}/api/movies/id/${movieId}`, requestOptions)
       .then((response) => {
         if (!response.ok) {
           return Promise.reject(response);
@@ -313,7 +317,7 @@ const ShowAllMovies: React.FC = (props: any) => {
           <td>{movie.year}</td>
           <td>{Math.round(movie.rating)}/10</td>
 
-          {shouldUserSeeWholeTable() && <td>{movie.current ? "Yes" : "No"}</td>}
+          {shouldUserSeeWholeTable() && <td>{movie.isActive ? "Yes" : "No"}</td>}
           {shouldUserSeeWholeTable() && (
             <td
               className="text-center cursor-pointer"
@@ -342,7 +346,7 @@ const ShowAllMovies: React.FC = (props: any) => {
             >
               <FontAwesomeIcon
                 className={
-                  movie.current
+                  movie.isActive
                     ? "text-warning mr-2 fa-1x"
                     : "text-secondary mr-2 fa-1x"
                 }

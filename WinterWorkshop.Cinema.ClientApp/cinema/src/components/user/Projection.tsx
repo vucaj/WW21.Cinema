@@ -39,8 +39,13 @@ const Projection: React.FC = (props: any) => {
         id: "",
         bannerUrl: "",
         title: "",
+        year: 0,
+        isActive: false,
+        duration: 0,
+        distributer: "",
+        description: "",
+        genre: 0,
         rating: 0,
-        year: "",
         projections: [
           {
             id: "",
@@ -69,8 +74,13 @@ const Projection: React.FC = (props: any) => {
         id: "",
         bannerUrl: "",
         title: "",
-        rating: 0,
-        year: "",
+        year: 0,
+        isActive: false,
+        duration: 0,
+        distributer: "",
+        description: "",
+        genre: 0,
+        rating: 0
       },
     ],
     filteredProjections: [

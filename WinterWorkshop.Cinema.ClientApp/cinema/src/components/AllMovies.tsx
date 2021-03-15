@@ -18,8 +18,13 @@ const AllMovies: React.FC = (props: any) => {
         id: "",
         bannerUrl: "",
         title: "",
-        year: "",
-        rating: 0,
+        year: 0,
+        isActive: false,
+        duration: 0,
+        distributer: "",
+        description: "",
+        genre: 0,
+        rating: 0
       },
     ],
   });
@@ -95,7 +100,7 @@ const AllMovies: React.FC = (props: any) => {
           <td>{movie.id}</td>
           <td>{movie.title}</td>
           <td>{movie.year}</td>
-          <td>{Math.round(movie.rating)}</td>
+          <td>{movie.rating}</td>
           <td onClick={() => handleOnEdit(movie.id)}>
             <FontAwesomeIcon
               className="text-info mr-2 fa-1x"

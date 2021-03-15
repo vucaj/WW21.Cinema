@@ -27,10 +27,15 @@ const UpdateMovie: React.FC = (props: any) => {
   const [state, setState] = useState<IState>({
     movie: {
       id: "",
+      bannerUrl: "",
       title: "",
-      year: "",
-      rating: 1,
-      current: true,
+      year: 0,
+      isActive: false,
+      duration: 0,
+      distributer: "",
+      description: "",
+      genre: 0,
+      rating: 0
     },
     titleError: "",
     yearError: "",
@@ -47,17 +52,13 @@ const UpdateMovie: React.FC = (props: any) => {
     validateData(id, value);
   };
 
-  const handleYearChange = (year: string) => {
-    setState({ ...state, movie: { ...state.movie, year: year } });
-    validateData("year", year);
-  };
 
   const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
-    const { title, year, rating, current } = state.movie;
+    const { title, year, rating, duration, isActive, distributer, description, genre } = state.movie;
 
     setState({ ...state, submited: true });
-    if (title && year && rating && current) {
+    if (title && year && rating && duration && isActive && distributer && description && genre) {
       handleUpdateMovie();
     } else {
       setState({ ...state, submited: false });
@@ -112,9 +113,15 @@ const UpdateMovie: React.FC = (props: any) => {
             title: response.title,
             year: response.year,
             rating: response.rating,
-            current: response.current,
+            isActive: response.isActive,
+            duration: response.duration,
+            distributer: response.distributer,
+            description: response.description,
+            genre: response.genre,
+            bannerUrl: "",
             id: response.id,
           },
+
         });
       })
       .catch((response) => {
@@ -128,7 +135,7 @@ const UpdateMovie: React.FC = (props: any) => {
       Title: state.movie.title,
       Year: +state.movie.year,
       Rating: +state.movie.rating,
-      Current: state.movie.current,
+      Current: state.movie.isActive,
     };
 
     const requestOptions = {
@@ -203,7 +210,7 @@ const UpdateMovie: React.FC = (props: any) => {
                   as="select"
                   id="current"
                   placeholder="Movie is:"
-                  value={state.movie.current?.toString()}
+                  value={state.movie.isActive?.toString()}
                   onChange={onInputChange}
                 >
                   <option value="true">Current</option>
@@ -211,21 +218,6 @@ const UpdateMovie: React.FC = (props: any) => {
                 </FormControl>
               </FormGroup>
               <FormGroup>
-                <YearPicker
-                  defaultValue={"Chose movie year"}
-                  start={1890}
-                  end={2120}
-                  reverse
-                  required={true}
-                  disabled={false}
-                  value={state.movie.year}
-                  onChange={(year: string) => {
-                    handleYearChange(year);
-                  }}
-                  id="year"
-                  name="year"
-                  classes={"form-control"}
-                ></YearPicker>
                 <FormText className="text-danger">{state.yearError}</FormText>
               </FormGroup>
               <Button type="submit" disabled={state.submited} block>
