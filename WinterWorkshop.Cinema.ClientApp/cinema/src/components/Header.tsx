@@ -71,6 +71,7 @@ const Header: React.FC = (props: any) => {
   const handleSubmitLogout = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     localStorage.removeItem("userLoggedIn");
+    localStorage.removeItem("jwt");
     setState({ ...state, submitted: true });
     setState({ ...state, token: false });
     getTokenForGuest();
@@ -102,8 +103,6 @@ const Header: React.FC = (props: any) => {
   };
 
   const login = () => {
-    localStorage.setItem("userLoggedIn", "true");
-
     const requestOptions = {
       method: "GET",
       headers: {
@@ -113,7 +112,7 @@ const Header: React.FC = (props: any) => {
     };
 
     fetch(
-      `${serviceConfig.baseURL}/api/users/byusername/${state.username}`,
+      `${serviceConfig.baseURL}/api/users/username/${state.username}`,
       requestOptions
     )
       .then((response) => {
@@ -161,9 +160,10 @@ const Header: React.FC = (props: any) => {
       })
       .then((data) => {
         if (data.token) {
+          localStorage.setItem("userLoggedIn", "true");
           localStorage.setItem("jwt", data.token);
           setTimeout(() => {
-            window.location.reload();
+            refreshPage();
           }, 500);
         }
       })
