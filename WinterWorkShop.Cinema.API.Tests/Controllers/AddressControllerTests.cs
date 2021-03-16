@@ -426,7 +426,7 @@ namespace WinterWorkShop.Cinema.Tests.Controllers
         }
 
         [TestMethod]
-        public async Task GetAddressById_WhenAddresstIsNull_ReturnsNotFound_Tests()
+        public void GetAddressById_WhenAddresstIsNull_ReturnsNotFound_Tests()
         {
             // Arrange
             AddressDomainModel addressDomainModel = new AddressDomainModel
@@ -441,17 +441,9 @@ namespace WinterWorkShop.Cinema.Tests.Controllers
 
             CreateAddressResultModel createAddressResultModel = new CreateAddressResultModel()
             {
-                IsSuccessful = true,
-                ErrorMessage = null,
-                Address = new AddressDomainModel
-                {
-                    Id = addressDomainModel.Id,
-                    StreetName = addressDomainModel.StreetName,
-                    CityName = addressDomainModel.CityName,
-                    Country = addressDomainModel.Country,
-                    Latitude = addressDomainModel.Latitude,
-                    Longitude = addressDomainModel.Longitude
-                }
+                IsSuccessful = false,
+                ErrorMessage = Messages.ADDRESS_NOT_FOUND,
+                Address = addressDomainModel
             };
 
             Task<CreateAddressResultModel> responseTask = Task.FromResult(createAddressResultModel);
@@ -459,12 +451,15 @@ namespace WinterWorkShop.Cinema.Tests.Controllers
             _addressService.Setup(x => x.GetAddressByIdAsync(addressDomainModel)).Returns(responseTask);
 
             AddressController addressController = new AddressController(_addressService.Object);
+            int expectedStatusCode = 404;
 
             // Act
-            var test = await addressController.GetAddressByIdAsync(addressDomainModel);
+            var test = addressController.GetAddressByIdAsync(addressDomainModel).ConfigureAwait(false).GetAwaiter().GetResult().Result;
+
 
             // Assert
-            Assert.IsInstanceOfType(test.Result, typeof(NotFoundResult));
+            Assert.IsInstanceOfType(test, typeof(NotFoundResult));
+            Assert.AreEqual(expectedStatusCode, ((NotFoundResult)test).StatusCode);
         }
         [TestMethod]
         public void PostAsync_UpdateAddress_Address()
