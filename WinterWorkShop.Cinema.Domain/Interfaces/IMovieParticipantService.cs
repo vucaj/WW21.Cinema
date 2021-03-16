@@ -10,19 +10,19 @@ namespace WinterWorkShop.Cinema.Domain.Interfaces
     {
         Task<IEnumerable<MovieParticipantDomainModel>> GetAllAsync();
 
-        Task<CreateMovieParticipantResultModel> GetByMovieParticipantId(MovieParticipantDomainModel domainModel);
+        Task<GetMovieParticipantResultModel> GetByMovieParticipantId(MovieParticipantDomainModel domainModel);
 
-        Task<CreateMovieParticipantResultModel> Create(MovieParticipantDomainModel domainModel);
+        Task<CreateMovieParticipantResultModel> Create(MovieParticipantDomainModel newParticipant);
 
-        Task<DeleteMovieParticipantResultModel> Delete(MovieParticipantDomainModel domainModel);
+        Task<DeleteMovieParticipantResultModel> Delete(MovieParticipantDomainModel deleteParticipant);
 
-        Task<UpdateMovieParticipantResultModel> Update(MovieParticipantDomainModel domainModel);
+        Task<UpdateMovieParticipantResultModel> Update(MovieParticipantDomainModel updateParticipant);
 
-        Task<IEnumerable<CreateMovieParticipantResultModel>> GetAllByMovieIdAsync(MovieDomainModel domainModel);
+        Task<IEnumerable<GetMovieParticipantResultModel>> GetAllByMovieIdAsync(MovieDomainModel domainModel);
 
-        Task<IEnumerable<CreateMovieParticipantResultModel>> GetAllByParticipantIdAsync(ParticipantDomainModel domainModel);
+        Task<IEnumerable<GetMovieParticipantResultModel>> GetAllByParticipantIdAsync(ParticipantDomainModel domainModel);
 
-        Task<DeleteParticipantResultModel> GetByParticipantIdAsync(Guid id);
+        Task<GetMovieParticipantResultModel> GetByParticipantIdAsync(Guid id);
 
         /*Task<DeleteMovieResultModel> GetByMovieIdAsync(Guid id);*/
     }

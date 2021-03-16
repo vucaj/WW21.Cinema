@@ -81,7 +81,6 @@ namespace WinterWorkShop.Cinema.Tests.Controllers
             Assert.AreEqual(expectedStatusCode, ((OkObjectResult)result).StatusCode);
         }
 
-        // treba da se popravi
         [TestMethod]
         public void GetParticipantById_Return_Participant()
         {
@@ -126,7 +125,6 @@ namespace WinterWorkShop.Cinema.Tests.Controllers
             Assert.AreEqual(expectedStatusCode, ((OkObjectResult)result).StatusCode);
         }
               
-        // treba da se popravi
         [TestMethod]
         public async Task GetParticipantById_WhenParticipantIsNull_ReturnsNotFound_Tests()
         {
