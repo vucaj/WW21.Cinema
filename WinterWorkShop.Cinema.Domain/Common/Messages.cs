@@ -88,6 +88,7 @@
         public const string PARTICIPANT_UPDATE_ERROR = "Error occured while updating participant.";
         public const string PARTICIPANT_FIRST_NAME_NOT_VALID = "The participant first name cannot be longer than 30 characters.";
         public const string PARTICIPANT_LAST_NAME_NOT_VALID = "The participant last name cannot be longer than 30 characters.";
+        public const string PARTICIPANT_DOES_NOT_EXIST = "Participant does not exist.";
         #endregion
 
         #region MovieParticipant
