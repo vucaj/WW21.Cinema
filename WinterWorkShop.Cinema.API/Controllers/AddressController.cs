@@ -5,6 +5,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using WinterWorkShop.Cinema.API.Models;
+using WinterWorkShop.Cinema.Domain.Common;
 using WinterWorkShop.Cinema.Domain.Interfaces;
 using WinterWorkShop.Cinema.Domain.Models;
 
@@ -159,7 +160,7 @@ namespace WinterWorkShop.Cinema.API.Controllers
         
         [HttpPut]
         [Route("update")]
-        public async Task<ActionResult> UpdateAddress([FromBody] UpdateAddressModel updateAddressModel)
+        public async Task<ActionResult<AddressDomainModel>> UpdateAddress([FromBody] UpdateAddressModel updateAddressModel)
         {
             if (!ModelState.IsValid)
             {
@@ -190,10 +191,15 @@ namespace WinterWorkShop.Cinema.API.Controllers
 
             if (!updateAddressResultModel.IsSuccessful)
             {
-                return BadRequest();
+                ErrorResponseModel errorResponseModel = new ErrorResponseModel
+                {
+                    ErrorMessage = updateAddressResultModel.ErrorMessage,
+                    StatusCode = System.Net.HttpStatusCode.BadRequest
+                };
+                return BadRequest(errorResponseModel);
             }
 
-            return Ok();
+            return Ok(updateAddressResultModel);
         }
 
     }

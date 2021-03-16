@@ -165,7 +165,16 @@ namespace WinterWorkShop.Cinema.Domain.Services
             UpdateAddressResultModel resultModel = new UpdateAddressResultModel
             {
                 IsSuccessful = true,
-                ErrorMessage = null
+                ErrorMessage = null,
+                Address = new AddressDomainModel
+                {
+                    Id = updateAddress.Id,
+                    StreetName = updateAddress.StreetName,
+                    CityName = updateAddress.CityName,
+                    Country = updateAddress.Country,
+                    Latitude = updateAddress.Latitude,
+                    Longitude = updateAddress.Longitude
+                }
             };
 
             return resultModel;
