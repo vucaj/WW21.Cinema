@@ -97,8 +97,10 @@
         public const string MOVIEPARTICIPANT_NOT_FOUND = "Error occured while getting movie participant by id, please try again.";
         public const string MOVIEPARTICIPANT_SAVE_ERROR = "Error occured while saving to database.";
         public const string MOVIEPARTICIPANT_UPDATE_ERROR = "Error occured while updating movie participant.";
+        public const string MOVIEPARTICIPANT_DOES_NOT_EXIST = "Movie participant does not exist.";
+        public const string MOVIEPARTICIPANT_CREATION_ERROR = "Error occured while creating new movie participant, please try again.";
         #endregion
-        
+
         #region Ticket
 
         public const string TICKET_NOT_FOUND = "Ticket with given ID not found.";
