@@ -58,7 +58,7 @@ namespace WinterWorkShop.Cinema.API.Controllers
         /// <returns></returns>
         [HttpGet]
         [Route("current")]
-        public async Task<ActionResult<IEnumerable<Movie>>> GetAsync()
+        public async Task<ActionResult<IEnumerable<MovieDomainModel>>> GetAsync()
         {
             IEnumerable<MovieDomainModel> movieDomainModels;
 
