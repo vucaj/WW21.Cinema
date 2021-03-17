@@ -177,7 +177,7 @@ const TopTenMovies: React.FC = (props: any) => {
 
     setState({ ...state, isLoading: true });
     fetch(
-      `${serviceConfig.baseURL}/api/movies/topbyyear/${year}`,
+      `${serviceConfig.baseURL}/api/movies/top`,
       requestOptions
     )
       .then((response) => {

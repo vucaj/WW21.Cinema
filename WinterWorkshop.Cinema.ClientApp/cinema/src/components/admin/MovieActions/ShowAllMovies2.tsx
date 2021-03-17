@@ -168,19 +168,6 @@ const ShowAllMovies2: React.FC = (props: any) => {
                     <Button onClick={() => handleReset(clearFilters)} size="small" style={{ width: 90 }}>
                         Reset
                     </Button>
-                    <Button
-                        type="link"
-                        size="small"
-                        onClick={() => {
-                            confirm({ closeDropdown: false });
-                            setState({...state,
-                                searchText: selectedKeys[0],
-                                searchedColumn: dataIndex,
-                            });
-                        }}
-                    >
-                        Filter
-                    </Button>
                 </Space>
             </div>
         ),
@@ -216,6 +203,37 @@ const ShowAllMovies2: React.FC = (props: any) => {
         setState({...state, searchText: ''})
     }
 
+    const getGenre = (genre) =>{
+        switch (genre){
+            case 0:
+                return "Horror";
+            case 1:
+                return "Action";
+            case 2:
+                return "Drama";
+            case 3:
+                return "Sci-fi";
+            case 4:
+                return "Crime";
+            case 5:
+                return "Fantasy";
+            case 6:
+                return "Historical";
+            case 7:
+                return "Romance";
+            case 8:
+                return "Western";
+            case 9:
+                return "Thriler";
+            case 10:
+                return "Animated";
+            case 11:
+                return "Adult";
+            case 12:
+                return "Documentary";
+        }
+    }
+
 
     const columns = [
         {
@@ -246,36 +264,8 @@ const ShowAllMovies2: React.FC = (props: any) => {
             title: 'Genre',
             dataIndex: 'genre',
             key: 'genre',
-            render: genre => {
-                switch (genre){
-                    case 0:
-                        return "Horror";
-                    case 1:
-                        return "Action";
-                    case 2:
-                        return "Drama";
-                    case 3:
-                        return "Sci-fi";
-                    case 4:
-                        return "Crime";
-                    case 5:
-                        return "Fantasy";
-                    case 6:
-                        return "Historical";
-                    case 7:
-                        return "Romance";
-                    case 8:
-                        return "Western";
-                    case 9:
-                        return "Thriler";
-                    case 10:
-                        return "Animated";
-                    case 11:
-                        return "Adult";
-                    case 12:
-                        return "Documentary";
-                }
-            }
+            render: genre => getGenre(genre)
+
 
         },
         {
@@ -302,14 +292,27 @@ const ShowAllMovies2: React.FC = (props: any) => {
         setState({...state, expandedRowKeys: keys});
     }
 
+    const getDescription = (record) => {
+        return (<div>
+                <Title level={4}>{record.title}</Title>
+                <a><b>Genre:</b> {getGenre(record.genre)}</a>
+                <br></br>
+                <a><b>Duration:</b> {record.duration}</a>
+                <p style={{ margin: 0 }}>{record.description}</p>
+                </div>)
+    };
+
     return(
         <React.Fragment>
             <Card style={{ margin: 10 }}>
                 <Title level={2}>All Movies</Title>
-
                 <Table
                     columns={columns}
                     dataSource={state.movies}
+                    rowKey={record => record.id}
+                    expandable={{
+                        expandedRowRender: record => <div>{getDescription(record)}</div>,
+                    }}
                 >
 
                 </Table>

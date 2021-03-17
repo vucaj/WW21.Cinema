@@ -73,6 +73,22 @@ namespace WinterWorkShop.Cinema.API.Controllers
         }
 
         [HttpGet]
+        [Route("top")]
+        public async Task<ActionResult<IEnumerable<MovieDomainModel>>> GetTop10Async()
+        {
+            IEnumerable<MovieDomainModel> movieDomainModels;
+
+            movieDomainModels = await _movieService.GetTop10Async();
+
+            if (movieDomainModels == null)
+            {
+                movieDomainModels = new List<MovieDomainModel>();
+            }
+
+            return Ok(movieDomainModels);
+        }
+
+        [HttpGet]
         [Route("all")]
         public async Task<ActionResult<IEnumerable<MovieDomainModel>>> GetAllAsync()
         {
@@ -241,7 +257,7 @@ namespace WinterWorkShop.Cinema.API.Controllers
                     StatusCode = System.Net.HttpStatusCode.InternalServerError
                 };
 
-                return StatusCode((int)System.Net.HttpStatusCode.InternalServerError, errorResponse);
+                return StatusCode((int) System.Net.HttpStatusCode.InternalServerError, errorResponse);
             }
 
             return Accepted("movies//" + deletedMovie.Id, deletedMovie);
