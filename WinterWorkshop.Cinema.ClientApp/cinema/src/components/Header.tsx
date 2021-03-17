@@ -71,7 +71,6 @@ const Header: React.FC = (props: any) => {
   const handleSubmitLogout = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     localStorage.removeItem("userLoggedIn");
-    localStorage.removeItem("jwt");
     setState({ ...state, submitted: true });
     setState({ ...state, token: false });
     getTokenForGuest();
@@ -103,6 +102,8 @@ const Header: React.FC = (props: any) => {
   };
 
   const login = () => {
+    localStorage.setItem("userLoggedIn", "true");
+
     const requestOptions = {
       method: "GET",
       headers: {
@@ -112,65 +113,64 @@ const Header: React.FC = (props: any) => {
     };
 
     fetch(
-      `${serviceConfig.baseURL}/api/users/username/${state.username}`,
-      requestOptions
+        `${serviceConfig.baseURL}/api/users/username/${state.username}`,
+        requestOptions
     )
-      .then((response) => {
-        if (!response.ok) {
-          return Promise.reject(response);
-        }
-        return response.json();
-      })
-      .then((data) => {
-        setState({ ...state, token: true });
-        var isGuest = false;
-        if (data.userName) {
-          setState({ ...state, shouldHide: false });
-          if (!data.isAdmin && !data.isSuperUser && !data.isUser) {
-            isGuest = true;
+        .then((response) => {
+          if (!response.ok) {
+            return Promise.reject(response);
           }
-          getToken(data.isAdmin, data.isSuperUser, data.isUser, isGuest);
-          NotificationManager.success(`Welcome, ${data.firstName}!`);
-        }
-      })
-      .catch((response) => {
-        NotificationManager.error("Username does not exists.");
-        setState({ ...state, submitted: false });
-      });
+          return response.json();
+        })
+        .then((data) => {
+          setState({ ...state, token: true });
+          var isGuest = false;
+          if (data.userName) {
+            setState({ ...state, shouldHide: false });
+            if (!data.isAdmin && !data.isSuperUser && !data.isUser) {
+              isGuest = true;
+            }
+            getToken(data.isAdmin, data.isSuperUser, data.isUser, isGuest);
+            NotificationManager.success(`Welcome, ${data.firstName}!`);
+          }
+        })
+        .catch((response) => {
+          NotificationManager.error("Username does not exists.");
+          setState({ ...state, submitted: false });
+        });
   };
 
   const getToken = (
-    IsAdmin: boolean,
-    isSuperUser: boolean,
-    isUser: boolean,
-    isGuest: boolean
+      IsAdmin: boolean,
+      isSuperUser: boolean,
+      isUser: boolean,
+      isGuest: boolean
   ) => {
     const requestOptions = {
       method: "GET",
     };
     fetch(
-      `${serviceConfig.baseURL}/get-token?name=${state.username}&admin=${IsAdmin}&superUser=${isSuperUser}&user=${isUser}&guest=${isGuest}`,
-      requestOptions
+        `${serviceConfig.baseURL}/get-token?name=${state.username}&admin=${IsAdmin}&superUser=${isSuperUser}&user=${isUser}&guest=${isGuest}`,
+        requestOptions
     )
-      .then((response) => {
-        if (!response.ok) {
-          return Promise.reject(response);
-        }
-        return response.json();
-      })
-      .then((data) => {
-        if (data.token) {
-          localStorage.setItem("userLoggedIn", "true");
-          localStorage.setItem("jwt", data.token);
-          setTimeout(() => {
-            refreshPage();
-          }, 500);
-        }
-      })
-      .catch((response) => {
-        NotificationManager.error(response.message || response.statusText);
-        setState({ ...state, submitted: false });
-      });
+        .then((response) => {
+          if (!response.ok) {
+            return Promise.reject(response);
+          }
+          return response.json();
+        })
+        .then((data) => {
+          if (data.token) {
+            localStorage.setItem("jwt", data.token);
+            setTimeout(() => {
+              window.location.reload();
+            }, 500);
+          }
+        })
+        .catch((response) => {
+          NotificationManager.error(response.message || response.statusText);
+          setState({ ...state, submitted: false });
+        });
   };
 
   const getTokenForGuest = () => {
@@ -178,23 +178,23 @@ const Header: React.FC = (props: any) => {
       method: "GET",
     };
     fetch(`${serviceConfig.baseURL}/get-token?guest=true`, requestOptions)
-      .then((response) => {
-        if (!response.ok) {
-          return Promise.reject(response);
-        }
-        return response.json();
-      })
-      .then((data) => {
-        setState({ ...state, shouldHide: true });
-        if (data.token) {
-          localStorage.setItem("jwt", data.token);
-          window.location.reload();
-        }
-      })
-      .catch((response) => {
-        NotificationManager.error(response.message || response.statusText);
-        setState({ ...state, submitted: false });
-      });
+        .then((response) => {
+          if (!response.ok) {
+            return Promise.reject(response);
+          }
+          return response.json();
+        })
+        .then((data) => {
+          setState({ ...state, shouldHide: true });
+          if (data.token) {
+            localStorage.setItem("jwt", data.token);
+            window.location.reload();
+          }
+        })
+        .catch((response) => {
+          NotificationManager.error(response.message || response.statusText);
+          setState({ ...state, submitted: false });
+        });
     state.token = true;
   };
 
@@ -207,51 +207,51 @@ const Header: React.FC = (props: any) => {
   };
 
   return (
-    <Navbar bg="dark" expand="lg">
-      <Navbar.Brand className="text-info font-weight-bold text-capitalize">
-        <Link className="text-decoration-none" to="/dashboard/Projection">
-          Cinema 9
-        </Link>
-      </Navbar.Brand>
-      <Navbar.Toggle aria-controls="basic-navbar-nav" className="text-white" />
-      <Navbar.Collapse id="basic-navbar-nav" className="text-white">
-        <Nav className="mr-auto text-white"></Nav>
-        <Form
-          inline
-          onSubmit={(e: React.FormEvent<HTMLFormElement>) => handleSubmit(e)}
-        >
-          <FormControl
-            type="text"
-            placeholder="Username"
-            id="username"
-            value={state.username}
-            onChange={handleChange}
-            className="mr-sm-2"
-          />
-          <Button type="submit" variant="outline-success" id="login">
-            Login
-          </Button>
-        </Form>
-        {shouldShowUserProfile() && (
-          <Button
-            style={{ backgroundColor: "transparent", marginRight: "10px" }}
-            onClick={redirectToUserPage}
+      <Navbar bg="dark" expand="lg">
+        <Navbar.Brand className="text-info font-weight-bold text-capitalize">
+          <Link className="text-decoration-none" to="/dashboard/Projection">
+            Cinema 9
+          </Link>
+        </Navbar.Brand>
+        <Navbar.Toggle aria-controls="basic-navbar-nav" className="text-white" />
+        <Navbar.Collapse id="basic-navbar-nav" className="text-white">
+          <Nav className="mr-auto text-white"></Nav>
+          <Form
+              inline
+              onSubmit={(e: React.FormEvent<HTMLFormElement>) => handleSubmit(e)}
           >
-            {getUserName()}
-          </Button>
-        )}
-        <Form
-          inline
-          onSubmit={(e: React.FormEvent<HTMLFormElement>) =>
-            handleSubmitLogout(e)
-          }
-        >
-          <Button type="submit" variant="outline-danger" id="logout">
-            Logout
-          </Button>
-        </Form>
-      </Navbar.Collapse>
-    </Navbar>
+            <FormControl
+                type="text"
+                placeholder="Username"
+                id="username"
+                value={state.username}
+                onChange={handleChange}
+                className="mr-sm-2"
+            />
+            <Button type="submit" variant="outline-success" id="login">
+              Login
+            </Button>
+          </Form>
+          {shouldShowUserProfile() && (
+              <Button
+                  style={{ backgroundColor: "transparent", marginRight: "10px" }}
+                  onClick={redirectToUserPage}
+              >
+                {getUserName()}
+              </Button>
+          )}
+          <Form
+              inline
+              onSubmit={(e: React.FormEvent<HTMLFormElement>) =>
+                  handleSubmitLogout(e)
+              }
+          >
+            <Button type="submit" variant="outline-danger" id="logout">
+              Logout
+            </Button>
+          </Form>
+        </Navbar.Collapse>
+      </Navbar>
   );
 };
 

@@ -15,6 +15,8 @@ namespace WinterWorkShop.Cinema.Domain.Interfaces
         /// <returns></returns>
         IEnumerable<MovieDomainModel> GetAllMovies(bool? isCurrent);
 
+        Task<IEnumerable<MovieDomainModel>> GetAllMovies();
+
         /// <summary>
         /// Get a movie by ID
         /// </summary>
