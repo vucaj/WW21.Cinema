@@ -87,6 +87,27 @@ namespace WinterWorkShop.Cinema.API.Controllers
 
             return Ok(movieDomainModels);
         }
+        
+        [HttpGet]
+        [Route("top-{year}")]
+        public async Task<ActionResult<IEnumerable<MovieDomainModel>>> GetTop10Async(int year)
+        {
+            if (!(year >= 1950 && year <= 2021))
+            {
+                return BadRequest();
+            }
+            
+            IEnumerable<MovieDomainModel> movieDomainModels;
+
+            movieDomainModels = await _movieService.GetTop10ByYearAsync(year);
+
+            if (movieDomainModels == null)
+            {
+                movieDomainModels = new List<MovieDomainModel>();
+            }
+
+            return Ok(movieDomainModels);
+        }
 
         [HttpGet]
         [Route("all")]

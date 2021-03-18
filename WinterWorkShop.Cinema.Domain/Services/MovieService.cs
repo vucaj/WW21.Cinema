@@ -118,6 +118,39 @@ namespace WinterWorkShop.Cinema.Domain.Services
             
         }
 
+        public async Task<IEnumerable<MovieDomainModel>> GetTop10ByYearAsync(int year)
+        {
+            var data =  _moviesRepository.GetTop10ByYear(year);
+
+            if (data == null)
+            {
+                return null;
+            }
+
+            List<MovieDomainModel> result = new List<MovieDomainModel>();
+
+            foreach (var item in data)
+            {
+                MovieDomainModel movie = new MovieDomainModel()
+                {
+                    Id = item.Id,
+                    Title = item.Title,
+                    Description = item.Description,
+                    Genre = item.Genre,
+                    Duration = item.Duration,
+                    Distributer = item.Distributer,
+                    IsActive = item.IsActive,
+                    NumberOfOscars = item.NumberOfOscars,
+                    Rating = item.Rating,
+                    Year = item.Year
+                };
+                
+                result.Add(movie);
+            }
+
+            return result;
+        }
+
         public async Task<MovieDomainModel> GetMovieByIdAsync(Guid id)
         {
             Movie data = await _moviesRepository.GetByIdAsync(id);
