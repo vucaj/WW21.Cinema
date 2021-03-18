@@ -1,35 +1,39 @@
-import {IMovie, ITag} from "../../../models";
-import { Table, Card, Typography, Input, Button, Space } from 'antd';
-import Highlighter from 'react-highlight-words';
-import { SearchOutlined } from '@ant-design/icons';
+import {IMovie} from "../../../models";
 import React, {useEffect, useState} from "react";
-import { NotificationManager } from "react-notifications";
-import {toast} from "react-toastify";
-import {isAdmin, isGuest, isSuperUser, isUser} from "../../helpers/authCheck";
 import {serviceConfig} from "../../../appSettings";
-import "antd/dist/antd.css";
+import { NotificationManager } from "react-notifications";
+import {Button, Card, Input, Space, Table, Typography} from "antd";
+import Highlighter from 'react-highlight-words';
+import {SearchOutlined} from "@ant-design/icons";
+
+
 
 interface IState{
     movies: IMovie[];
-    tags: ITag[];
+    filteredMoviesByYear: IMovie[];
+    id: string;
+    bannerUrl: string;
     title: string;
     year: number;
-    id: string;
+    isActive: boolean;
+    duration: number;
+    distributer: string;
+    description: string;
+    genre: number;
     rating: number;
-    current: boolean;
-    tag: string;
-    listOfTags: string[];
+    isLoading: boolean;
+    selectedYear: boolean;
     titleError: string;
     yearError: string;
     submitted: boolean;
-    isLoading: boolean
     searchText: string;
     searchedColumn: string;
     expandedRowKeys: string[];
 }
 
-const ShowAllMovies2: React.FC = (props: any) => {
+const TopTenMovies2: React.FC = (props: any) => {
     const [state, setState] = useState<IState>({
+        bannerUrl: "", description: "", distributer: "", duration: 0, genre: 0,
         movies: [
             {
                 id: "",
@@ -44,100 +48,67 @@ const ShowAllMovies2: React.FC = (props: any) => {
                 rating: 0
             },
         ],
-        tags: [
+        filteredMoviesByYear: [
             {
-                name: "",
+                id: "",
+                bannerUrl: "",
+                title: "",
+                year: 0,
+                isActive: false,
+                duration: 0,
+                distributer: "",
+                description: "",
+                genre: 0,
+                rating: 0
             },
         ],
         title: "",
         year: 0,
         id: "",
         rating: 0,
-        current: false,
-        tag: "",
-        listOfTags: [""],
+        isActive: false,
         titleError: "",
-        yearError: '',
+        yearError: "",
         submitted: false,
         isLoading: true,
-        // search
+        selectedYear: false,
+
         searchText: '',
         searchedColumn: '',
         expandedRowKeys: []
     });
 
-    toast.configure();
+    useEffect( () =>{
+        getProjections();
+    }, [])
 
-    let userShouldSeeWholeTable;
-    const shouldUseerSeeWholeTable = () => {
-        if(userShouldSeeWholeTable === undefined){
-            userShouldSeeWholeTable = !isGuest() && isUser();
-        }
-        return userShouldSeeWholeTable;
-    }
+    const getProjections = () => {
+        const requestOptions ={
+            method: "GET",
+            headers: {
+                "Content-Type": "application/json",
+                Authorization: `Bearer ${localStorage.getItem("jwt")}`
+            }
+        };
 
-    useEffect(() => {
-        getProjections()
-    }, []);
-
-    const getProjections = () =>{
-        if(isAdmin() === true || isSuperUser() === true)
-        {
-            const requestOptions = {
-                method: "GET",
-                headers: {
-                    "Content-Type": "application/json",
-                    Authorization: `Bearer ${localStorage.getItem("jwt")}`,
-                },
-            };
-
-            setState({...state, isLoading: true});
-
-            fetch(`${serviceConfig.baseURL}/api/movies/all`, requestOptions)
-                .then((response) => {
-                    if(!response.ok){
-                        return Promise.reject(response);
-                    }
-                    return response.json();
-                })
-                .then((data) => {
-                    if(data){
-                        setState({...state, movies: data, isLoading: false});
-                    }
-                })
-                .catch((response) => {
-                    setState({...state, isLoading: false});
-                    NotificationManager.error(response.message || response.statusText);
-                    setState({...state, submitted: false});
-                });
-        } else{
-            const requestOptions = {
-                method: "GET",
-                headers: {
-                    "Content-Type": "application/json",
-                    Authorization: `Bearer ${localStorage.getItem("jwt")}`,
-                },
-            };
-
-            setState({...state, isLoading: true});
-            fetch(`${serviceConfig.baseURL}/api/movies/current`, requestOptions)
-                .then((response) => {
-                    if(!response.ok){
-                        return Promise.reject(response);
-                    }
-                    return response.json();
-                })
-                .then((data) => {
-                    if(data) {
-                        setState({...state, movies: data, isLoading: false});
-                    }
-                })
-                .catch((response) => {
-                    setState({...state, isLoading: false});
-                    NotificationManager.error(response.message || response.statusText);
-                    setState({...state, submitted: false});
-                });
-        }
+        setState({...state, isLoading: true});
+        fetch(`${serviceConfig.baseURL}/api/Movies/top`, requestOptions)
+            .then((response) =>{
+                if(!response.ok){
+                    return Promise.reject(response);
+                }
+                return response.json();
+            })
+            .then((data) => {
+                if(data) {
+                    setState({...state, movies: data, isLoading: false});
+                }
+            })
+            .catch((response) => {
+                setState({...state, isLoading: false});
+                NotificationManager.error(response.message || response.statusText);
+                setState({...state, submitted: false});
+            })
     }
 
     let searchInput;
@@ -285,15 +256,15 @@ const ShowAllMovies2: React.FC = (props: any) => {
 
     const getDescription = (record) => {
         return (<div>
-                <Title level={4}>{record.title}</Title>
-                <a><b>Genre:</b> {getGenre(record.genre)}</a>
-                <br></br>
-                <a><b>Duration:</b> {record.duration}</a>
-                <p style={{ margin: 0 }}>{record.description}</p>
-                </div>)
+            <Title level={4}>{record.title}</Title>
+            <a><b>Genre:</b> {getGenre(record.genre)}</a>
+            <br></br>
+            <a><b>Duration:</b> {record.duration}</a>
+            <p style={{ margin: 0 }}>{record.description}</p>
+        </div>)
     };
 
-    return(
+    return (
         <React.Fragment>
             <Card style={{ margin: 10 }}>
                 <Title level={2}>All Movies</Title>
@@ -305,11 +276,10 @@ const ShowAllMovies2: React.FC = (props: any) => {
                         expandedRowRender: record => <div>{getDescription(record)}</div>,
                     }}
                 >
-
                 </Table>
             </Card>
         </React.Fragment>
     )
 }
 
-export default ShowAllMovies2
+export default TopTenMovies2
