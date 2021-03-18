@@ -2,9 +2,10 @@ import {IMovie} from "../../../models";
 import React, {useEffect, useState} from "react";
 import {serviceConfig} from "../../../appSettings";
 import { NotificationManager } from "react-notifications";
-import {Button, Card, Input, Space, Table, Typography} from "antd";
+import {Button, Card, Input, Space, Table, Typography, Tabs, Select} from "antd";
 import Highlighter from 'react-highlight-words';
 import {SearchOutlined} from "@ant-design/icons";
+
 
 
 
@@ -22,13 +23,15 @@ interface IState{
     genre: number;
     rating: number;
     isLoading: boolean;
-    selectedYear: boolean;
+    isSelectedYear: boolean;
+    selectedYear: number;
     titleError: string;
     yearError: string;
     submitted: boolean;
     searchText: string;
     searchedColumn: string;
     expandedRowKeys: string[];
+
 }
 
 const TopTenMovies2: React.FC = (props: any) => {
@@ -71,8 +74,8 @@ const TopTenMovies2: React.FC = (props: any) => {
         yearError: "",
         submitted: false,
         isLoading: true,
-        selectedYear: false,
-
+        isSelectedYear: false,
+        selectedYear: 2021,
         searchText: '',
         searchedColumn: '',
         expandedRowKeys: []
@@ -260,14 +263,16 @@ const TopTenMovies2: React.FC = (props: any) => {
             <a><b>Genre:</b> {getGenre(record.genre)}</a>
             <br></br>
             <a><b>Duration:</b> {record.duration}</a>
+            <br></br>
+            <a><b>Description:</b></a>
             <p style={{ margin: 0 }}>{record.description}</p>
         </div>)
     };
 
-    return (
-        <React.Fragment>
-            <Card style={{ margin: 10 }}>
-                <Title level={2}>All Movies</Title>
+    const getTopTenAllTime = () =>{
+        return (
+            <div>
+                <Title level={2}>Top 10: All Time</Title>
                 <Table
                     columns={columns}
                     dataSource={state.movies}
@@ -277,6 +282,59 @@ const TopTenMovies2: React.FC = (props: any) => {
                     }}
                 >
                 </Table>
+            </div>
+        )
+    }
+
+    const handleYearChange = (value) => {
+        setState({...state, selectedYear: parseInt(value)})
+        console.log(state.selectedYear)
+    }
+
+    const { Option } = Select;
+    const getSelect = () => {
+        return (
+            <div>
+                <Select defaultValue="2021" style={{ width: 120 }} onChange={handleYearChange}>
+                    <Option value="2021">2021</Option>
+                    <Option value="2020">2020</Option>
+                </Select>
+            </div>
+        )
+    }
+
+    const getTopTenByYear = () => {
+        return(
+            <div>
+                <Title level={2}>Top 10: {state.selectedYear}</Title>
+                {getSelect()}
+                <Table
+                    columns={columns}
+                    dataSource={state.movies}
+                    rowKey={record => record.id}
+                    expandable={{
+                        expandedRowRender: record => <div>{getDescription(record)}</div>,
+                    }}
+                >
+                </Table>
+            </div>
+        )
+    }
+
+
+    const { TabPane } = Tabs;
+
+    return (
+        <React.Fragment>
+            <Card style={{ margin: 10 }}>
+                <Tabs defaultActiveKey="1" size="large">
+                     <TabPane tab="All Time" key="1">
+                         {getTopTenAllTime()}
+                    </TabPane>
+                    <TabPane tab="By Year" key="2">
+                        {getTopTenByYear()}
+                    </TabPane>
+                </Tabs>
             </Card>
         </React.Fragment>
     )

@@ -289,6 +289,8 @@ const ShowAllMovies2: React.FC = (props: any) => {
                 <a><b>Genre:</b> {getGenre(record.genre)}</a>
                 <br></br>
                 <a><b>Duration:</b> {record.duration}</a>
+                <br></br>
+                <a><b>Description:</b></a>
                 <p style={{ margin: 0 }}>{record.description}</p>
                 </div>)
     };
