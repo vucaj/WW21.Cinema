@@ -12,6 +12,10 @@ namespace WinterWorkShop.Cinema.Repositories
     public interface IMoviesRepository : IRepository<Movie> 
     {
         IEnumerable<Movie> GetCurrentMovies();
+
+        IEnumerable<Movie> GetTop10();
+
+        IEnumerable<Movie> GetTop10ByYear(int year);
     }
 
     public class MoviesRepository : IMoviesRepository
@@ -53,6 +57,20 @@ namespace WinterWorkShop.Cinema.Repositories
         {
             var data = _cinemaContext.Movies
                 .Where(x => x.IsActive);            
+
+            return data;
+        }
+
+        public IEnumerable<Movie> GetTop10()
+        {
+            var data = _cinemaContext.Movies.OrderByDescending(x => x.Rating).Take(10);
+
+            return data;
+        }
+
+        public IEnumerable<Movie> GetTop10ByYear(int year)
+        {
+            var data = _cinemaContext.Movies.Where(x => x.Year == year).OrderByDescending(x => x.Rating).Take(10);
 
             return data;
         }

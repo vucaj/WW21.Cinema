@@ -298,24 +298,47 @@ const ShowAllMovies: React.FC = (props: any) => {
     });
   };
 
+  const getGenre = (genre) => {
+    switch (genre){
+      case 0:
+        return "Horror";
+      case 1:
+        return "Action";
+      case 2:
+        return "Drama";
+      case 3:
+        return "Sci-fi";
+      case 4:
+        return "Crime";
+      case 5:
+        return "Fantasy";
+      case 6:
+        return "Historical";
+      case 7:
+        return "Romance";
+      case 8:
+        return "Western";
+      case 9:
+        return "Thriler";
+      case 10:
+        return "Animated";
+      case 11:
+        return "Adult";
+      case 12:
+        return "Documentary";
+    }
+  }
+
   const fillTableWithDaata = () => {
     return state.movies.map((movie) => {
       return (
         <tr key={movie.id}>
-          <td
-            className="text-center cursor-pointer"
-            onClick={(
-              e: React.MouseEvent<HTMLTableDataCellElement, MouseEvent>
-            ) => getTagsByMovieId(e, movie.id)}
-          >
-            <FontAwesomeIcon
-              className="text-info mr-2 fa-1x"
-              icon={faInfoCircle}
-            />
-          </td>
           <td>{movie.title}</td>
           <td>{movie.year}</td>
-          <td>{Math.round(movie.rating)}/10</td>
+          <td>{movie.rating}</td>
+          <td>{movie.duration} min</td>
+          <td>{getGenre(movie.genre)}</td>
+          <td>{movie.distributer}</td>
 
           {shouldUserSeeWholeTable() && <td>{movie.isActive ? "Yes" : "No"}</td>}
           {shouldUserSeeWholeTable() && (
@@ -461,10 +484,12 @@ const ShowAllMovies: React.FC = (props: any) => {
     <Table striped bordered hover size="sm" variant="dark">
       <thead>
         <tr>
-          <th>Tags</th>
           <th>Title</th>
           <th>Year</th>
           <th>Rating</th>
+          <th>Duration</th>
+          <th>Genre</th>
+          <th>Distributer</th>
           {shouldUserSeeWholeTable() && <th>Is Current</th>}
           {shouldUserSeeWholeTable() && <th></th>}
           {shouldUserSeeWholeTable() && <th></th>}

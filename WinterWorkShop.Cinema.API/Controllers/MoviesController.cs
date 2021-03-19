@@ -58,7 +58,7 @@ namespace WinterWorkShop.Cinema.API.Controllers
         /// <returns></returns>
         [HttpGet]
         [Route("current")]
-        public async Task<ActionResult<IEnumerable<Movie>>> GetAsync()
+        public async Task<ActionResult<IEnumerable<MovieDomainModel>>> GetAsync()
         {
             IEnumerable<MovieDomainModel> movieDomainModels;
 
@@ -72,6 +72,59 @@ namespace WinterWorkShop.Cinema.API.Controllers
             return Ok(movieDomainModels);
         }
 
+        [HttpGet]
+        [Route("top")]
+        public async Task<ActionResult<IEnumerable<MovieDomainModel>>> GetTop10Async()
+        {
+            IEnumerable<MovieDomainModel> movieDomainModels;
+
+            movieDomainModels = await _movieService.GetTop10Async();
+
+            if (movieDomainModels == null)
+            {
+                movieDomainModels = new List<MovieDomainModel>();
+            }
+
+            return Ok(movieDomainModels);
+        }
+        
+        [HttpGet]
+        [Route("top-{year}")]
+        public async Task<ActionResult<IEnumerable<MovieDomainModel>>> GetTop10Async(int year)
+        {
+            if (!(year >= 1950 && year <= 2021))
+            {
+                return BadRequest();
+            }
+            
+            IEnumerable<MovieDomainModel> movieDomainModels;
+
+            movieDomainModels = await _movieService.GetTop10ByYearAsync(year);
+
+            if (movieDomainModels == null)
+            {
+                movieDomainModels = new List<MovieDomainModel>();
+            }
+
+            return Ok(movieDomainModels);
+        }
+
+        [HttpGet]
+        [Route("all")]
+        public async Task<ActionResult<IEnumerable<MovieDomainModel>>> GetAllAsync()
+        {
+            IEnumerable<MovieDomainModel> movieDomainModels;
+
+            movieDomainModels = await _movieService.GetAllMovies();
+
+            if (movieDomainModels == null)
+            {
+                movieDomainModels = new List<MovieDomainModel>();
+            }
+
+            return Ok(movieDomainModels);
+        }
+        
         /// <summary>
         /// Adds a new movie
         /// </summary>
@@ -225,7 +278,7 @@ namespace WinterWorkShop.Cinema.API.Controllers
                     StatusCode = System.Net.HttpStatusCode.InternalServerError
                 };
 
-                return StatusCode((int)System.Net.HttpStatusCode.InternalServerError, errorResponse);
+                return StatusCode((int) System.Net.HttpStatusCode.InternalServerError, errorResponse);
             }
 
             return Accepted("movies//" + deletedMovie.Id, deletedMovie);
