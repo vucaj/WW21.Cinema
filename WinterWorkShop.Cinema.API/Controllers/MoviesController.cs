@@ -22,13 +22,15 @@ namespace WinterWorkShop.Cinema.API.Controllers
     public class MoviesController : ControllerBase
     {
         private readonly IMovieService _movieService;
+        private readonly IProjectionService _projectionService;
 
         private readonly ILogger<MoviesController> _logger;
 
-        public MoviesController(ILogger<MoviesController> logger, IMovieService movieService)
+        public MoviesController(ILogger<MoviesController> logger, IMovieService movieService, IProjectionService projectionService)
         {
             _logger = logger;
             _movieService = movieService;
+            _projectionService = projectionService;
         }
 
         /// <summary>
@@ -109,6 +111,40 @@ namespace WinterWorkShop.Cinema.API.Controllers
             return Ok(movieDomainModels);
         }
 
+        [HttpGet]
+        [Route("withFutureProjections")]
+        public async Task<ActionResult<IEnumerable<MovieDomainModel>>> GetMoviesWithFutureProjections()
+        {
+            var projectionDomainModel = await _projectionService.GetFutureProjections();
+
+            List<MovieDomainModel> movieDomainModels = new List<MovieDomainModel>();
+
+            foreach (var item in projectionDomainModel)
+            {
+                if (!isInList(movieDomainModels, item.MovieId))
+                {
+                    movieDomainModels.Add(new MovieDomainModel()
+                    {
+                        Id = item.MovieId,
+                        Title = item.MovieTitle
+                    });
+                }
+            }
+            
+            return Ok(movieDomainModels);
+        }
+
+        private bool isInList(List<MovieDomainModel> movieDomainModels, Guid movieId)
+        {
+            foreach (var item in movieDomainModels)
+            {
+                if (item.Id == movieId)
+                    return true;
+            }
+
+            return false;
+        }
+        
         [HttpGet]
         [Route("all")]
         public async Task<ActionResult<IEnumerable<MovieDomainModel>>> GetAllAsync()

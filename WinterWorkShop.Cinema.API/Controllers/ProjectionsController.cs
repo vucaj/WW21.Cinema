@@ -109,7 +109,7 @@ namespace WinterWorkShop.Cinema.API.Controllers
 
             return Created("projections//" + createProjectionResultModel.Projection.Id, createProjectionResultModel.Projection);
         }
-
+        
         [HttpDelete]
         [Route("delete")]
         public async Task<ActionResult<ProjectionDomainModel>> DeleteProjectionAsync([FromBody] DeleteProjectionModel deleteProjectionModel)

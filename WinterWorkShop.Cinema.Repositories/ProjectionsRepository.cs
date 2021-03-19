@@ -11,7 +11,9 @@ namespace WinterWorkShop.Cinema.Repositories
 {
     public interface IProjectionsRepository : IRepository<Projection> 
     {
-        IEnumerable<Projection> GetByAuditoriumId(Guid salaId);        
+        IEnumerable<Projection> GetByAuditoriumId(Guid salaId);
+
+        Task<IEnumerable<Projection>> GetFutureProjections();
     }
 
     public class ProjectionsRepository : IProjectionsRepository
@@ -48,6 +50,13 @@ namespace WinterWorkShop.Cinema.Repositories
             var projectionsData = _cinemaContext.Projections.Where(x => x.AuditoriumId == auditoriumId);
 
             return projectionsData;
+        }
+
+        public async Task<IEnumerable<Projection>> GetFutureProjections()
+        {
+            var projections = await _cinemaContext.Projections.Include(x => x.Movie).Where(x => x.DateTime.CompareTo(DateTime.Now) > 0).ToListAsync();
+
+            return projections;
         }
 
         public Projection Insert(Projection obj)

@@ -177,5 +177,22 @@ namespace WinterWorkShop.Cinema.Domain.Services
                 }
             };
         }
+
+        public async Task<IEnumerable<ProjectionDomainModel>> GetFutureProjections()
+        {
+            var projections = await _projectionsRepository.GetFutureProjections();
+
+            return projections.Select(projection => new ProjectionDomainModel()
+            {
+                Id = projection.Id,
+                AuditoriumId = projection.AuditoriumId,
+                CinemaId = projection.CinemaId,
+                DateTime = projection.DateTime,
+                MovieId = projection.MovieId,
+                TicketPrice = projection.TicketPrice, 
+                MovieTitle = projection.Movie.Title
+            });
+            
+        }
     }
 }
