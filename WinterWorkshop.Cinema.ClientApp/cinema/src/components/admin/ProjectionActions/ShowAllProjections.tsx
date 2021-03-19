@@ -16,11 +16,16 @@ const ShowAllProjections: React.FC = (props: any) => {
   const [state, setState] = useState<IState>({
     projections: [
       {
-        id: "",
-        movieId: "",
-        movieTitle: "",
-        auditoriumName: "",
-        projectionTime: "",
+          id: "",
+          movieId: "",
+          dateTime: "",
+          auditoirumId: "",
+          cinemaId: '',
+          ticketPrice: 0,
+          movieTitle: '',
+          auditoriumName: '',
+          cinemaName: '',
+          movieRating: 0
       },
     ],
     isLoading: true,
@@ -89,9 +94,9 @@ const ShowAllProjections: React.FC = (props: any) => {
     return state.projections.map((projection) => {
       return (
         <tr key={projection.id}>
-          <td width="18%">{projection.movieTitle}</td>
-          <td width="18%">{projection.auditoriumName}</td>
-          <td width="18%">{projection.projectionTime}</td>
+          <td width="18%"></td>
+          <td width="18%"></td>
+          <td width="18%"></td>
           <td
             width="5%"
             className="text-center cursor-pointer"

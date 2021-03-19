@@ -41,6 +41,7 @@ const NewAuditorium: React.FC = (props: any) => {
       {
         id: "",
         name: "",
+        addressId: 0
       },
     ],
     cinemaIdError: "",

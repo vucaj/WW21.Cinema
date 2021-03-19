@@ -26,6 +26,7 @@ import { PrivateRouteAdmin } from "../hoc/privateRouteAdmin";
 import { PrivateRouteAdminSuperUserAndUser } from "../hoc/privateRouteAdminSuperUserAndUser";
 import ShowAllMovies2 from "./MovieActions/ShowAllMovies2";
 import TopTenMovies2 from "./MovieActions/TopTenMovies2";
+import Projection2 from "../user/Projection2";
 
 // higher order component
 
@@ -77,7 +78,7 @@ const Dashboard: React.FC = () => {
             path="/dashboard/NewProjection"
             component={NewProjection}
           />
-          <Route path="/dashboard/Projection" component={Projection} />
+          <Route path="/dashboard/Projection" component={Projection2} />
           <Route
             path="/dashboard/ProjectionDetails"
             component={ProjectionDetails}

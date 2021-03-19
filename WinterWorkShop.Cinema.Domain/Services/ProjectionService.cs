@@ -38,7 +38,11 @@ namespace WinterWorkShop.Cinema.Domain.Services
                 CinemaId = projection.CinemaId,
                 DateTime = projection.DateTime,
                 MovieId = projection.MovieId,
-                TicketPrice = projection.TicketPrice
+                TicketPrice = projection.TicketPrice,
+                AuditoriumName = projection.Auditorium.Name,
+                CinemaName = projection.Cinema.Name,
+                MovieRating = projection.Movie.Rating,
+                MovieTitle = projection.Movie.Title
             });
         }
 

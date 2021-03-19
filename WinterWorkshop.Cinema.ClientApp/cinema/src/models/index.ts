@@ -1,12 +1,14 @@
 export interface IProjection {
   id: string;
-  projectionTime: string;
+  dateTime: string;
   movieId: string;
+  auditoirumId: string;
+  cinemaId: string;
+  ticketPrice: number;
+  movieTitle: string;
   auditoriumName: string;
-  bannerUrl?: string;
-  movieTitle?: string;
-  movieRating?: number;
-  movieYear?: string;
+  cinemaName: string;
+  movieRating: number
 }
 
 export interface IMovie {
@@ -27,6 +29,7 @@ export interface IMovie {
 export interface ICinema {
   id: string;
   name: string;
+  addressId: number;
 }
 
 export interface IAuditorium {
