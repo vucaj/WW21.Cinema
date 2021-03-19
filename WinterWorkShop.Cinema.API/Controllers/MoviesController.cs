@@ -283,5 +283,49 @@ namespace WinterWorkShop.Cinema.API.Controllers
 
             return Accepted("movies//" + deletedMovie.Id, deletedMovie);
         }
+
+        [HttpPut]
+        [Route("activateDeactivate/{id}")]
+        public async Task<ActionResult> ActivateDeactivateMovie(Guid id)
+        {
+            if (!ModelState.IsValid)
+            {
+                return BadRequest(ModelState);
+            }
+
+            MovieDomainModel movieToUpdate = await _movieService.GetMovieByIdAsync(id);
+
+            if (movieToUpdate == null)
+            {
+                ErrorResponseModel errorResponse = new ErrorResponseModel
+                {
+                    ErrorMessage = Messages.MOVIE_DOES_NOT_EXIST,
+                    StatusCode = System.Net.HttpStatusCode.BadRequest
+                };
+
+                return BadRequest(errorResponse);
+            }
+
+            movieToUpdate.IsActive = !movieToUpdate.IsActive;
+
+            MovieDomainModel movieDomainModel;
+            try
+            {
+                movieDomainModel = await _movieService.UpdateMovie(movieToUpdate);
+            }
+            catch (DbUpdateException e)
+            {
+                ErrorResponseModel errorResponse = new ErrorResponseModel
+                {
+                    ErrorMessage = e.InnerException.Message ?? e.Message,
+                    StatusCode = System.Net.HttpStatusCode.BadRequest
+                };
+
+                return BadRequest(errorResponse);
+            }
+
+            return Accepted("activate-deactivate//" + movieDomainModel.Id, movieDomainModel);
+
+        }
     }
 }

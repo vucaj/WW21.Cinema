@@ -18,6 +18,13 @@ namespace WinterWorkShop.Cinema.Domain.Models
         public Guid CinemaId { get; set; }
         
         public double TicketPrice { get; set; }
-        
+
+        public string MovieTitle { get; set; }
+
+        public double MovieRating { get; set; }
+
+        public string CinemaName { get; set; }
+
+        public string AuditoriumName { get; set; }
     }
 }
