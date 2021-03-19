@@ -35,7 +35,23 @@ namespace WinterWorkShop.Cinema.API.Controllers
         {
             IEnumerable<ProjectionDomainModel> projectionDomainModels;
            
-             projectionDomainModels = await _projectionService.GetAllAsync();            
+            projectionDomainModels = await _projectionService.GetAllAsync();            
+
+            if (projectionDomainModels == null)
+            {
+                projectionDomainModels = new List<ProjectionDomainModel>();
+            }
+
+            return Ok(projectionDomainModels);
+        }
+
+        [HttpGet]
+        [Route("getAllFuture")]
+        public async Task<ActionResult<IEnumerable<ProjectionDomainModel>>> GetAllFutureAsync()
+        {
+            IEnumerable<ProjectionDomainModel> projectionDomainModels;
+           
+            projectionDomainModels = await _projectionService.GetFutureProjections();            
 
             if (projectionDomainModels == null)
             {

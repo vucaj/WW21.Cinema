@@ -3,6 +3,7 @@ import { NotificationManager } from "react-notifications";
 import React, { useEffect, useState } from "react";
 import {withRouter} from "react-router-dom";
 import {serviceConfig} from "../../appSettings";
+import {Table} from "antd";
 
 
 interface IState {
@@ -129,7 +130,31 @@ const Projection2: React.FC = (props: any) => {
     }, [])
 
     const getMoviesWithFutureProjections = () => {
-        //TODO prvo uradtii na backendu
+        const requestOptions = {
+            method: "GET",
+            headers: {
+                "Content-Type": "application/json",
+                Authorization: `Bearer ${localStorage.getItem("jwt")}`
+            }
+        };
+
+        setState({...state, isLoading: true});
+        fetch(`${serviceConfig.baseURL}/api/movies/withFutureProjections`, requestOptions)
+            .then((response) => {
+                if(!response.ok){
+                    return Promise.reject(response);
+                }
+                return response.json();
+            })
+            .then((data) => {
+                if(data){
+                    setState({...state, movies: data, isLoading: false});
+                }
+            })
+            .catch((response) => {
+                setState({...state, isLoading: false})
+                NotificationManager.error(response.message || response.statusText);
+            });
     }
 
     const getAllCinemas = () => {
@@ -188,11 +213,27 @@ const Projection2: React.FC = (props: any) => {
             });
     }
 
+    const columns = [
+        {
+            
+        }
+    ]
+
+    const getTable = () => {
+        return(
+            <div>
+                <Table
+                    columns = {}>
+                </Table>
+            </div>
+        )
+    }
+
 
     return (
       <React.Fragment>
           <div>
-
+              {getTable()}
           </div>
       </React.Fragment>
     );
