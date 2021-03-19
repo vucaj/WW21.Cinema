@@ -4,12 +4,12 @@ using System.Text;
 
 namespace WinterWorkShop.Cinema.Domain.Models
 {
-    public class DeleteMovieParticipantResultModel
+    public class GetParticipantResultModel
     {
         public bool IsSuccessful { get; set; }
 
         public string ErrorMessage { get; set; }
 
-        public MovieParticipantDomainModel MovieParticipant { get; set; }
+        public ParticipantDomainModel Participant { get; set; }
     }
 }

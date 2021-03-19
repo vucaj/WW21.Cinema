@@ -20,13 +20,13 @@ namespace WinterWorkShop.Cinema.Domain.Services
             _movieParticipantRepository = movieParticipantRepository;
             _participantRepository = participantRepository;
         }
-        public async Task<CreateMovieParticipantResultModel> Create(MovieParticipantDomainModel domainModel)
+        public async Task<CreateMovieParticipantResultModel> Create(MovieParticipantDomainModel newParticipant)
         {
             MovieParticipant newMovieParticipant = new MovieParticipant
             {
                 Id = Guid.NewGuid(),
-                MovieId = domainModel.MovieId,
-                ParticipantId = domainModel.ParticipantId
+                MovieId = newParticipant.MovieId,
+                ParticipantId = newParticipant.ParticipantId
             };
 
             MovieParticipant insertedMovieParticipant = _movieParticipantRepository.Insert(newMovieParticipant);
@@ -36,7 +36,7 @@ namespace WinterWorkShop.Cinema.Domain.Services
                 return new CreateMovieParticipantResultModel
                 {
                     IsSuccessful = false,
-                    ErrorMessage = Messages.MOVIEPARTICIPANT_SAVE_ERROR
+                    ErrorMessage = Messages.MOVIEPARTICIPANT_CREATION_ERROR
                 };
             }
 
@@ -72,16 +72,30 @@ namespace WinterWorkShop.Cinema.Domain.Services
             _movieParticipantRepository.Delete(movieParticipant.Id);
             _movieParticipantRepository.Save();
 
-            return new DeleteMovieParticipantResultModel
+            DeleteMovieParticipantResultModel resultModel = new DeleteMovieParticipantResultModel
             {
                 IsSuccessful = true,
-                ErrorMessage = null
+                ErrorMessage = null,
+                MovieParticipant = new MovieParticipantDomainModel
+                {
+                    Id = domainModel.Id,
+                    MovieId = domainModel.MovieId,
+                    ParticipantId = domainModel.ParticipantId
+                }
             };
+
+            return resultModel;
         }
 
         public async Task<IEnumerable<MovieParticipantDomainModel>> GetAllAsync()
         {
             var movieParticipant = await _movieParticipantRepository.GetAllAsync();
+
+            if(movieParticipant == null)
+            {
+                return null;
+            }
+
             return movieParticipant.Select(movieParticipants => new MovieParticipantDomainModel
             {
                 Id = movieParticipants.Id,
@@ -90,7 +104,7 @@ namespace WinterWorkShop.Cinema.Domain.Services
             });
         }
 
-        public async Task<IEnumerable<CreateMovieParticipantResultModel>> GetAllByMovieIdAsync(MovieDomainModel domainModel)
+        public async Task<IEnumerable<GetMovieParticipantResultModel>> GetAllByMovieIdAsync(MovieDomainModel domainModel)
         {
             var movieParticipants = await _movieParticipantRepository.GetAllByMovieIdAsync(domainModel.Id);
 
@@ -99,7 +113,7 @@ namespace WinterWorkShop.Cinema.Domain.Services
                 return null;
             }
 
-            return movieParticipants.Select(movieParticipant => new CreateMovieParticipantResultModel
+            return movieParticipants.Select(movieParticipant => new GetMovieParticipantResultModel
             {
                 IsSuccessful = true,
                 ErrorMessage = null,
@@ -112,7 +126,7 @@ namespace WinterWorkShop.Cinema.Domain.Services
             });
         }
 
-        public async Task<IEnumerable<CreateMovieParticipantResultModel>> GetAllByParticipantIdAsync(ParticipantDomainModel domainModel)
+        public async Task<IEnumerable<GetMovieParticipantResultModel>> GetAllByParticipantIdAsync(ParticipantDomainModel domainModel)
         {
             var movieParticipants = await _movieParticipantRepository.GetAllByParticipantIdAsync(domainModel.Id);
 
@@ -121,7 +135,7 @@ namespace WinterWorkShop.Cinema.Domain.Services
                 return null;
             }
 
-            return movieParticipants.Select(movieParticipant => new CreateMovieParticipantResultModel
+            return movieParticipants.Select(movieParticipant => new GetMovieParticipantResultModel
             {
                 IsSuccessful = true,
                 ErrorMessage = null,
@@ -134,18 +148,18 @@ namespace WinterWorkShop.Cinema.Domain.Services
             });
         }
 
-        public async Task<CreateMovieParticipantResultModel> GetByMovieParticipantId(MovieParticipantDomainModel domainModel)
+        public async Task<GetMovieParticipantResultModel> GetByMovieParticipantId(MovieParticipantDomainModel domainModel)
         {
             var movieParticipant = await _movieParticipantRepository.GetByIdAsync(domainModel.Id);
             if (movieParticipant == null)
             {
-                return new CreateMovieParticipantResultModel
+                return new GetMovieParticipantResultModel
                 {
                     IsSuccessful = false,
                     ErrorMessage = Messages.MOVIEPARTICIPANT_NOT_FOUND
                 };
             }
-            return new CreateMovieParticipantResultModel
+            return new GetMovieParticipantResultModel
             {
                 IsSuccessful = true,
                 ErrorMessage = null,
@@ -160,20 +174,20 @@ namespace WinterWorkShop.Cinema.Domain.Services
 
         // todo: implementirati metodu GetByMovieIdAsync
 
-        public async Task<DeleteParticipantResultModel> GetByParticipantIdAsync(Guid id)
+        public async Task<GetMovieParticipantResultModel> GetByParticipantIdAsync(Guid id)
         {
             var participant = await _participantRepository.GetByIdAsync(id);
 
             if(participant == null)
             {
-                return new DeleteParticipantResultModel
+                return new GetMovieParticipantResultModel
                 {
                     IsSuccessful = false,
                     ErrorMessage = Messages.PARTICIPANT_NOT_FOUND
                 };
             }
 
-            return new DeleteParticipantResultModel
+            return new GetMovieParticipantResultModel
             {
                 IsSuccessful = true,
                 ErrorMessage = null
@@ -212,7 +226,13 @@ namespace WinterWorkShop.Cinema.Domain.Services
             UpdateMovieParticipantResultModel resultModel = new UpdateMovieParticipantResultModel
             {
                 IsSuccessful = true,
-                ErrorMessage = null
+                ErrorMessage = null,
+                MovieParticipant = new MovieParticipantDomainModel
+                {
+                    Id = updatedMovieParticipant.Id,
+                    MovieId = updatedMovieParticipant.MovieId,
+                    ParticipantId = updatedMovieParticipant.ParticipantId
+                }
             };
 
             return resultModel;

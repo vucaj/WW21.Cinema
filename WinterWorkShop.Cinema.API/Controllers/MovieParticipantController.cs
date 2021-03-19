@@ -6,6 +6,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using WinterWorkShop.Cinema.API.Models;
+using WinterWorkShop.Cinema.Domain.Common;
 using WinterWorkShop.Cinema.Domain.Interfaces;
 using WinterWorkShop.Cinema.Domain.Models;
 
@@ -23,6 +24,11 @@ namespace WinterWorkShop.Cinema.API.Controllers
         {
             _movieParticipantService = movieParticipantService;
             _movieService = movieService;
+        }
+
+        public MovieParticipantController(IMovieParticipantService movieParticipantService)
+        {
+            _movieParticipantService = movieParticipantService;
         }
 
         [HttpGet]
@@ -50,6 +56,11 @@ namespace WinterWorkShop.Cinema.API.Controllers
                 Id = domainModel.Id
             });
 
+            if (movieParticipantDomainModel == null)
+            {
+                return NotFound(Messages.MOVIEPARTICIPANT_NOT_FOUND);
+            }
+
             return Ok(movieParticipantDomainModel);
         }
 
@@ -62,6 +73,11 @@ namespace WinterWorkShop.Cinema.API.Controllers
                 Id = domainModel.Id
             });
 
+            if (movieParticipantByMovieId == null)
+            {
+                return NotFound(Messages.MOVIEPARTICIPANT_NOT_FOUND_BY_MOVIE_ID);
+            }
+
             return Ok(movieParticipantByMovieId);
         }
 
@@ -73,6 +89,11 @@ namespace WinterWorkShop.Cinema.API.Controllers
             {
                 Id = domainModel.Id
             });
+
+            if (movieParticipantByParticipantId == null)
+            {
+                return NotFound(Messages.MOVIEPARTICIPANT_NOT_FOUND_BY_PARTICIPANT_ID);
+            }
 
             return Ok(movieParticipantByParticipantId);
         }
@@ -129,26 +150,32 @@ namespace WinterWorkShop.Cinema.API.Controllers
                 return BadRequest(errorResponse);
             }
 
-            return Created("movie participant//" + createMovieParticipantResultModel.MovieParticipant.Id, createMovieParticipantResultModel);
+            return Created("movie participant//" + createMovieParticipantResultModel.MovieParticipant.Id, createMovieParticipantResultModel.MovieParticipant);
         }
 
         [HttpPost]
         [Route("delete")]
-        public async Task<ActionResult> DeleteMovieParticipant([FromBody] DeleteMovieParticipantModel deleteMovieParticipantModel)
+        public async Task<ActionResult<MovieParticipantDomainModel>> DeleteMovieParticipant([FromBody] DeleteMovieParticipantModel deleteMovieParticipantModel)
         {
             if (!ModelState.IsValid)
             {
                 return BadRequest(ModelState);
             }
 
-            var movieParticipantId = await _movieParticipantService.GetByMovieParticipantId(new MovieParticipantDomainModel
+            GetMovieParticipantResultModel movieParticipantId = await _movieParticipantService.GetByMovieParticipantId(new MovieParticipantDomainModel
             {
                 Id = deleteMovieParticipantModel.MovieParticipantId
             });
 
-            if(movieParticipantId == null)
+            if (!movieParticipantId.IsSuccessful)
             {
-                return NotFound();
+                ErrorResponseModel errorResponseModel = new ErrorResponseModel()
+                {
+                    ErrorMessage = movieParticipantId.ErrorMessage,
+                    StatusCode = System.Net.HttpStatusCode.BadRequest
+                };
+
+                return BadRequest(errorResponseModel);
             }
 
             MovieParticipantDomainModel movieParticipantDomainModel = new MovieParticipantDomainModel
@@ -156,40 +183,25 @@ namespace WinterWorkShop.Cinema.API.Controllers
                 Id = deleteMovieParticipantModel.MovieParticipantId
             };
 
-            DeleteMovieParticipantResultModel deleteMovieParticipantResultModel;
+            DeleteMovieParticipantResultModel resultModel = await _movieParticipantService.Delete(movieParticipantDomainModel);
 
-            try
-            {
-                deleteMovieParticipantResultModel = await _movieParticipantService.Delete(movieParticipantDomainModel);
-            }
-            catch (DbUpdateException e)
+            if (!resultModel.IsSuccessful)
             {
                 ErrorResponseModel errorResponseModel = new ErrorResponseModel
                 {
-                    ErrorMessage = e.InnerException.Message ?? e.Message,
+                    ErrorMessage = resultModel.ErrorMessage,
                     StatusCode = System.Net.HttpStatusCode.BadRequest
                 };
 
                 return BadRequest(errorResponseModel);
             }
 
-            if (!deleteMovieParticipantResultModel.IsSuccessful)
-            {
-                ErrorResponseModel errorResponseModel = new ErrorResponseModel()
-                {
-                    ErrorMessage = deleteMovieParticipantResultModel.ErrorMessage,
-                    StatusCode = System.Net.HttpStatusCode.BadRequest
-                };
-
-                return BadRequest(errorResponseModel);
-            }
-
-            return Ok("Deleted movie participant: " + movieParticipantDomainModel.Id);
+            return Accepted("Deleted Movie Participant//" + resultModel.MovieParticipant.Id, resultModel.MovieParticipant);
         }
 
         [HttpPut]
         [Route("update")]
-        public async Task<ActionResult> UpdateMovieParticipant([FromBody] UpdateMovieParticipantModel updateMovieParticipantModel)
+        public async Task<ActionResult<MovieParticipantDomainModel>> UpdateMovieParticipant([FromBody] UpdateMovieParticipantModel updateMovieParticipantModel)
         {
             if (!ModelState.IsValid)
             {
@@ -213,10 +225,15 @@ namespace WinterWorkShop.Cinema.API.Controllers
 
             if (!updateMovieParticipantResultModel.IsSuccessful)
             {
-                return BadRequest();
+                ErrorResponseModel errorResponseModel = new ErrorResponseModel
+                {
+                    ErrorMessage = updateMovieParticipantResultModel.ErrorMessage,
+                    StatusCode = System.Net.HttpStatusCode.BadRequest
+                };
+                return BadRequest(errorResponseModel);
             }
 
-            return Ok();
+            return Ok(updateMovieParticipantResultModel);
         }
     }
 }
