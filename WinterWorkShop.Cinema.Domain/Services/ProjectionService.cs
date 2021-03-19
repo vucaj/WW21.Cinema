@@ -190,7 +190,10 @@ namespace WinterWorkShop.Cinema.Domain.Services
                 DateTime = projection.DateTime,
                 MovieId = projection.MovieId,
                 TicketPrice = projection.TicketPrice, 
-                MovieTitle = projection.Movie.Title
+                MovieTitle = projection.Movie.Title,
+                AuditoriumName = projection.Auditorium.Name,
+                CinemaName = projection.Cinema.Name,
+                MovieRating = projection.Movie.Rating
             });
             
         }

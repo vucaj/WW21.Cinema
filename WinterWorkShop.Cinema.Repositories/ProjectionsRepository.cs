@@ -54,7 +54,7 @@ namespace WinterWorkShop.Cinema.Repositories
 
         public async Task<IEnumerable<Projection>> GetFutureProjections()
         {
-            var projections = await _cinemaContext.Projections.Include(x => x.Movie).Where(x => x.DateTime.CompareTo(DateTime.Now) > 0).ToListAsync();
+            var projections = await _cinemaContext.Projections.Include(x => x.Movie).Include(x => x.Auditorium).Include(x => x.Cinema).Where(x => x.DateTime.CompareTo(DateTime.Now) > 0).ToListAsync();
 
             return projections;
         }

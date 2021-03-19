@@ -127,7 +127,36 @@ const Projection2: React.FC = (props: any) => {
         getAllCinemas();
         getAllAuditoria();
         getMoviesWithFutureProjections();
+        getAllProjections();
     }, [])
+
+    const getAllProjections = () => {
+        const requestOptions = {
+            method: "GET",
+            headers: {
+                "Content-Type": "application/json",
+                Authorization: `Bearer ${localStorage.getItem("jwt")}`
+            }
+        };
+
+        setState({...state, isLoading: true});
+        fetch(`${serviceConfig.baseURL}/api/projections/getAllFuture`, requestOptions)
+            .then((response) => {
+                if(!response.ok){
+                    return Promise.reject(response);
+                }
+                return response.json();
+            })
+            .then((data) => {
+                if(data){
+                    setState({...state, projections: data, isLoading: false});
+                }
+            })
+            .catch((response) => {
+                setState({...state, isLoading: false})
+                NotificationManager.error(response.message || response.statusText);
+            });
+    }
 
     const getMoviesWithFutureProjections = () => {
         const requestOptions = {
@@ -215,15 +244,46 @@ const Projection2: React.FC = (props: any) => {
 
     const columns = [
         {
-            
+            title: "Cinema Name",
+            dataIndex: 'cinemaName',
+            key: 'cinemaName'
+        },
+        {
+            title: 'Movie Title',
+            dataIndex: 'movieTitle',
+            key: 'movieTitle'
+        },
+        {
+            title: 'Time',
+            dataIndex: 'dateTime',
+            key: 'dateTime'
+        },
+        {
+            title: 'Ticket Price',
+            dataIndex: 'ticketPrice',
+            key: 'ticketPrice'
+        },
+        {
+            title: 'Auditorium Name',
+            dataIndex: 'auditoriumName',
+            key: 'auditoriumName'
+        },
+        {
+            title: 'Movie Rating',
+            dataIndex: 'movieRating',
+            key: 'movieRating'
         }
+
+
     ]
 
     const getTable = () => {
         return(
             <div>
                 <Table
-                    columns = {}>
+                    columns = {columns}
+                    dataSource={state.projections}
+                    rowKey={projection => projection.id}>
                 </Table>
             </div>
         )
