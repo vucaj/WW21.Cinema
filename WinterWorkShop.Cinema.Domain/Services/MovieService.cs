@@ -293,5 +293,52 @@ namespace WinterWorkShop.Cinema.Domain.Services
                 Year = data.Year
             };
         }
+
+/*        public async Task<MovieDomainModel> ActivateDeactivateMovie(MovieDomainModel updateMovie)
+        {
+            Movie movie = await _moviesRepository.GetByIdAsync(updateMovie.Id);
+
+            if (movie == null)
+            {
+                return null;
+            }
+
+            Movie movieToUpdate = new Movie()
+            {
+                Id = movie.Id,
+                Title = updateMovie.Title,
+                Description = updateMovie.Description,
+                Genre = updateMovie.Genre,
+                Duration = updateMovie.Duration,
+                Distributer = updateMovie.Distributer,
+                IsActive = !movie.IsActive,
+                NumberOfOscars = updateMovie.NumberOfOscars,
+                Rating = updateMovie.Rating,
+                Year = updateMovie.Year
+            };
+
+            Movie data = _moviesRepository.Update(movieToUpdate);
+
+            if (data == null)
+            {
+                return null;
+            }
+
+            _moviesRepository.Save();
+
+            return new MovieDomainModel()
+            {
+                Id = data.Id,
+                Title = data.Title,
+                Description = data.Description,
+                Genre = data.Genre,
+                Duration = data.Duration,
+                Distributer = data.Distributer,
+                IsActive = data.IsActive,
+                NumberOfOscars = data.NumberOfOscars,
+                Rating = data.Rating,
+                Year = data.Year
+            };
+        }*/
     }
 }

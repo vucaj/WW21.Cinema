@@ -21,6 +21,8 @@ namespace WinterWorkShop.Cinema.Domain.Interfaces
 
         Task<IEnumerable<MovieDomainModel>> GetTop10ByYearAsync(int year);
 
+        /*Task<MovieDomainModel> ActivateDeactivateMovie(MovieDomainModel updateMovie);*/
+
         /// <summary>
         /// Get a movie by ID
         /// </summary>

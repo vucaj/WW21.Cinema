@@ -56,6 +56,7 @@
         public const string PROJECTION_DELETE_ERROR = "Projection cannot be deleted.";
 
         public const string PROJECTION_DELETE_ERROR_HAS_SOLD_TICKETS = "Projection cannot be deleted because it has sold tickets.";
+        public const string PROJECTIONS_FOR_THAT_MOVIE_ARE_STILL_ONGOING = "Projection cannot be deactivated for that movie, because there are still ongoing.";
         #endregion
 
         #region Seats
