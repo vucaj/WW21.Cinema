@@ -24,6 +24,7 @@ import { checkRole } from "../helpers/roleCheck";
 import { PrivateRouteAdminAndSuperUser } from "../hoc/privateRouteAdminAndSuperUser";
 import { PrivateRouteAdmin } from "../hoc/privateRouteAdmin";
 import { PrivateRouteAdminSuperUserAndUser } from "../hoc/privateRouteAdminSuperUserAndUser";
+import ShowAllCinemas2 from "./CinemaActions/ShowAllCinemas2"
 
 // higher order component
 
@@ -39,6 +40,7 @@ const Dashboard: React.FC = () => {
           />
           <Route path="/dashboard/AllMovies" component={ShowAllMovies} />
           <Route path="/dashboard/TopTenMovies" component={TopTenMovies} />
+          <Route path="/dashboard/ShowAllCinemas2" component={ShowAllCinemas2} />
           <PrivateRouteAdminAndSuperUser
             path="/dashboard/EditMovie/:id"
             component={EditMovie}
