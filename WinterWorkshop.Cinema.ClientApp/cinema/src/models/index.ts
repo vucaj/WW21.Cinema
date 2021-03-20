@@ -9,6 +9,15 @@ export interface IProjection {
   movieYear?: string;
 }
 
+export interface IAddress{
+  id: 0;
+  cityName: "";
+  streetName: "";
+  country: "";
+  latitude: 0;
+  longitude: 0;
+}
+
 export interface IMovie {
   id: "",
   bannerUrl: "",
@@ -25,8 +34,8 @@ export interface IMovie {
 
 
 export interface ICinema {
-  id: string;
-  name: string;
+  id: "";
+  name: "";
 }
 
 export interface IAuditorium {
