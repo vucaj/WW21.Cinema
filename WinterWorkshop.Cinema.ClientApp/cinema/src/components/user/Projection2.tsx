@@ -242,9 +242,18 @@ const Projection2: React.FC = (props: any) => {
             });
     }
 
+    const getFormat = (value) => {
+        var parts = value.toString().split('T');
+        var dateParts = parts[0].split("-");
+
+        return(parts[1] + '     ' + dateParts[2] + '.' + dateParts[1] + '.' + dateParts[0] + '.');
+    }
+
     const formatDate = (date) => {
         return(
-            <div></div>
+            <div>
+                {getFormat(date)}
+            </div>
         );
     }
 
@@ -263,7 +272,7 @@ const Projection2: React.FC = (props: any) => {
             title: 'Time',
             dataIndex: 'dateTime',
             key: 'dateTime',
-            //render: (date) => {return(formatDate(date))}
+            render: (date) => {return(formatDate(date))}
         },
         {
             title: 'Ticket Price',
