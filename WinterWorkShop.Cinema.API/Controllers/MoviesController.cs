@@ -26,12 +26,14 @@ namespace WinterWorkShop.Cinema.API.Controllers
 
         private readonly ILogger<MoviesController> _logger;
 
-        public MoviesController(ILogger<MoviesController> logger, IMovieService movieService, IProjectionService projectionService)
+        public MoviesController(IMovieService movieService, IProjectionService projectionService, ILogger<MoviesController> logger)
         {
-            _logger = logger;
             _movieService = movieService;
             _projectionService = projectionService;
+            _logger = logger;
         }
+
+
 
         /// <summary>
         /// Gets Movie by Id
@@ -318,6 +320,46 @@ namespace WinterWorkShop.Cinema.API.Controllers
             }
 
             return Accepted("movies//" + deletedMovie.Id, deletedMovie);
+        }
+
+        [HttpPut]
+        [Route("activateDeactivate-{id}")]
+        public async Task<ActionResult> ActivateDeactivateMovie(Guid Id)
+        {
+            if (!ModelState.IsValid)
+            {
+                return BadRequest(ModelState);
+            }
+
+            var futureProjections = await _projectionService.GetFutureProjectionsByMovieId(Id);
+
+            if (futureProjections.Count() > 0)
+            {
+                return BadRequest(Messages.PROJECTIONS_FOR_THAT_MOVIE_ARE_STILL_ONGOING);
+            }
+
+            MovieDomainModel movieToUpdate = await _movieService.GetMovieByIdAsync(Id);
+
+            movieToUpdate.IsActive = !movieToUpdate.IsActive;
+
+            MovieDomainModel movieDomainModel;
+            try
+            {
+                movieDomainModel = await _movieService.UpdateMovie(movieToUpdate);
+            }
+            catch (DbUpdateException e)
+            {
+                ErrorResponseModel errorResponse = new ErrorResponseModel
+                {
+                    ErrorMessage = e.InnerException.Message ?? e.Message,
+                    StatusCode = System.Net.HttpStatusCode.BadRequest
+                };
+
+                return BadRequest(errorResponse);
+            }
+
+            return Accepted("activate-deactivate//" + movieDomainModel.Id, movieDomainModel);
+
         }
     }
 }

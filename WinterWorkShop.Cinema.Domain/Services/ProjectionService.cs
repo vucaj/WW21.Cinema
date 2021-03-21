@@ -183,6 +183,44 @@ namespace WinterWorkShop.Cinema.Domain.Services
             var projections = await _projectionsRepository.GetFutureProjections();
 
             return projections.Select(projection => new ProjectionDomainModel()
+
+        }
+        public async Task<IEnumerable<ProjectionDomainModel>> GetFutureProjectionsByMovieId(Guid Id)
+        {
+            var projections = await _projectionsRepository.GetFutureProjectionsByMovieIdAsync(Id);
+
+            if(projections == null)
+            {
+                return null;
+            }
+
+            var projectionsList = projections.Select(projection => new ProjectionDomainModel
+            {
+                Id = projection.Id,
+                AuditoriumId = projection.AuditoriumId,
+                CinemaId = projection.Auditorium.Cinema.Id,
+                DateTime = projection.DateTime,
+                MovieId = projection.MovieId,
+                TicketPrice = projection.TicketPrice,
+                MovieTitle = projection.Movie.Title,
+                AuditoriumName = projection.Auditorium.Name,
+                CinemaName = projection.Auditorium.Cinema.Name,
+                MovieRating = projection.Movie.Rating
+            });
+
+            return projectionsList;
+        }
+
+        public async Task<IEnumerable<ProjectionDomainModel>> GetFutureProjectionsByMovieId(MovieDomainModel domainModel)
+        {
+            var projections = await _projectionsRepository.GetFutureProjectionsByMovieIdAsync(domainModel.Id);
+
+            if (projections == null)
+            {
+                return null;
+            }
+
+            var projectionsList = projections.Select(projection => new ProjectionDomainModel
             {
                 Id = projection.Id,
                 AuditoriumId = projection.AuditoriumId,
@@ -195,6 +233,8 @@ namespace WinterWorkShop.Cinema.Domain.Services
                 CinemaName = projection.Cinema.Name,
                 MovieRating = projection.Movie.Rating
             });
+
+            return projectionsList;
             
         }
     }
