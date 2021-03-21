@@ -38,7 +38,11 @@ namespace WinterWorkShop.Cinema.Domain.Services
                 CinemaId = projection.CinemaId,
                 DateTime = projection.DateTime,
                 MovieId = projection.MovieId,
-                TicketPrice = projection.TicketPrice
+                TicketPrice = projection.TicketPrice,
+                AuditoriumName = projection.Auditorium.Name,
+                CinemaName = projection.Cinema.Name,
+                MovieRating = projection.Movie.Rating,
+                MovieTitle = projection.Movie.Title
             });
         }
 
@@ -174,56 +178,24 @@ namespace WinterWorkShop.Cinema.Domain.Services
             };
         }
 
-        public async Task<IEnumerable<ProjectionDomainModel>> GetFutureProjectionsByMovieId(Guid Id)
+        public async Task<IEnumerable<ProjectionDomainModel>> GetFutureProjections()
         {
-            var projections = await _projectionsRepository.GetFutureProjectionsByMovieIdAsync(Id);
+            var projections = await _projectionsRepository.GetFutureProjections();
 
-            if(projections == null)
-            {
-                return null;
-            }
-
-            var projectionsList = projections.Select(projection => new ProjectionDomainModel
-            {
-                Id = projection.Id,
-                AuditoriumId = projection.AuditoriumId,
-                CinemaId = projection.Auditorium.Cinema.Id,
-                DateTime = projection.DateTime,
-                MovieId = projection.MovieId,
-                TicketPrice = projection.TicketPrice,
-                MovieTitle = projection.Movie.Title,
-                AuditoriumName = projection.Auditorium.Name,
-                CinemaName = projection.Auditorium.Cinema.Name,
-                MovieRating = projection.Movie.Rating
-            });
-
-            return projectionsList;
-        }
-
-        public async Task<IEnumerable<ProjectionDomainModel>> GetFutureProjectionsByMovieId(MovieDomainModel domainModel)
-        {
-            var projections = await _projectionsRepository.GetFutureProjectionsByMovieIdAsync(domainModel.Id);
-
-            if (projections == null)
-            {
-                return null;
-            }
-
-            var projectionsList = projections.Select(projection => new ProjectionDomainModel
+            return projections.Select(projection => new ProjectionDomainModel()
             {
                 Id = projection.Id,
                 AuditoriumId = projection.AuditoriumId,
                 CinemaId = projection.CinemaId,
                 DateTime = projection.DateTime,
                 MovieId = projection.MovieId,
-                TicketPrice = projection.TicketPrice,
+                TicketPrice = projection.TicketPrice, 
                 MovieTitle = projection.Movie.Title,
                 AuditoriumName = projection.Auditorium.Name,
-                CinemaName = projection.Auditorium.Cinema.Name,
+                CinemaName = projection.Cinema.Name,
                 MovieRating = projection.Movie.Rating
             });
-
-            return projectionsList;
+            
         }
     }
 }

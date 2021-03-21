@@ -12,7 +12,8 @@ namespace WinterWorkShop.Cinema.Repositories
     public interface IProjectionsRepository : IRepository<Projection> 
     {
         IEnumerable<Projection> GetByAuditoriumId(Guid salaId);
-        Task<IEnumerable<Projection>> GetFutureProjectionsByMovieIdAsync(Guid Id);
+
+        Task<IEnumerable<Projection>> GetFutureProjections();
     }
 
     public class ProjectionsRepository : IProjectionsRepository
@@ -34,7 +35,7 @@ namespace WinterWorkShop.Cinema.Repositories
 
         public async Task<IEnumerable<Projection>> GetAllAsync()
         {
-            var data = await _cinemaContext.Projections.Include(x => x.Movie).Include(x => x.Auditorium).ToListAsync();
+            var data = await _cinemaContext.Projections.Include(x => x.Cinema).Include(x => x.Movie).Include(x => x.Auditorium).ToListAsync();
             
             return data;           
         }
@@ -49,6 +50,13 @@ namespace WinterWorkShop.Cinema.Repositories
             var projectionsData = _cinemaContext.Projections.Where(x => x.AuditoriumId == auditoriumId);
 
             return projectionsData;
+        }
+
+        public async Task<IEnumerable<Projection>> GetFutureProjections()
+        {
+            var projections = await _cinemaContext.Projections.Include(x => x.Movie).Include(x => x.Auditorium).Include(x => x.Cinema).Where(x => x.DateTime.CompareTo(DateTime.Now) > 0).ToListAsync();
+
+            return projections;
         }
 
         public Projection Insert(Projection obj)
@@ -69,18 +77,6 @@ namespace WinterWorkShop.Cinema.Repositories
             _cinemaContext.Entry(obj).State = EntityState.Modified;
 
             return updatedEntry;
-        }
-
-        public async Task<IEnumerable<Projection>> GetFutureProjectionsByMovieIdAsync(Guid Id)
-        {
-            var projections = await _cinemaContext.Projections
-                .Include(x => x.Auditorium)
-                .ThenInclude(x => x.Cinema)
-                .Include(x => x.Movie)
-                .Include(x => x.Tickets)
-                .Where(x => x.DateTime.CompareTo(DateTime.Now) > 0 && x.Movie.Id.Equals(Id)).ToListAsync();
-
-            return projections;
         }
     }
 }

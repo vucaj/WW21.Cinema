@@ -50,13 +50,19 @@ const Projection: React.FC = (props: any) => {
           {
             id: "",
             movieId: "",
-            projectionTime: "",
-            auditoriumName: "",
+            dateTime: "",
+            auditoirumId: "",
+            cinemaId: '',
+            ticketPrice: 0,
+            movieTitle: '',
+            auditoriumName: '',
+            cinemaName: '',
+            movieRating: 0
           },
         ],
       },
     ],
-    cinemas: [{ id: "", name: "" }],
+    cinemas: [{ id: "", name: "", addressId: 0 }],
     auditoriums: [
       {
         id: "",
@@ -87,12 +93,14 @@ const Projection: React.FC = (props: any) => {
       {
         id: "",
         movieId: "",
-        projectionTime: "",
-        bannerUrl: "",
-        auditoriumName: "",
-        movieTitle: "",
-        movieRating: 0,
-        movieYear: "",
+        dateTime: "",
+        auditoirumId: "",
+        cinemaId: '',
+        ticketPrice: 0,
+        movieTitle: '',
+        auditoriumName: '',
+        cinemaName: '',
+        movieRating: 0
       },
     ],
     cinemaId: "",
@@ -352,7 +360,7 @@ const Projection: React.FC = (props: any) => {
             onClick={() => navigateToProjectionDetails(projection.id, movie.id)}
             className="btn-projection-time"
           >
-            {projection.projectionTime.slice(11, 16)}h
+            projection.projectionTime.slice(11, 16)h
           </Button>
         );
       });
@@ -360,10 +368,10 @@ const Projection: React.FC = (props: any) => {
       return (
         <Card.Body key={movie.id}>
           <div>
-            <img className="img-style" src={movie.bannerUrl}></img>
+            <img className="img-style" ></img>
           </div>
           <Card.Title>
-            <span className="card-title-font">{movie.title}</span>
+            <span className="card-title-font">movie.title</span>
             {getRoundedRating(movie.rating)}
           </Card.Title>
           <hr />
@@ -385,7 +393,7 @@ const Projection: React.FC = (props: any) => {
       return (
         <Card.Body>
           <div className="banner-img">
-            <img className="img-style" src={filteredProjection.bannerUrl}></img>
+            <img className="img-style" ></img>
           </div>
           <Card.Title>
             <span className="card-title-font">
@@ -397,7 +405,7 @@ const Projection: React.FC = (props: any) => {
           </Card.Title>
           <hr />
           <Card.Subtitle className="mb-2 text-muted">
-            Year of production: {filteredProjection.movieYear}
+            Year of production: filteredProjection.movieYear
           </Card.Subtitle>
           <hr />
           <Card.Text>
@@ -413,7 +421,7 @@ const Projection: React.FC = (props: any) => {
             }
             className="btn-projection-time"
           >
-            {filteredProjection.projectionTime.slice(11, 16)}h
+            filteredProjection.projectionTime.slice(11, 16)h
           </Button>
         </Card.Body>
       );

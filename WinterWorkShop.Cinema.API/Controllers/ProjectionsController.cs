@@ -35,7 +35,7 @@ namespace WinterWorkShop.Cinema.API.Controllers
         {
             IEnumerable<ProjectionDomainModel> projectionDomainModels;
            
-             projectionDomainModels = await _projectionService.GetAllAsync();            
+            projectionDomainModels = await _projectionService.GetAllAsync();            
 
             if (projectionDomainModels == null)
             {
@@ -46,15 +46,12 @@ namespace WinterWorkShop.Cinema.API.Controllers
         }
 
         [HttpGet]
-        [Route("getAllFutureByMovieId")]
-        public async Task<ActionResult<IEnumerable<ProjectionDomainModel>>> GetAllFutureProjectionsByMovieIdAsync([FromBody] MovieDomainModel domainModel)
+        [Route("getAllFuture")]
+        public async Task<ActionResult<IEnumerable<ProjectionDomainModel>>> GetAllFutureAsync()
         {
             IEnumerable<ProjectionDomainModel> projectionDomainModels;
-
-            projectionDomainModels = await _projectionService.GetFutureProjectionsByMovieId(new MovieDomainModel
-            {
-                Id = domainModel.Id
-            });
+           
+            projectionDomainModels = await _projectionService.GetFutureProjections();            
 
             if (projectionDomainModels == null)
             {
@@ -128,7 +125,7 @@ namespace WinterWorkShop.Cinema.API.Controllers
 
             return Created("projections//" + createProjectionResultModel.Projection.Id, createProjectionResultModel.Projection);
         }
-
+        
         [HttpDelete]
         [Route("delete")]
         public async Task<ActionResult<ProjectionDomainModel>> DeleteProjectionAsync([FromBody] DeleteProjectionModel deleteProjectionModel)
