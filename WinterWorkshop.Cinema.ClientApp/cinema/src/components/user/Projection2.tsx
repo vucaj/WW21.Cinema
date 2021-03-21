@@ -242,6 +242,12 @@ const Projection2: React.FC = (props: any) => {
             });
     }
 
+    const formatDate = (date) => {
+        return(
+            <div></div>
+        );
+    }
+
     const columns = [
         {
             title: "Cinema Name",
@@ -256,7 +262,8 @@ const Projection2: React.FC = (props: any) => {
         {
             title: 'Time',
             dataIndex: 'dateTime',
-            key: 'dateTime'
+            key: 'dateTime',
+            //render: (date) => {return(formatDate(date))}
         },
         {
             title: 'Ticket Price',
