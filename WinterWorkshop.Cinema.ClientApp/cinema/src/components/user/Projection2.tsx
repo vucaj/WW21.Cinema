@@ -3,7 +3,9 @@ import { NotificationManager } from "react-notifications";
 import React, { useEffect, useState } from "react";
 import {withRouter} from "react-router-dom";
 import {serviceConfig} from "../../appSettings";
-import {Table} from "antd";
+import Highlighter from 'react-highlight-words';
+import {Button, Input, Space, Table } from "antd";
+import {SearchOutlined} from "@ant-design/icons";
 
 
 interface IState {
@@ -31,6 +33,9 @@ interface IState {
     auditoriumId: string;
     movieId: string;
     name: string;
+    searchText: string;
+    searchedColumn: string;
+
 }
 
 const Projection2: React.FC = (props: any) => {
@@ -121,6 +126,8 @@ const Projection2: React.FC = (props: any) => {
         selectedMovie: false,
         selectedDate: false,
         date: new Date(),
+        searchText: '',
+        searchedColumn: ''
     })
 
     useEffect(() => {
@@ -257,31 +264,99 @@ const Projection2: React.FC = (props: any) => {
         );
     }
 
+    let searchInput;
+
+    const getColumnSearchProps = dataIndex => ({
+        filterDropdown: ({setSelectedKeys, selectedKeys, confirm, clearFilters}) => (
+            <div style={{ padding: 8 }}>
+                <Input
+                    ref={node => {
+                        searchInput = node;
+                    }}
+                    placeholder={`Search ${dataIndex}`}
+                    value={selectedKeys[0]}
+                    onChange={e => setSelectedKeys(e.target.value ? [e.target.value] : [])}
+                    onPressEnter={() => handleSearch(selectedKeys, confirm, dataIndex)}
+                    style={{ width: 188, marginBottom: 8, display: 'block' }}
+                />
+                <Space>
+                    <Button
+                        type="primary"
+                        onClick={() => handleSearch(selectedKeys, confirm, dataIndex)}
+                        icon={<SearchOutlined />}
+                        size="small"
+                        style={{ width: 90 }}
+                    >
+                        Search
+                    </Button>
+                    <Button onClick={() => handleReset(clearFilters)} size="small" style={{ width: 90 }}>
+                        Reset
+                    </Button>
+                </Space>
+            </div>
+        ),
+        filterIcon: filtered => <SearchOutlined style={{ color: filtered ? '#1890ff' : undefined }} />,
+        onFilter: (value, record) =>
+            record[dataIndex]? record[dataIndex].toString().toLowerCase().includes(value.toLowerCase()): '',
+        onFilterDropdownVisibleChange: visible => {
+            if(visible){
+                setTimeout(() => searchInput.select(), 100 )
+            }
+        },
+
+        render: text =>
+            state.searchedColumn === dataIndex? (
+                <Highlighter
+                    highlightStyle = {{backgroundColor: '#ffc069', padding: 0}}
+                    searchWords = {[state.searchText]}
+                    autoEscape
+                    textToHighlight={text? text.toString(): ''}
+                />
+            ):(
+                text
+            ),
+    });
+
+    const handleSearch = (selectedKeys, confirm, dataIndex) =>{
+        confirm();
+        setState({...state, searchText: selectedKeys[0], searchedColumn: dataIndex});
+    };
+
+    const handleReset = clearFilters =>{
+        clearFilters();
+        setState({...state, searchText: ''})
+    }
+
     const columns = [
         {
             title: "Cinema Name",
             dataIndex: 'cinemaName',
+            ...getColumnSearchProps('cinemaName'),
             key: 'cinemaName'
         },
         {
             title: 'Movie Title',
             dataIndex: 'movieTitle',
+            ...getColumnSearchProps('movieTitle'),
             key: 'movieTitle'
         },
         {
             title: 'Time',
             dataIndex: 'dateTime',
             key: 'dateTime',
+            ...getColumnSearchProps('dateTime'),
             render: (date) => {return(formatDate(date))}
         },
         {
             title: 'Ticket Price',
             dataIndex: 'ticketPrice',
+            ...getColumnSearchProps('ticketPrice'),
             key: 'ticketPrice'
         },
         {
             title: 'Auditorium Name',
             dataIndex: 'auditoriumName',
+            ...getColumnSearchProps('auditoriumName'),
             key: 'auditoriumName'
         },
         {
