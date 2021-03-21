@@ -11,15 +11,6 @@ export interface IProjection {
   movieRating: number
 }
 
-export interface IAddress{
-  id: 0;
-  cityName: "";
-  streetName: "";
-  country: "";
-  latitude: 0;
-  longitude: 0;
-}
-
 export interface IMovie {
   id: "",
   bannerUrl: "",

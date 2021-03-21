@@ -14,7 +14,6 @@ namespace WinterWorkShop.Cinema.Repositories
         IEnumerable<Projection> GetByAuditoriumId(Guid salaId);
 
         Task<IEnumerable<Projection>> GetFutureProjections();
-        Task<IEnumerable<Projection>> GetFutureProjectionsByMovieIdAsync(Guid Id);
     }
 
     public class ProjectionsRepository : IProjectionsRepository
@@ -78,18 +77,6 @@ namespace WinterWorkShop.Cinema.Repositories
             _cinemaContext.Entry(obj).State = EntityState.Modified;
 
             return updatedEntry;
-        }
-
-        public async Task<IEnumerable<Projection>> GetFutureProjectionsByMovieIdAsync(Guid Id)
-        {
-            var projections = await _cinemaContext.Projections
-                .Include(x => x.Auditorium)
-                .ThenInclude(x => x.Cinema)
-                .Include(x => x.Movie)
-                .Include(x => x.Tickets)
-                .Where(x => x.DateTime.CompareTo(DateTime.Now) > 0 && x.Movie.Id.Equals(Id)).ToListAsync();
-
-            return projections;
         }
     }
 }
