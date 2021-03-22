@@ -8,6 +8,7 @@ import { toast } from "react-toastify";
 import { isAdmin, isGuest, isSuperUser, isUser } from "../../helpers/authCheck";
 import { serviceConfig } from "../../../appSettings";
 import "antd/dist/antd.css";
+import { render } from "@testing-library/react";
 
 interface IState {
     movies: IMovie[];
@@ -215,24 +216,10 @@ const ShowAllMovies2: React.FC = (props: any) => {
                 NotificationManager.success("Successfuly activated/deactivated movie!");
             })
             .catch((response) => {
-                NotificationManager.error(response.message || response.statusText);
+                NotificationManager.error("Can't deactivate movie that have future projections");
                 setState({ ...state, submitted: false });
             });
     };
-
-    const hideButtonAD = () => {
-        let btnAC = document.getElementById("btnAC");
-        if (btnAC) {
-            btnAC.style.display = "none";
-        }
-    }
-
-    const showButtonAD = () => {
-        let btnAC = document.getElementById("btnAC");
-        if (btnAC) {
-            btnAC.style.display = "block";
-        }
-    }
 
     const handleSearch = (selectedKeys, confirm, dataIndex) => {
         confirm();

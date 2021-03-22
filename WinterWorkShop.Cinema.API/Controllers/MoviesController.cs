@@ -322,7 +322,7 @@ namespace WinterWorkShop.Cinema.API.Controllers
 
         [HttpPut]
         [Route("activateDeactivate/{id}")]
-        public async Task<ActionResult> ActivateDeactivateMovie(Guid Id)
+        public async Task<ActionResult<MovieDomainModel>> ActivateDeactivateMovie(Guid Id)
         {
             if (!ModelState.IsValid)
             {
