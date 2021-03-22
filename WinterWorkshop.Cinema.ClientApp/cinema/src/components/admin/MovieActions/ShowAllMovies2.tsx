@@ -369,7 +369,12 @@ const ShowAllMovies2: React.FC = (props: any) => {
             <br></br>
             <a><b>Description:</b></a>
             <p style={{ margin: 0 }}>{record.description}</p>
-            {getBtn(record.isActive, record.id)}
+            {(() =>{
+                if(isAdmin() === true || isSuperUser() === true)
+                {
+                    {getBtn(record.isActive, record.id)}
+                }
+            })()}
         </div>)
     };
 
