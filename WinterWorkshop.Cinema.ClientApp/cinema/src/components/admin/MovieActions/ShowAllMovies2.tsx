@@ -353,9 +353,10 @@ const ShowAllMovies2: React.FC = (props: any) => {
 
     const getBtn = (value: boolean, id) => {
         if (value) {
-            return (<Button style={{ background: "red", borderColor: "white" }} onClick={() => activateDeactivateMovie(id)} type="primary" id="btnAD" danger>DEACTIVATE</Button>);
+            if (isAdmin() || isSuperUser())
+                return (<Button style={{ background: "red", borderColor: "white" }} onClick={() => activateDeactivateMovie(id)} type="primary" id="btnAD" danger>DEACTIVATE</Button>);
         }
-        else {
+        else if (isAdmin() || isSuperUser()) {
             return (<Button style={{ background: "green", borderColor: "white" }} onClick={() => activateDeactivateMovie(id)} type="primary" id="btnAd" danger>ACTIVATE</Button>)
         }
     }
@@ -369,12 +370,7 @@ const ShowAllMovies2: React.FC = (props: any) => {
             <br></br>
             <a><b>Description:</b></a>
             <p style={{ margin: 0 }}>{record.description}</p>
-            {(() =>{
-                if(isAdmin() === true || isSuperUser() === true)
-                {
-                    {getBtn(record.isActive, record.id)}
-                }
-            })()}
+            { getBtn(record.isActive, record.id)}
         </div>)
     };
 
