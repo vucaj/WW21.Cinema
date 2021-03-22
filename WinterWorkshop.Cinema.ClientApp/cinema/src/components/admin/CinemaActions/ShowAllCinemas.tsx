@@ -18,6 +18,7 @@ const ShowAllCinemas: React.FC = (props: any) => {
       {
         id: "",
         name: "",
+        addressId: 0
       },
     ],
     isLoading: true,

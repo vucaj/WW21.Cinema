@@ -26,14 +26,12 @@ namespace WinterWorkShop.Cinema.API.Controllers
 
         private readonly ILogger<MoviesController> _logger;
 
-        public MoviesController(IMovieService movieService, IProjectionService projectionService, ILogger<MoviesController> logger)
+        public MoviesController(ILogger<MoviesController> logger, IMovieService movieService, IProjectionService projectionService)
         {
+            _logger = logger;
             _movieService = movieService;
             _projectionService = projectionService;
-            _logger = logger;
         }
-
-
 
         /// <summary>
         /// Gets Movie by Id
@@ -113,6 +111,40 @@ namespace WinterWorkShop.Cinema.API.Controllers
             return Ok(movieDomainModels);
         }
 
+        [HttpGet]
+        [Route("withFutureProjections")]
+        public async Task<ActionResult<IEnumerable<MovieDomainModel>>> GetMoviesWithFutureProjections()
+        {
+            var projectionDomainModel = await _projectionService.GetFutureProjections();
+
+            List<MovieDomainModel> movieDomainModels = new List<MovieDomainModel>();
+
+            foreach (var item in projectionDomainModel)
+            {
+                if (!isInList(movieDomainModels, item.MovieId))
+                {
+                    movieDomainModels.Add(new MovieDomainModel()
+                    {
+                        Id = item.MovieId,
+                        Title = item.MovieTitle
+                    });
+                }
+            }
+            
+            return Ok(movieDomainModels);
+        }
+
+        private bool isInList(List<MovieDomainModel> movieDomainModels, Guid movieId)
+        {
+            foreach (var item in movieDomainModels)
+            {
+                if (item.Id == movieId)
+                    return true;
+            }
+
+            return false;
+        }
+        
         [HttpGet]
         [Route("all")]
         public async Task<ActionResult<IEnumerable<MovieDomainModel>>> GetAllAsync()
