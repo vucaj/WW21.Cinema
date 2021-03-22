@@ -194,33 +194,6 @@ const ShowAllMovies2: React.FC = (props: any) => {
             ),
     });
 
-    // const activateDeactivateMovie = (id: string) => {
-    //     const requestOptions = {
-    //         method: "PUT",
-    //         headers: {
-    //             "Content-Type": "application/json",
-    //             Authorization: `Bearer ${localStorage.getItem("jwt")}`,
-    //         },
-    //     };
-
-    //     setState({ ...state, isLoading: true });
-    //     fetch(`${serviceConfig.baseURL}/api/Movies/activateDeactivate-${id}`, requestOptions)
-    //         .then((response) => {
-    //             if (!response.ok) {
-    //                 return Promise.reject(response);
-    //             }
-    //             NotificationManager.success("Successfully activated/deactivated movie.");
-    //             return response.json();
-    //         })
-
-    //         .catch((response) => {
-    //             NotificationManager.error(response.message || response.statusText);
-    //             setState({ ...state, isLoading: false });
-    //         });
-
-    //     setTimeout(() => window.location.reload(), 1000);
-    // };
-
     const activateDeactivateMovie = (id) => {
         const requestOptions = {
             method: "PUT",
