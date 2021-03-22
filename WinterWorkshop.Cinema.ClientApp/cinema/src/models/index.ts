@@ -66,3 +66,12 @@ export interface IReservation {
 export interface ITag {
   name: string;
 }
+
+export interface IAddress{
+  id: number;
+  cityName: string;
+  streetName: string;
+  country: string;
+  longitude: number;
+  latitude: number;
+}
