@@ -38,7 +38,12 @@ const EditAuditorium: React.FC = (props: any): JSX.Element => {
       {
         id: "",
         name: "",
-        addressId: 0
+        addressId: 0,  
+        cityName: "",
+        country: "",
+        latitude: 0,
+        longitude: 0,
+        streetName: ""
       },
     ],
     cinemaIdError: "",

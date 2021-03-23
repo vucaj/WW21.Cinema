@@ -11,5 +11,10 @@ namespace WinterWorkShop.Cinema.Domain.Models
         public string Name { get; set; }
         
         public int AddressId { get; set; }
+        public string CityName { get; set; }
+        public string Country { get; set; }
+        public string StreetName { get; set; }
+        public double Longitude { get; set; }
+        public double Latitude { get; set; }
     }
 }

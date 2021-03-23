@@ -31,6 +31,11 @@ export interface ICinema {
   id: string;
   name: string;
   addressId: number;
+  streetName: string;
+  cityName: string;
+  country: string;
+  latitude: number;
+  longitude: number; 
 }
 
 export interface IAuditorium {
@@ -66,4 +71,13 @@ export interface IReservation {
 
 export interface ITag {
   name: string;
+}
+
+export interface IAddress{
+  id: number;
+  cityName: string;
+  streetName: string;
+  country: string;
+  longitude: number;
+  latitude: number;
 }
