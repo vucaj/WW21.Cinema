@@ -112,7 +112,7 @@ const NewMovie: React.FC = (props: any) => {
     e.preventDefault();
 
     setState({ ...state, submitted: true });
-    const { title, year, rating, genre, isActive, description, distributer, numberOfOscars, duration } = state;
+    const { title, year, rating } = state;
     if (title && year && rating) {
       addMovie();
     } else {
@@ -142,7 +142,7 @@ const NewMovie: React.FC = (props: any) => {
     const data = {
       Title: state.title,
       Year: +state.year,
-      isActive: state.isActive === true,
+      isActive: state.isActive == false,
       Rating: +state.rating,
       Description: state.description,
       Genre: state.genre,
@@ -160,7 +160,7 @@ const NewMovie: React.FC = (props: any) => {
       body: JSON.stringify(data),
     };
 
-    fetch(`${serviceConfig.baseURL}/api/Movies/create`, requestOptions)
+    fetch(`${serviceConfig.baseURL}/api/movies/create`, requestOptions)
       .then((response) => {
         if (!response.ok) {
           return Promise.reject("Something went wrong");
@@ -189,6 +189,7 @@ const NewMovie: React.FC = (props: any) => {
               <FormControl
                 id="title"
                 type="text"
+                maxLength={50}
                 placeholder="Movie Title"
                 value={state.title}
                 onChange={handleChange}
@@ -240,7 +241,7 @@ const NewMovie: React.FC = (props: any) => {
                 <option value="10">10</option>
               </FormControl>
             </FormGroup>
-            <FormGroup>
+            {/* <FormGroup>
               <FormControl
                 defaultValue={"Select Genre"}
                 as="select"
@@ -264,7 +265,7 @@ const NewMovie: React.FC = (props: any) => {
                 <option value="11">Adult</option>
                 <option value="12">Documentary</option>
               </FormControl>
-            </FormGroup>
+            </FormGroup> */}
             <FormGroup>
               <FormControl
                 className="add-new-form"
@@ -285,12 +286,13 @@ const NewMovie: React.FC = (props: any) => {
               id="distributer"
               type="text"
               placeholder="Distributer"
+              maxLength={30}
               value={state.distributer}
               onChange={handleChange}
               className="add-new-form"
               style={{ marginTop: 10, marginBottom: 10 }}
             />
-            <InputNumber id="duration" className="add-new-form" style={{ position: "relative", left: 355, marginTop: 10, marginBottom: 5 }} placeholder="Duration(min)" min={0} max={300} value={state.duration} pattern="[0-9]*" onChange={(duration: number) => {
+            <InputNumber id="duration" className="add-new-form" style={{ position: "relative", left: 355, marginTop: 10, marginBottom: 5 }} placeholder="Duration(min)" min={1} max={500} value={state.duration} pattern="[0-9]*" onChange={(duration: number) => {
               handleDurationChange(duration);
             }} />
             <FormControl
@@ -299,6 +301,7 @@ const NewMovie: React.FC = (props: any) => {
               id="description"
               type="text"
               placeholder="Description"
+              maxLength={300}
               value={state.description}
               onChange={handleChange}
               className="add-new-form"

@@ -35,7 +35,8 @@ const UpdateMovie: React.FC = (props: any) => {
       distributer: "",
       description: "",
       genre: 0,
-      rating: 0
+      rating: 0,
+      numberOfOscars: 0,
     },
     titleError: "",
     yearError: "",
@@ -120,6 +121,7 @@ const UpdateMovie: React.FC = (props: any) => {
             genre: response.genre,
             bannerUrl: "",
             id: response.id,
+            numberOfOscars: response.numberOfOscars
           },
 
         });
