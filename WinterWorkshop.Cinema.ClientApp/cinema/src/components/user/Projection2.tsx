@@ -68,7 +68,7 @@ const Projection2: React.FC = (props: any) => {
                 movieRating: 0
             },
         ],
-        cinemas: [{ id: "", name: "", addressId: 0 }],
+        cinemas: [{ id: "", name: "", addressId: 0, cityName: "", country: "", latitude: 0, longitude: 0, streetName: "" }],
         auditoriums: [
             {
                 id: "",

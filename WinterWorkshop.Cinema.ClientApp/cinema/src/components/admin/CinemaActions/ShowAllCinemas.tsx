@@ -18,7 +18,12 @@ const ShowAllCinemas: React.FC = (props: any) => {
       {
         id: "",
         name: "",
-        addressId: 0
+        addressId: 0,  
+        cityName: "",
+        country: "",
+        latitude: 0,
+        longitude: 0,
+        streetName: ""
       },
     ],
     isLoading: true,

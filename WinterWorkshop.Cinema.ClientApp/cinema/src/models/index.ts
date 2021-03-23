@@ -30,6 +30,11 @@ export interface ICinema {
   id: string;
   name: string;
   addressId: number;
+  streetName: string;
+  cityName: string;
+  country: string;
+  latitude: number;
+  longitude: number; 
 }
 
 export interface IAuditorium {

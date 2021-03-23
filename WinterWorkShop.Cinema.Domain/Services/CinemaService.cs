@@ -35,7 +35,12 @@ namespace WinterWorkShop.Cinema.Domain.Services
             {
                 Id = cinema.Id,
                 Name = cinema.Name,
-                AddressId = cinema.AddressId
+                AddressId = cinema.AddressId,
+                CityName = cinema.Address.CityName,
+                StreetName = cinema.Address.StreetName,
+                Country = cinema.Address.Country,
+                Latitude = cinema.Address.Latitude,
+                Longitude = cinema.Address.Longitude
             });
         }
 
