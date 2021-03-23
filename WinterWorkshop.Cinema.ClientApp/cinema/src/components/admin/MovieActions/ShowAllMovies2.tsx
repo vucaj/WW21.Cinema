@@ -313,10 +313,10 @@ const ShowAllMovies2: React.FC = (props: any) => {
 
     const getBtn = (value: boolean, id) => {
         if (value) {
-            if (!isAdmin() || !isSuperUser())
+            if (isAdmin() || isSuperUser())
                 return (<Button style={{ background: "red", borderColor: "white" }} onClick={() => activateDeactivateMovie(id)} type="primary" id="btnAD" danger>DEACTIVATE</Button>);
         }
-        else if (!isAdmin() || !isSuperUser()) {
+        else if (isAdmin() || isSuperUser()) {
             return (<Button style={{ background: "green", borderColor: "white" }} onClick={() => activateDeactivateMovie(id)} type="primary" id="btnAd" danger>ACTIVATE</Button>)
         }
     }
