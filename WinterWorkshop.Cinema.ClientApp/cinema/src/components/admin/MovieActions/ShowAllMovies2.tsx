@@ -212,6 +212,7 @@ const ShowAllMovies2: React.FC = (props: any) => {
                 return response.statusText;
             })
             .then((response) => {
+                getProjections();
                 NotificationManager.success("Successfuly activated/deactivated movie!");
             })
             .catch((response) => {
