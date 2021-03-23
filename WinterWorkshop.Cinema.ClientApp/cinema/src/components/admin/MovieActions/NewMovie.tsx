@@ -8,6 +8,7 @@ import {
   Row,
   Col,
   FormText,
+  Form,
 } from "react-bootstrap";
 import { NotificationManager } from "react-notifications";
 import { serviceConfig } from "../../../appSettings";
@@ -18,6 +19,12 @@ interface IState {
   year: string;
   rating: string;
   current: boolean;
+  isActive: boolean;
+  description: string;
+  genre: number;
+  duration: number;
+  distributer: string;
+  numberOfOscars: number;
   titleError: string;
   submitted: boolean;
   canSubmit: boolean;
@@ -32,6 +39,12 @@ const NewMovie: React.FC = (props: any) => {
     year: "",
     rating: "",
     current: false,
+    isActive: false,
+    description: "",
+    genre: 0,
+    duration: 0,
+    distributer: "",
+    numberOfOscars: 0,
     titleError: "",
     submitted: false,
     canSubmit: true,
@@ -43,7 +56,7 @@ const NewMovie: React.FC = (props: any) => {
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { id, value } = e.target;
     setState({ ...state, [id]: value });
-    validate(id, value);
+    // validate(id, value);
   };
 
   const handleTagsChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -54,28 +67,28 @@ const NewMovie: React.FC = (props: any) => {
     setState({ ...state, bannerUrl: e.target.value });
   };
 
-  const validate = (id: string, value: string) => {
-    if (id === "title") {
-      if (value === "") {
-        setState({
-          ...state,
-          titleError: "Fill in movie title",
-          canSubmit: false,
-        });
-      } else {
-        setState({ ...state, titleError: "", canSubmit: true });
-      }
-    }
+  // const validate = (id: string, value: string) => {
+  //   if (id === "title") {
+  //     if (value === "") {
+  //       setState({
+  //         ...state,
+  //         titleError: "Fill in movie title",
+  //         canSubmit: false,
+  //       });
+  //     } else {
+  //       setState({ ...state, titleError: "", canSubmit: true });
+  //     }
+  //   }
 
-    if (id === "year") {
-      const yearNum = +value;
-      if (!value || value === "" || yearNum < 1895 || yearNum > 2100) {
-        setState({ ...state, yearError: "Please chose valid year" });
-      } else {
-        setState({ ...state, yearError: "" });
-      }
-    }
-  };
+  //   if (id === "year") {
+  //     const yearNum = +value;
+  //     if (!value || value === "" || yearNum < 1895 || yearNum > 2100) {
+  //       setState({ ...state, yearError: "Please chose valid year" });
+  //     } else {
+  //       setState({ ...state, yearError: "" });
+  //     }
+  //   }
+  // };
 
   const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
@@ -93,17 +106,20 @@ const NewMovie: React.FC = (props: any) => {
 
   const handleYearChange = (year: string) => {
     setState({ ...state, year: year });
-    validate("year", year);
+    // validate("year", year);
   };
 
   const addMovie = (splitTags: string[]) => {
     const data = {
       Title: state.title,
       Year: +state.year,
-      Current: state.current === true,
+      isActive: state.isActive === true,
       Rating: +state.rating,
-      Tags: splitTags,
-      BannerUrl: state.bannerUrl,
+      Description: state.description,
+      Genre: state.genre,
+      Duration: state.duration,
+      Distributer: state.distributer,
+      NumberOfOscars: state.numberOfOscars,
     };
 
     const requestOptions = {
@@ -115,7 +131,7 @@ const NewMovie: React.FC = (props: any) => {
       body: JSON.stringify(data),
     };
 
-    fetch(`${serviceConfig.baseURL}/api/movies`, requestOptions)
+    fetch(`${serviceConfig.baseURL}/api/Movies/create`, requestOptions)
       .then((response) => {
         if (!response.ok) {
           return Promise.reject(response);
@@ -152,8 +168,8 @@ const NewMovie: React.FC = (props: any) => {
             <FormGroup>
               <YearPicker
                 defaultValue={"Select Movie Year"}
-                start={1895}
-                end={2100}
+                start={1950}
+                end={2021}
                 reverse
                 required={true}
                 disabled={false}
@@ -170,6 +186,7 @@ const NewMovie: React.FC = (props: any) => {
             </FormGroup>
             <FormGroup>
               <FormControl
+                defaultValue={"Select Rating"}
                 as="select"
                 className="add-new-form"
                 placeholder="Rating"
@@ -177,6 +194,7 @@ const NewMovie: React.FC = (props: any) => {
                 value={state.rating}
                 onChange={handleChange}
               >
+                <option value="0">Select Rating</option>
                 <option value="1">1</option>
                 <option value="2">2</option>
                 <option value="3">3</option>
@@ -193,16 +211,16 @@ const NewMovie: React.FC = (props: any) => {
               <FormControl
                 className="add-new-form"
                 as="select"
-                placeholder="Current"
-                id="current"
-                value={state.current.toString()}
+                placeholder="IsActive"
+                id="isActive"
+                value={state.isActive.toString()}
                 onChange={handleChange}
               >
-                <option value="true">Current</option>
-                <option value="false">Not Current</option>
+                <option value="true">Active</option>
+                <option value="false">Not Active</option>
               </FormControl>
             </FormGroup>
-            <FormControl
+            {/* <FormControl
               id="tags"
               type="text"
               placeholder="Movie Tags"
@@ -211,15 +229,15 @@ const NewMovie: React.FC = (props: any) => {
                 handleTagsChange(e);
               }}
               className="add-new-form"
-            />
+            /> */}
             <FormControl
-              id="bannerUrl"
+              as="textarea"
+              rows={3}
+              id="description"
               type="text"
-              placeholder="Banner Url"
-              value={state.bannerUrl}
-              onChange={(e: React.ChangeEvent<HTMLInputElement>) => {
-                handleBannerUrlChange(e);
-              }}
+              placeholder="Description"
+              value={state.description}
+              onChange={handleChange}
               className="add-new-form"
             />
             <FormText className="text-danger">{state.titleError}</FormText>
