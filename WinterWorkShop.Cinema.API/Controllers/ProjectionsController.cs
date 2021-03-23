@@ -152,5 +152,24 @@ namespace WinterWorkShop.Cinema.API.Controllers
 
             return Accepted("projections//" + projection.Projection.Id, projection.Projection);
         }
+
+        [HttpGet]
+        [Route("getAllFutureByMovieId")]
+        public async Task<ActionResult<IEnumerable<ProjectionDomainModel>>> GetAllFutureProjectionsByMovieIdAsync([FromBody] MovieDomainModel domainModel)
+        {
+            IEnumerable<ProjectionDomainModel> projectionDomainModels;
+
+            projectionDomainModels = await _projectionService.GetFutureProjectionsByMovieId(new MovieDomainModel
+            {
+                Id = domainModel.Id
+            });
+
+            if (projectionDomainModels == null)
+            {
+                projectionDomainModels = new List<ProjectionDomainModel>();
+            }
+
+            return Ok(projectionDomainModels);
+        }
     }
 }
