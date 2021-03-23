@@ -8,7 +8,7 @@ import { toast } from "react-toastify";
 import { isAdmin, isGuest, isSuperUser, isUser } from "../../helpers/authCheck";
 import { serviceConfig } from "../../../appSettings";
 import "antd/dist/antd.css";
-import { render } from "@testing-library/react";
+import { Spinner } from "react-bootstrap";
 
 interface IState {
     movies: IMovie[];
@@ -212,7 +212,6 @@ const ShowAllMovies2: React.FC = (props: any) => {
                 return response.statusText;
             })
             .then((response) => {
-                props.history.goBack();
                 NotificationManager.success("Successfuly activated/deactivated movie!");
             })
             .catch((response) => {
@@ -313,10 +312,10 @@ const ShowAllMovies2: React.FC = (props: any) => {
 
     const getBtn = (value: boolean, id) => {
         if (value) {
-            if (isAdmin() || isSuperUser())
+            if (!isAdmin() || !isSuperUser())
                 return (<Button style={{ background: "red", borderColor: "white" }} onClick={() => activateDeactivateMovie(id)} type="primary" id="btnAD" danger>DEACTIVATE</Button>);
         }
-        else if (isAdmin() || isSuperUser()) {
+        else if (!isAdmin() || !isSuperUser()) {
             return (<Button style={{ background: "green", borderColor: "white" }} onClick={() => activateDeactivateMovie(id)} type="primary" id="btnAd" danger>ACTIVATE</Button>)
         }
     }
