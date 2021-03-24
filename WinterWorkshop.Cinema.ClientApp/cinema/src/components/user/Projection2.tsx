@@ -1,11 +1,11 @@
-import {IAuditorium, ICinema, IMovie, IProjection} from "../../models";
+import { IAuditorium, ICinema, IMovie, IProjection } from "../../models";
 import { NotificationManager } from "react-notifications";
 import React, { useEffect, useState } from "react";
-import {withRouter} from "react-router-dom";
-import {serviceConfig} from "../../appSettings";
+import { withRouter } from "react-router-dom";
+import { serviceConfig } from "../../appSettings";
 import Highlighter from 'react-highlight-words';
-import {Button, Input, Space, Table } from "antd";
-import {SearchOutlined} from "@ant-design/icons";
+import { Button, Input, Space, Table } from "antd";
+import { SearchOutlined } from "@ant-design/icons";
 
 
 interface IState {
@@ -52,6 +52,7 @@ const Projection2: React.FC = (props: any) => {
                 description: "",
                 genre: 0,
                 rating: 0,
+                numberOfOscars: 0,
             },
         ],
         projections: [
@@ -92,7 +93,8 @@ const Projection2: React.FC = (props: any) => {
                 distributer: "",
                 description: "",
                 genre: 0,
-                rating: 0
+                rating: 0,
+                numberOfOscars: 0,
             },
         ],
         filteredProjections: [
@@ -146,21 +148,21 @@ const Projection2: React.FC = (props: any) => {
             }
         };
 
-        setState({...state, isLoading: true});
+        setState({ ...state, isLoading: true });
         fetch(`${serviceConfig.baseURL}/api/projections/getAllFuture`, requestOptions)
             .then((response) => {
-                if(!response.ok){
+                if (!response.ok) {
                     return Promise.reject(response);
                 }
                 return response.json();
             })
             .then((data) => {
-                if(data){
-                    setState({...state, projections: data, isLoading: false});
+                if (data) {
+                    setState({ ...state, projections: data, isLoading: false });
                 }
             })
             .catch((response) => {
-                setState({...state, isLoading: false})
+                setState({ ...state, isLoading: false })
                 NotificationManager.error(response.message || response.statusText);
             });
     }
@@ -174,21 +176,21 @@ const Projection2: React.FC = (props: any) => {
             }
         };
 
-        setState({...state, isLoading: true});
+        setState({ ...state, isLoading: true });
         fetch(`${serviceConfig.baseURL}/api/movies/withFutureProjections`, requestOptions)
             .then((response) => {
-                if(!response.ok){
+                if (!response.ok) {
                     return Promise.reject(response);
                 }
                 return response.json();
             })
             .then((data) => {
-                if(data){
-                    setState({...state, movies: data, isLoading: false});
+                if (data) {
+                    setState({ ...state, movies: data, isLoading: false });
                 }
             })
             .catch((response) => {
-                setState({...state, isLoading: false})
+                setState({ ...state, isLoading: false })
                 NotificationManager.error(response.message || response.statusText);
             });
     }
@@ -202,26 +204,26 @@ const Projection2: React.FC = (props: any) => {
             },
         };
 
-        setState({...state, isLoading: true});
+        setState({ ...state, isLoading: true });
         fetch(`${serviceConfig.baseURL}/api/Cinemas/getAll`, requestOptions)
             .then((response) => {
-                if(!response.ok){
+                if (!response.ok) {
                     return Promise.reject(response);
                 }
                 return response.json();
             })
             .then((data) => {
-                if(data){
-                    setState({...state, cinemas: data, isLoading: false});
+                if (data) {
+                    setState({ ...state, cinemas: data, isLoading: false });
                 }
             })
             .catch((response) => {
                 NotificationManager.error(response.message || response.statusText);
-                setState({...state, isLoading: false});
+                setState({ ...state, isLoading: false });
             });
     };
 
-    const getAllAuditoria = () =>{
+    const getAllAuditoria = () => {
         const requestOptions = {
             method: "GET",
             headers: {
@@ -230,22 +232,22 @@ const Projection2: React.FC = (props: any) => {
             },
         };
 
-        setState({...state, isLoading: true});
+        setState({ ...state, isLoading: true });
         fetch(`${serviceConfig.baseURL}/api/Auditoriums/getAll`, requestOptions)
             .then((response) => {
-                if(!response.ok){
+                if (!response.ok) {
                     return Promise.reject(response)
                 }
                 return response.json()
             })
             .then((data) => {
-                if(data) {
-                    setState({...state, auditoriums: data, isLoading: false});
+                if (data) {
+                    setState({ ...state, auditoriums: data, isLoading: false });
                 }
             })
             .catch((response) => {
                 NotificationManager.error(response.message || response.statusText);
-                setState({...state, isLoading: false});
+                setState({ ...state, isLoading: false });
             });
     }
 
@@ -253,11 +255,11 @@ const Projection2: React.FC = (props: any) => {
         var parts = value.toString().split('T');
         var dateParts = parts[0].split("-");
 
-        return(parts[1] + '     ' + dateParts[2] + '.' + dateParts[1] + '.' + dateParts[0] + '.');
+        return (parts[1] + '     ' + dateParts[2] + '.' + dateParts[1] + '.' + dateParts[0] + '.');
     }
 
     const formatDate = (date) => {
-        return(
+        return (
             <div>
                 {getFormat(date)}
             </div>
@@ -267,7 +269,7 @@ const Projection2: React.FC = (props: any) => {
     let searchInput;
 
     const getColumnSearchProps = dataIndex => ({
-        filterDropdown: ({setSelectedKeys, selectedKeys, confirm, clearFilters}) => (
+        filterDropdown: ({ setSelectedKeys, selectedKeys, confirm, clearFilters }) => (
             <div style={{ padding: 8 }}>
                 <Input
                     ref={node => {
@@ -297,34 +299,34 @@ const Projection2: React.FC = (props: any) => {
         ),
         filterIcon: filtered => <SearchOutlined style={{ color: filtered ? '#1890ff' : undefined }} />,
         onFilter: (value, record) =>
-            record[dataIndex]? record[dataIndex].toString().toLowerCase().includes(value.toLowerCase()): '',
+            record[dataIndex] ? record[dataIndex].toString().toLowerCase().includes(value.toLowerCase()) : '',
         onFilterDropdownVisibleChange: visible => {
-            if(visible){
-                setTimeout(() => searchInput.select(), 100 )
+            if (visible) {
+                setTimeout(() => searchInput.select(), 100)
             }
         },
 
         render: text =>
-            state.searchedColumn === dataIndex? (
+            state.searchedColumn === dataIndex ? (
                 <Highlighter
-                    highlightStyle = {{backgroundColor: '#ffc069', padding: 0}}
-                    searchWords = {[state.searchText]}
+                    highlightStyle={{ backgroundColor: '#ffc069', padding: 0 }}
+                    searchWords={[state.searchText]}
                     autoEscape
-                    textToHighlight={text? text.toString(): ''}
+                    textToHighlight={text ? text.toString() : ''}
                 />
-            ):(
+            ) : (
                 text
             ),
     });
 
-    const handleSearch = (selectedKeys, confirm, dataIndex) =>{
+    const handleSearch = (selectedKeys, confirm, dataIndex) => {
         confirm();
-        setState({...state, searchText: selectedKeys[0], searchedColumn: dataIndex});
+        setState({ ...state, searchText: selectedKeys[0], searchedColumn: dataIndex });
     };
 
-    const handleReset = clearFilters =>{
+    const handleReset = clearFilters => {
         clearFilters();
-        setState({...state, searchText: ''})
+        setState({ ...state, searchText: '' })
     }
 
     const columns = [
@@ -345,7 +347,7 @@ const Projection2: React.FC = (props: any) => {
             dataIndex: 'dateTime',
             key: 'dateTime',
             ...getColumnSearchProps('dateTime'),
-            render: (date) => {return(formatDate(date))}
+            render: (date) => { return (formatDate(date)) }
         },
         {
             title: 'Ticket Price',
@@ -369,10 +371,10 @@ const Projection2: React.FC = (props: any) => {
     ]
 
     const getTable = () => {
-        return(
+        return (
             <div>
                 <Table
-                    columns = {columns}
+                    columns={columns}
                     dataSource={state.projections}
                     rowKey={projection => projection.id}>
                 </Table>
@@ -382,11 +384,11 @@ const Projection2: React.FC = (props: any) => {
 
 
     return (
-      <React.Fragment>
-          <div>
-              {getTable()}
-          </div>
-      </React.Fragment>
+        <React.Fragment>
+            <div>
+                {getTable()}
+            </div>
+        </React.Fragment>
     );
 }
 

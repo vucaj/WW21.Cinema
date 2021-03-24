@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { withRouter } from "react-router-dom";
 import {
   FormGroup,
@@ -8,16 +8,26 @@ import {
   Row,
   Col,
   FormText,
+  Form,
 } from "react-bootstrap";
 import { NotificationManager } from "react-notifications";
 import { serviceConfig } from "../../../appSettings";
 import { YearPicker } from "react-dropdown-date";
+import { Input, InputNumber } from 'antd';
+import { IMovie } from "../../../models";
 
 interface IState {
+  movies: IMovie[];
   title: string;
   year: string;
   rating: string;
   current: boolean;
+  isActive: boolean;
+  description: string;
+  genre: number;
+  duration: number;
+  distributer: string;
+  numberOfOscars: number;
   titleError: string;
   submitted: boolean;
   canSubmit: boolean;
@@ -28,10 +38,31 @@ interface IState {
 
 const NewMovie: React.FC = (props: any) => {
   const [state, setState] = useState<IState>({
+    movies: [
+      {
+        id: "",
+        bannerUrl: "",
+        title: "",
+        year: 0,
+        isActive: false,
+        duration: 0,
+        distributer: "",
+        description: "",
+        genre: 0,
+        rating: 0,
+        numberOfOscars: 0,
+      },
+    ],
     title: "",
     year: "",
     rating: "",
     current: false,
+    isActive: false,
+    description: "",
+    genre: 0,
+    duration: 0,
+    distributer: "",
+    numberOfOscars: 0,
     titleError: "",
     submitted: false,
     canSubmit: true,
@@ -43,48 +74,47 @@ const NewMovie: React.FC = (props: any) => {
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { id, value } = e.target;
     setState({ ...state, [id]: value });
-    validate(id, value);
+    // validate(id, value);
   };
 
-  const handleTagsChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    setState({ ...state, tags: e.target.value });
-  };
+  // const handleTagsChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+  //   setState({ ...state, tags: e.target.value });
+  // };
 
-  const handleBannerUrlChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    setState({ ...state, bannerUrl: e.target.value });
-  };
+  // const handleBannerUrlChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+  //   setState({ ...state, bannerUrl: e.target.value });
+  // };
 
-  const validate = (id: string, value: string) => {
-    if (id === "title") {
-      if (value === "") {
-        setState({
-          ...state,
-          titleError: "Fill in movie title",
-          canSubmit: false,
-        });
-      } else {
-        setState({ ...state, titleError: "", canSubmit: true });
-      }
-    }
+  // const validate = (id: string, value: string) => {
+  //   if (id === "title") {
+  //     if (value === "") {
+  //       setState({
+  //         ...state,
+  //         titleError: "Fill in movie title",
+  //         canSubmit: false,
+  //       });
+  //     } else {
+  //       setState({ ...state, titleError: "", canSubmit: true });
+  //     }
+  //   }
 
-    if (id === "year") {
-      const yearNum = +value;
-      if (!value || value === "" || yearNum < 1895 || yearNum > 2100) {
-        setState({ ...state, yearError: "Please chose valid year" });
-      } else {
-        setState({ ...state, yearError: "" });
-      }
-    }
-  };
+  // if (id === "year") {
+  //   const yearNum = +value;
+  //   if (!value || value === "" || yearNum < 1895 || yearNum > 2100) {
+  //     setState({ ...state, yearError: "Please chose valid year" });
+  //   } else {
+  //     setState({ ...state, yearError: "" });
+  //   }
+  // }
+  // };
 
   const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
-    let splitTags = state.tags.split(",");
 
     setState({ ...state, submitted: true });
     const { title, year, rating } = state;
-    if (title && year && rating && splitTags[0] !== "") {
-      addMovie(splitTags);
+    if (title && year && rating) {
+      addMovie();
     } else {
       NotificationManager.error("Please fill in data");
       setState({ ...state, submitted: false });
@@ -93,17 +123,36 @@ const NewMovie: React.FC = (props: any) => {
 
   const handleYearChange = (year: string) => {
     setState({ ...state, year: year });
-    validate("year", year);
+    // validate("year", year);
   };
 
-  const addMovie = (splitTags: string[]) => {
+  const handleDurationChange = (duration: number) => {
+    setState({ ...state, duration: duration });
+  }
+
+  // const handleDistributerChange = (distributer: string) => {
+  //   setState({ ...state, distributer: distributer });
+  // }
+
+  const handleNumberOfOscarsChange = (numberOfOscars: number) => {
+    setState({ ...state, numberOfOscars: numberOfOscars });
+  }
+
+  const handleGenreChange = (genre: number) => {
+    setState({ ...state, genre: genre });
+  }
+
+  const addMovie = () => {
     const data = {
       Title: state.title,
       Year: +state.year,
-      Current: state.current === true,
+      isActive: state.isActive == false,
       Rating: +state.rating,
-      Tags: splitTags,
-      BannerUrl: state.bannerUrl,
+      Description: state.description,
+      Genre: +state.genre,
+      Duration: state.duration,
+      Distributer: state.distributer,
+      NumberOfOscars: state.numberOfOscars,
     };
 
     const requestOptions = {
@@ -115,10 +164,10 @@ const NewMovie: React.FC = (props: any) => {
       body: JSON.stringify(data),
     };
 
-    fetch(`${serviceConfig.baseURL}/api/movies`, requestOptions)
+    fetch(`${serviceConfig.baseURL}/api/movies/create`, requestOptions)
       .then((response) => {
         if (!response.ok) {
-          return Promise.reject(response);
+          return Promise.reject("Something went wrong");
         }
         return response.statusText;
       })
@@ -132,6 +181,39 @@ const NewMovie: React.FC = (props: any) => {
       });
   };
 
+  const getGenre = (genre) => {
+    switch (genre) {
+      case 0:
+        return "Horror";
+      case 1:
+        return "Action";
+      case 2:
+        return "Drama";
+      case 3:
+        return "Sci-fi";
+      case 4:
+        return "Crime";
+      case 5:
+        return "Fantasy";
+      case 6:
+        return "Historical";
+      case 7:
+        return "Romance";
+      case 8:
+        return "Western";
+      case 9:
+        return "Thriler";
+      case 10:
+        return "Animated";
+      case 11:
+        return "Adult";
+      case 12:
+        return "Documentary";
+    }
+  }
+
+  const { TextArea } = Input;
+
   return (
     <Container>
       <Row>
@@ -142,18 +224,20 @@ const NewMovie: React.FC = (props: any) => {
               <FormControl
                 id="title"
                 type="text"
+                maxLength={50}
                 placeholder="Movie Title"
                 value={state.title}
                 onChange={handleChange}
                 className="add-new-form"
+                required
               />
               <FormText className="text-danger">{state.titleError}</FormText>
             </FormGroup>
             <FormGroup>
               <YearPicker
                 defaultValue={"Select Movie Year"}
-                start={1895}
-                end={2100}
+                start={1950}
+                end={2021}
                 reverse
                 required={true}
                 disabled={false}
@@ -170,13 +254,16 @@ const NewMovie: React.FC = (props: any) => {
             </FormGroup>
             <FormGroup>
               <FormControl
+                defaultValue={"Select Rating"}
                 as="select"
                 className="add-new-form"
-                placeholder="Rating"
+                required={true}
+                placeholder="Select Rating"
                 id="rating"
                 value={state.rating}
                 onChange={handleChange}
               >
+                <option value="0">Select Rating</option>
                 <option value="1">1</option>
                 <option value="2">2</option>
                 <option value="3">3</option>
@@ -191,35 +278,65 @@ const NewMovie: React.FC = (props: any) => {
             </FormGroup>
             <FormGroup>
               <FormControl
-                className="add-new-form"
                 as="select"
-                placeholder="Current"
-                id="current"
-                value={state.current.toString()}
+                className="add-new-form"
+                id="genre"
+                value={state.genre}
                 onChange={handleChange}
               >
-                <option value="true">Current</option>
-                <option value="false">Not Current</option>
+                <option value="0">Horror</option>
+                <option value="1">Action</option>
+                <option value="2">Drama</option>
+                <option value="3">Sci-fi</option>
+                <option value="4">Crime</option>
+                <option value="5">Fantasy</option>
+                <option value="6">Historical</option>
+                <option value="7">Romance</option>
+                <option value="8">Western</option>
+                <option value="9">Thriler</option>
+                <option value="10">Animated</option>
+                <option value="11">Adult</option>
+                <option value="12">Documentary</option>
               </FormControl>
             </FormGroup>
+            <FormGroup>
+              <FormControl
+                className="add-new-form"
+                as="select"
+                placeholder="IsActive"
+                id="isActive"
+                value={state.isActive.toString()}
+                onChange={handleChange}
+              >
+                <option value="false">Active</option>
+                <option value="true">Not Active</option>
+              </FormControl>
+            </FormGroup>
+            <InputNumber className="add-new-form" style={{ position: "relative", left: 355, marginTop: 10, marginBottom: 10 }} id="numberOfOscars" placeholder="Number of Oscars" min={0} max={20} value={state.numberOfOscars} pattern="[0-9]*" onChange={(numberOfOscars: number) => {
+              handleNumberOfOscarsChange(numberOfOscars);
+            }} />
             <FormControl
-              id="tags"
+              id="distributer"
               type="text"
-              placeholder="Movie Tags"
-              value={state.tags}
-              onChange={(e: React.ChangeEvent<HTMLInputElement>) => {
-                handleTagsChange(e);
-              }}
+              placeholder="Distributer"
+              maxLength={30}
+              value={state.distributer}
+              onChange={handleChange}
               className="add-new-form"
+              style={{ marginTop: 10, marginBottom: 10 }}
             />
+            <InputNumber id="duration" className="add-new-form" style={{ position: "relative", left: 355, marginTop: 10, marginBottom: 5 }} placeholder="Duration(min)" min={1} max={500} value={state.duration} pattern="[0-9]*" onChange={(duration: number) => {
+              handleDurationChange(duration);
+            }} />
             <FormControl
-              id="bannerUrl"
+              as="textarea"
+              rows={3}
+              id="description"
               type="text"
-              placeholder="Banner Url"
-              value={state.bannerUrl}
-              onChange={(e: React.ChangeEvent<HTMLInputElement>) => {
-                handleBannerUrlChange(e);
-              }}
+              placeholder="Description"
+              maxLength={300}
+              value={state.description}
+              onChange={handleChange}
               className="add-new-form"
             />
             <FormText className="text-danger">{state.titleError}</FormText>
