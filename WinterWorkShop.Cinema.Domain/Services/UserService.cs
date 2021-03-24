@@ -67,7 +67,7 @@ namespace WinterWorkShop.Cinema.Domain.Services
             };
         }
 
-        public async Task<UserDomainResultModel> GetUserByUserName(string username)
+        public UserDomainResultModel GetUserByUserName(string username)
         {
             var user = _usersRepository.GetByUserName(username);
 

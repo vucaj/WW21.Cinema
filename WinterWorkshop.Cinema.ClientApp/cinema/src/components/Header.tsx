@@ -160,6 +160,7 @@ const Header: React.FC = (props: any) => {
           return response.json();
         })
         .then((data) => {
+          console.log(data.token);
           if (data.token) {
             localStorage.setItem("jwt", data.token);
             setTimeout(() => {
@@ -231,6 +232,7 @@ const Header: React.FC = (props: any) => {
             <Button type="submit" variant="outline-success" id="login">
               Login
             </Button>
+
           </Form>
           {shouldShowUserProfile() && (
               <Button
