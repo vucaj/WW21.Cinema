@@ -253,6 +253,7 @@ const TopTenMovies2: React.FC = (props: any) => {
         {
             title: 'Number Of Oscars',
             dataIndex: 'numberOfOscars',
+            ...getColumnSearchProps('numberOfOscars'),
             key: 'numberOfOscars'
         }
     ];
