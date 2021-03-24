@@ -284,7 +284,7 @@ const NewMovie: React.FC = (props: any) => {
                 value={state.genre}
                 onChange={handleChange}
               >
-                <option value="1">Horror</option>
+                <option value="0">Horror</option>
                 <option value="1">Action</option>
                 <option value="2">Drama</option>
                 <option value="3">Sci-fi</option>
@@ -308,8 +308,8 @@ const NewMovie: React.FC = (props: any) => {
                 value={state.isActive.toString()}
                 onChange={handleChange}
               >
-                <option value="true">Active</option>
-                <option value="false">Not Active</option>
+                <option value="false">Active</option>
+                <option value="true">Not Active</option>
               </FormControl>
             </FormGroup>
             <InputNumber className="add-new-form" style={{ position: "relative", left: 355, marginTop: 10, marginBottom: 10 }} id="numberOfOscars" placeholder="Number of Oscars" min={0} max={20} value={state.numberOfOscars} pattern="[0-9]*" onChange={(numberOfOscars: number) => {
