@@ -138,6 +138,10 @@ const NewMovie: React.FC = (props: any) => {
     setState({ ...state, numberOfOscars: numberOfOscars });
   }
 
+  const handleGenreChange = (genre: number) => {
+    setState({ ...state, genre: genre });
+  }
+
   const addMovie = () => {
     const data = {
       Title: state.title,
@@ -145,7 +149,7 @@ const NewMovie: React.FC = (props: any) => {
       isActive: state.isActive == false,
       Rating: +state.rating,
       Description: state.description,
-      Genre: state.genre,
+      Genre: +state.genre,
       Duration: state.duration,
       Distributer: state.distributer,
       NumberOfOscars: state.numberOfOscars,
@@ -176,6 +180,37 @@ const NewMovie: React.FC = (props: any) => {
         setState({ ...state, submitted: false });
       });
   };
+
+  const getGenre = (genre) => {
+    switch (genre) {
+      case 0:
+        return "Horror";
+      case 1:
+        return "Action";
+      case 2:
+        return "Drama";
+      case 3:
+        return "Sci-fi";
+      case 4:
+        return "Crime";
+      case 5:
+        return "Fantasy";
+      case 6:
+        return "Historical";
+      case 7:
+        return "Romance";
+      case 8:
+        return "Western";
+      case 9:
+        return "Thriler";
+      case 10:
+        return "Animated";
+      case 11:
+        return "Adult";
+      case 12:
+        return "Documentary";
+    }
+  }
 
   const { TextArea } = Input;
 
@@ -241,17 +276,15 @@ const NewMovie: React.FC = (props: any) => {
                 <option value="10">10</option>
               </FormControl>
             </FormGroup>
-            {/* <FormGroup>
+            <FormGroup>
               <FormControl
-                defaultValue={"Select Genre"}
                 as="select"
                 className="add-new-form"
-                placeholder="Genre"
                 id="genre"
                 value={state.genre}
                 onChange={handleChange}
               >
-                <option value="0">Horror</option>
+                <option value="1">Horror</option>
                 <option value="1">Action</option>
                 <option value="2">Drama</option>
                 <option value="3">Sci-fi</option>
@@ -265,7 +298,7 @@ const NewMovie: React.FC = (props: any) => {
                 <option value="11">Adult</option>
                 <option value="12">Documentary</option>
               </FormControl>
-            </FormGroup> */}
+            </FormGroup>
             <FormGroup>
               <FormControl
                 className="add-new-form"
