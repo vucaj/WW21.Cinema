@@ -222,6 +222,34 @@ const ShowAllMovies2: React.FC = (props: any) => {
             });
     };
 
+    const removeMovie = (id) => {
+        const requestOptions = {
+            method: "DELETE",
+            headers: {
+                "Content-Type": "application/json",
+                Authorization: `Bearer ${localStorage.getItem("jwt")}`,
+            },
+        };
+
+        setState({ ...state, isLoading: true });
+        fetch(`${serviceConfig.baseURL}/api/Movies/${id}`, requestOptions)
+            .then((response) => {
+                if (!response.ok) {
+                    return Promise.reject(response);
+                }
+                getProjections();
+                NotificationManager.success("Successfully deleted movie.");
+                return response.json();
+            })
+
+            .catch((response) => {
+                NotificationManager.error(response.message || response.statusText);
+                setState({ ...state, isLoading: false });
+            });
+
+        setTimeout(() => window.location.reload(), 1000);
+    };
+
     const handleSearch = (selectedKeys, confirm, dataIndex) => {
         confirm();
         setState({ ...state, searchText: selectedKeys[0], searchedColumn: dataIndex });
@@ -314,12 +342,17 @@ const ShowAllMovies2: React.FC = (props: any) => {
 
     const getBtn = (value: boolean, id) => {
         if (value) {
-            if (isAdmin() || isSuperUser())
+            if (!isAdmin() || !isSuperUser())
                 return (<Button style={{ background: "red", borderColor: "white" }} onClick={() => activateDeactivateMovie(id)} type="primary" id="btnAD" danger>DEACTIVATE</Button>);
         }
-        else if (isAdmin() || isSuperUser()) {
+        else if (!isAdmin() || !isSuperUser()) {
             return (<Button style={{ background: "green", borderColor: "white" }} onClick={() => activateDeactivateMovie(id)} type="primary" id="btnAd" danger>ACTIVATE</Button>)
         }
+    }
+
+    const deleteBtn = (id) => {
+        if (!isAdmin() || !isSuperUser())
+            return (<Button type="primary" style={{ marginLeft: 10 }} onClick={() => removeMovie(id)} danger>DELETE</Button>)
     }
 
     const getDescription = (record) => {
@@ -332,6 +365,7 @@ const ShowAllMovies2: React.FC = (props: any) => {
             <a><b>Description:</b></a>
             <p style={{ margin: 0 }}>{record.description}</p>
             { getBtn(record.isActive, record.id)}
+            { deleteBtn(record.id)}
         </div>)
     };
 
