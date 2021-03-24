@@ -8,7 +8,7 @@ import { toast } from "react-toastify";
 import { isAdmin, isGuest, isSuperUser, isUser } from "../../helpers/authCheck";
 import { serviceConfig } from "../../../appSettings";
 import "antd/dist/antd.css";
-import { render } from "@testing-library/react";
+import { Spinner } from "react-bootstrap";
 
 interface IState {
     movies: IMovie[];
@@ -43,7 +43,8 @@ const ShowAllMovies2: React.FC = (props: any) => {
                 distributer: "",
                 description: "",
                 genre: 0,
-                rating: 0
+                rating: 0,
+                numberOfOscars: 0,
             },
         ],
         tags: [
@@ -212,13 +213,41 @@ const ShowAllMovies2: React.FC = (props: any) => {
                 return response.statusText;
             })
             .then((response) => {
-                props.history.goBack();
+                getProjections();
                 NotificationManager.success("Successfuly activated/deactivated movie!");
             })
             .catch((response) => {
                 NotificationManager.error("Can't deactivate movie that have future projections");
                 setState({ ...state, submitted: false });
             });
+    };
+
+    const removeMovie = (id) => {
+        const requestOptions = {
+            method: "DELETE",
+            headers: {
+                "Content-Type": "application/json",
+                Authorization: `Bearer ${localStorage.getItem("jwt")}`,
+            },
+        };
+
+        setState({ ...state, isLoading: true });
+        fetch(`${serviceConfig.baseURL}/api/Movies/${id}`, requestOptions)
+            .then((response) => {
+                if (!response.ok) {
+                    return Promise.reject(response);
+                }
+                getProjections();
+                NotificationManager.success("Successfully deleted movie.");
+                return response.json();
+            })
+
+            .catch((response) => {
+                NotificationManager.error(response.message || response.statusText);
+                setState({ ...state, isLoading: false });
+            });
+
+        setTimeout(() => window.location.reload(), 1000);
     };
 
     const handleSearch = (selectedKeys, confirm, dataIndex) => {
@@ -321,6 +350,11 @@ const ShowAllMovies2: React.FC = (props: any) => {
         }
     }
 
+    const deleteBtn = (id) => {
+        if (isAdmin() || isSuperUser())
+            return (<Button type="primary" style={{ marginLeft: 10 }} onClick={() => removeMovie(id)} danger>DELETE</Button>)
+    }
+
     const getDescription = (record) => {
         return (<div>
             <Title level={4}>{record.title}</Title>
@@ -331,6 +365,7 @@ const ShowAllMovies2: React.FC = (props: any) => {
             <a><b>Description:</b></a>
             <p style={{ margin: 0 }}>{record.description}</p>
             { getBtn(record.isActive, record.id)}
+            { deleteBtn(record.id)}
         </div>)
     };
 

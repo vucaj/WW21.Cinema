@@ -47,7 +47,8 @@ const NewProjection: React.FC = (props: any) => {
         distributer: "",
         description: "",
         genre: 0,
-        rating: 0
+        rating: 0,
+        numberOfOscars: 0,
       },
     ],
     auditoriums: [

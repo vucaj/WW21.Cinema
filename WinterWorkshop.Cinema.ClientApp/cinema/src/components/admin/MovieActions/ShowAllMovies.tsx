@@ -50,7 +50,8 @@ const ShowAllMovies: React.FC = (props: any) => {
         distributer: "",
         description: "",
         genre: 0,
-        rating: 0
+        rating: 0,
+        numberOfOscars: 0,
       },
     ],
     tags: [
@@ -299,7 +300,7 @@ const ShowAllMovies: React.FC = (props: any) => {
   };
 
   const getGenre = (genre) => {
-    switch (genre){
+    switch (genre) {
       case 0:
         return "Horror";
       case 1:

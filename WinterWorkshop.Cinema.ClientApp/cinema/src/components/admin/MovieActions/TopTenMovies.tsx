@@ -34,7 +34,8 @@ const TopTenMovies: React.FC = (props: any) => {
         distributer: "",
         description: "",
         genre: 0,
-        rating: 0
+        rating: 0,
+        numberOfOscars: 0,
       },
     ],
     filteredMoviesByYear: [
@@ -48,7 +49,8 @@ const TopTenMovies: React.FC = (props: any) => {
         distributer: "",
         description: "",
         genre: 0,
-        rating: 0
+        rating: 0,
+        numberOfOscars: 0,
       },
     ],
     title: "",
@@ -231,8 +233,8 @@ const TopTenMovies: React.FC = (props: any) => {
           name="movieYear"
           id="movieYear"
           className="select-dropdown"
-          //min="1900"
-          //max="2100"
+        //min="1900"
+        //max="2100"
         >
           <option value="none">Year</option>
           {showYears}
