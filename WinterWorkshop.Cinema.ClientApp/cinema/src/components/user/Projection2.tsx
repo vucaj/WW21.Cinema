@@ -5,6 +5,7 @@ import {withRouter} from "react-router-dom";
 import {serviceConfig} from "../../appSettings";
 import Highlighter from 'react-highlight-words';
 import {Button, Input, Space, Table } from "antd";
+import "antd/dist/antd.css";
 import {SearchOutlined} from "@ant-design/icons";
 
 

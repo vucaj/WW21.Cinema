@@ -8,6 +8,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using WinterWorkShop.Cinema.API.TokenServiceExtensions;
 using WinterWorkShop.Cinema.Domain.Interfaces;
+using WinterWorkShop.Cinema.Domain.Models;
 
 namespace WinterWorkShop.Cinema.API.Controllers
 {
@@ -27,7 +28,7 @@ namespace WinterWorkShop.Cinema.API.Controllers
         // you will need a robust auth implementation for production
         // i.e. try IdentityServer4
         [Route("/get-token/{username}")]
-        public IActionResult GenerateToken(string username)
+        public ActionResult<LoginDomainModel> GenerateToken(string username)
         {
             var user = _userService.GetUserByUserName(username);
 
@@ -42,7 +43,14 @@ namespace WinterWorkShop.Cinema.API.Controllers
             var jwt = JwtTokenGenerator
                 .Generate(name, role, _configuration["Tokens:Issuer"], _configuration["Tokens:Key"]);
 
-            return Ok(new {token = jwt});
+            LoginDomainModel loginDomainModel = new LoginDomainModel()
+            {
+                Token = jwt,
+                Role = role
+            };
+            
+            
+            return Ok(loginDomainModel);
         }
     }
 }
