@@ -26,7 +26,7 @@ namespace WinterWorkShop.Cinema.Domain.Interfaces
         /// </summary>
         /// <param name="username"></param>
         /// <returns>User</returns>
-        Task<UserDomainResultModel> GetUserByUserName(string username);
+        UserDomainResultModel GetUserByUserName(string username);
 
         Task<UserDomainResultModel> CreateUser(UserDomainModel domainModel);
     }

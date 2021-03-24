@@ -72,7 +72,7 @@ namespace WinterWorkShop.Cinema.API.Controllers
         [Route("username/{username}")]
         public async Task<ActionResult<UserDomainModel>> GetbyUserNameAsync(string username)
         {
-            var model = await _userService.GetUserByUserName(username);
+            var model =  _userService.GetUserByUserName(username);
 
             if (!model.IsSuccessful)
             {

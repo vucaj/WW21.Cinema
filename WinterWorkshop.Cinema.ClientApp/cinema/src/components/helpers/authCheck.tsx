@@ -1,18 +1,17 @@
 export const getRole = () => {
-  const token = localStorage.getItem("jwt");
+  const roleEnum = localStorage.getItem('role');
 
-  if (!token) {
-    return false;
+  var role = '';
+
+  if(roleEnum == '0'){
+    role = 'user';
   }
-
-  var jwtDecoder = require("jwt-decode");
-  const decodedToken = jwtDecoder(token);
-
-  let role =
-    decodedToken[
-      "http://schemas.microsoft.com/ws/2008/06/identity/claims/role"
-    ];
-
+  else if(roleEnum == '1'){
+    role = 'admin'
+  }
+  else if(roleEnum == '2'){
+    role = 'superUser'
+  }
   return role;
 };
 
