@@ -243,6 +243,7 @@ const Header: React.FC = (props: any) => {
     localStorage.removeItem("jwt");
     localStorage.removeItem('isLoggedIn');
     localStorage.removeItem('role');
+    window.location.reload();
   }
 
 
