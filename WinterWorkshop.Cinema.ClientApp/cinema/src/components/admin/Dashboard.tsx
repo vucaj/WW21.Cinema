@@ -37,7 +37,7 @@ const Dashboard: React.FC = () => {
       {checkRole()}
       <Col className="pt-2 app-content-main">
         <Switch>
-          <Route
+          <PrivateRouteAdminAndSuperUser
             path="/dashboard/NewMovie"
             component={NewMovie}
           />
