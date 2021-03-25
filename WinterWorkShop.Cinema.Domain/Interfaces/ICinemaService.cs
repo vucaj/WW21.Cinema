@@ -13,7 +13,7 @@ namespace WinterWorkShop.Cinema.Domain.Interfaces
 
         Task<CinemaDomainResultModel> GetByCinemaId(CinemaDomainModel cinemaDomainModel);
 
-        Task<CreateCinemaResultModel> Create(CinemaDomainModel domainModel);
+        Task<CinemaDomainModel> Create(CinemaDomainModel domainModel);
 
         Task<DeleteCinemaResultModel> Delete(CinemaDomainModel domainModel);
     }

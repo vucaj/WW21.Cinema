@@ -70,7 +70,7 @@ namespace WinterWorkShop.Cinema.Domain.Services
             };
         }
 
-        public async Task<CreateCinemaResultModel> Create(CinemaDomainModel domainModel)
+        public async Task<CinemaDomainModel> Create(CinemaDomainModel domainModel)
         {
             Data.Cinema newCinema = new Data.Cinema
             {
@@ -85,28 +85,17 @@ namespace WinterWorkShop.Cinema.Domain.Services
 
             if (insertedCinema == null)
             {
-                return new CreateCinemaResultModel
-                {
-                    IsSuccessful = false,
-                    ErrorMessage = Messages.CINEMA_SAVE_ERROR
-                };
+                return null;
             }
             
             _cinemasRepository.Save();
 
-            CreateCinemaResultModel resultModel = new CreateCinemaResultModel
+            return new CinemaDomainModel
             {
-                IsSuccessful = true,
-                ErrorMessage = null,
-                Cinema = new CinemaDomainModel
-                {
-                    Id = insertedCinema.Id,
-                    Name = insertedCinema.Name,
-                    AddressId = insertedCinema.AddressId
-                }
+                Id = insertedCinema.Id,
+                Name = insertedCinema.Name,
+                AddressId = insertedCinema.AddressId
             };
-
-            return resultModel;
         }
 
         public async Task<DeleteCinemaResultModel> Delete(CinemaDomainModel domainModel)
