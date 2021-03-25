@@ -83,7 +83,8 @@ const NewCinema2: React.FC = (props: any) => {
         e.preventDefault();
 
         setState({...state, submitted: true});
-        if(state.name){
+        const {name, addressId} = state;
+        if(name && addressId){
             addCinema();
         } else {
             NotificationManager.error("Please fill in data");
@@ -94,7 +95,7 @@ const NewCinema2: React.FC = (props: any) => {
     const addCinema = () => {
         const data = {
             Name: state.name,
-            AddressId: state.addressId
+            AddressId: +state.addressId
         };
 
         const requestOptions = {
@@ -119,22 +120,6 @@ const NewCinema2: React.FC = (props: any) => {
             setState({...state, submitted:false});
         });
     };
-
-/*    const renderRows = (rows: number, seats: number) => {
-        const rowsRendered: JSX.Element[] = [];
-        for(let i = 0; i < rows; i++){
-            rowsRendered.push(<tr key={i}>{renderSeats(seats, i)}</tr>);
-        }
-        return rowsRendered;
-    };
-
-    const renderSeats = (seats: number, row: React.Key) => {
-        let renderedSeats: JSX.Element[] = [];
-        for(let i = 0; i < seats; i++){
-            renderedSeats.push(<td id="test" className="rendering-seats" key={`row${row}-seat${i}`}><p>DONE</p></td>);
-        }
-        return renderedSeats;
-    }; */
 
     return(
         <Container>
