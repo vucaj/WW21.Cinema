@@ -28,6 +28,7 @@ import ShowAllMovies2 from "./MovieActions/ShowAllMovies2";
 import TopTenMovies2 from "./MovieActions/TopTenMovies2";
 import Projection2 from "../user/Projection2";
 import ShowAllCinemas2 from "./CinemaActions/ShowAllCinemas2";
+import NewCinema2 from "./CinemaActions/NewCinema2";
 
 // higher order component
 
@@ -44,6 +45,7 @@ const Dashboard: React.FC = () => {
           <Route path="/dashboard/AllMovies" component={ShowAllMovies2} />
           <Route path="/dashboard/TopTenMovies" component={TopTenMovies2} />
           <Route path="/dashboard/ShowAllCinemas2" component={ShowAllCinemas2} />
+          <Route path="/dashboard/NewCinema2" component={NewCinema2} />
           <PrivateRouteAdminAndSuperUser
             path="/dashboard/EditMovie/:id"
             component={EditMovie}
@@ -52,7 +54,7 @@ const Dashboard: React.FC = () => {
             path="/dashboard/NewCinema"
             component={NewCinema}
           />
-          <PrivateRouteAdmin
+          <Route
             path="/dashboard/AllCinemas"
             component={ShowAllCinemas2}
           />

@@ -6,6 +6,7 @@ using Microsoft.EntityFrameworkCore;
 using WinterWorkShop.Cinema.API.Models;
 using WinterWorkShop.Cinema.Domain.Interfaces;
 using WinterWorkShop.Cinema.Domain.Models;
+using WinterWorkShop.Cinema.Domain.Common;
 
 namespace WinterWorkShop.Cinema.API.Controllers
 {
@@ -42,7 +43,7 @@ namespace WinterWorkShop.Cinema.API.Controllers
 
         [HttpPost]
         [Route("create")]
-        public async Task<ActionResult<CinemaDomainModel>> CreateCinemaAsync([FromBody] CreateCinemaModel createCinemaModel)
+        public async Task<ActionResult> CreateCinemaAsync([FromBody] CreateCinemaModel createCinemaModel)
         {
             //TODO: provertiti unetu adresu
             
@@ -58,11 +59,11 @@ namespace WinterWorkShop.Cinema.API.Controllers
                 AddressId = createCinemaModel.AddressId
             };
 
-            CreateCinemaResultModel createCinemaResultModel;
+            CinemaDomainModel createCinema;
 
             try
             {
-                createCinemaResultModel = await _cinemaService.Create(cinemaDomainModel);
+                createCinema = await _cinemaService.Create(cinemaDomainModel);
             }
             catch (DbUpdateException e)
             {
@@ -75,18 +76,18 @@ namespace WinterWorkShop.Cinema.API.Controllers
                 return BadRequest(errorResponse);
             }
 
-            if (!createCinemaResultModel.IsSuccessful)
+            if (createCinema == null)
             {
-                ErrorResponseModel errorResponseModel = new ErrorResponseModel
+                ErrorResponseModel errorResponse = new ErrorResponseModel
                 {
-                    ErrorMessage = createCinemaResultModel.ErrorMessage,
+                    ErrorMessage = Messages.CINEMA_CREATION_ERROR,
                     StatusCode = System.Net.HttpStatusCode.BadRequest
                 };
 
-                return BadRequest(errorResponseModel);
+                return StatusCode((int)System.Net.HttpStatusCode.InternalServerError, errorResponse);
             }
 
-            return Created("Cinema//" + createCinemaResultModel.Cinema.Id, createCinemaResultModel.Cinema);
+            return Created("Cinema//" + createCinema.Id, createCinema);
         }
 
         [HttpPost]

@@ -33,7 +33,9 @@
         public const string CINEMA_SAVE_ERROR = "Error occured while saving to database.";
         public const string CINEMA_PROPERTY_NAME_NOT_VALID = "The Cinema Name must have between 2 and 30 characters.";
         public const string CINEMA_NOT_FOUND = "The Cinema with given ID cannot be found.";
-        
+        public const string CINEMA_INVALID_ADDRESSID = "Cannot create new cinema, cinema with given addressId does not exist.";
+        public const string CINEMA_CREATION_ERROR = "Error occured while creating new cinema, please try again.";
+
         #endregion
 
         #region Movies        
