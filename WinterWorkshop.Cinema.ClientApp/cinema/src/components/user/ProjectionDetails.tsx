@@ -45,7 +45,8 @@ const ProjectionDetails: React.FC = () => {
       distributer: "",
       description: "",
       genre: 0,
-      rating: 0
+      rating: 0,
+      numberOfOscars: 0,
     },
     slicedTime: "",
     moviesId: "",
@@ -514,7 +515,7 @@ const ProjectionDetails: React.FC = () => {
                 if (
                   state.currentReservationSeats.length !== 0 &&
                   getButtonBySeatId(currentSeatId).className !==
-                    "seat nice-green-color"
+                  "seat nice-green-color"
                 ) {
                   return;
                 }
@@ -593,8 +594,8 @@ const ProjectionDetails: React.FC = () => {
               seatTaken
                 ? "seat seat-taken"
                 : currentlyReserved
-                ? "seat seat-current-reservation"
-                : "seat"
+                  ? "seat seat-current-reservation"
+                  : "seat"
             }
             value={currentSeatId}
             key={`row${row}-seat${i}`}

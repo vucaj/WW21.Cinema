@@ -1,15 +1,15 @@
-import {IMovie} from "../../../models";
-import React, {useEffect, useState} from "react";
-import {serviceConfig} from "../../../appSettings";
+import { IMovie } from "../../../models";
+import React, { useEffect, useState } from "react";
+import { serviceConfig } from "../../../appSettings";
 import { NotificationManager } from "react-notifications";
-import {Button, Card, Input, Space, Table, Typography, Tabs, Select} from "antd";
+import { Button, Card, Input, Space, Table, Typography, Tabs, Select } from "antd";
 import Highlighter from 'react-highlight-words';
-import {SearchOutlined} from "@ant-design/icons";
+import { SearchOutlined } from "@ant-design/icons";
 
 
 
 
-interface IState{
+interface IState {
     movies: IMovie[];
     filteredMoviesByYear: IMovie[];
     id: string;
@@ -48,7 +48,8 @@ const TopTenMovies2: React.FC = (props: any) => {
                 distributer: "",
                 description: "",
                 genre: 0,
-                rating: 0
+                rating: 0,
+                numberOfOscars: 0,
             },
         ],
         filteredMoviesByYear: [
@@ -62,7 +63,8 @@ const TopTenMovies2: React.FC = (props: any) => {
                 distributer: "",
                 description: "",
                 genre: 0,
-                rating: 0
+                rating: 0,
+                numberOfOscars: 0,
             },
         ],
         title: "",
@@ -81,12 +83,12 @@ const TopTenMovies2: React.FC = (props: any) => {
         expandedRowKeys: []
     });
 
-    useEffect( () =>{
+    useEffect(() => {
         getProjections();
     }, [])
 
     const getProjections = () => {
-        const requestOptions ={
+        const requestOptions = {
             method: "GET",
             headers: {
                 "Content-Type": "application/json",
@@ -94,30 +96,30 @@ const TopTenMovies2: React.FC = (props: any) => {
             }
         };
 
-        setState({...state, isLoading: true});
+        setState({ ...state, isLoading: true });
         fetch(`${serviceConfig.baseURL}/api/Movies/top`, requestOptions)
-            .then((response) =>{
-                if(!response.ok){
+            .then((response) => {
+                if (!response.ok) {
                     return Promise.reject(response);
                 }
                 return response.json();
             })
             .then((data) => {
-                if(data) {
-                    setState({...state, movies: data, isLoading: false});
+                if (data) {
+                    setState({ ...state, movies: data, isLoading: false });
                 }
             })
             .catch((response) => {
-                setState({...state, isLoading: false});
+                setState({ ...state, isLoading: false });
                 NotificationManager.error(response.message || response.statusText);
-                setState({...state, submitted: false});
+                setState({ ...state, submitted: false });
             });
     }
 
     let searchInput;
 
     const getColumnSearchProps = dataIndex => ({
-        filterDropdown: ({setSelectedKeys, selectedKeys, confirm, clearFilters}) => (
+        filterDropdown: ({ setSelectedKeys, selectedKeys, confirm, clearFilters }) => (
             <div style={{ padding: 8 }}>
                 <Input
                     ref={node => {
@@ -147,38 +149,38 @@ const TopTenMovies2: React.FC = (props: any) => {
         ),
         filterIcon: filtered => <SearchOutlined style={{ color: filtered ? '#1890ff' : undefined }} />,
         onFilter: (value, record) =>
-            record[dataIndex]? record[dataIndex].toString().toLowerCase().includes(value.toLowerCase()): '',
+            record[dataIndex] ? record[dataIndex].toString().toLowerCase().includes(value.toLowerCase()) : '',
         onFilterDropdownVisibleChange: visible => {
-            if(visible){
-                setTimeout(() => searchInput.select(), 100 )
+            if (visible) {
+                setTimeout(() => searchInput.select(), 100)
             }
         },
 
         render: text =>
-            state.searchedColumn === dataIndex? (
+            state.searchedColumn === dataIndex ? (
                 <Highlighter
-                    highlightStyle = {{backgroundColor: '#ffc069', padding: 0}}
-                    searchWords = {[state.searchText]}
+                    highlightStyle={{ backgroundColor: '#ffc069', padding: 0 }}
+                    searchWords={[state.searchText]}
                     autoEscape
-                    textToHighlight={text? text.toString(): ''}
+                    textToHighlight={text ? text.toString() : ''}
                 />
-            ):(
+            ) : (
                 text
             ),
     });
 
-    const handleSearch = (selectedKeys, confirm, dataIndex) =>{
+    const handleSearch = (selectedKeys, confirm, dataIndex) => {
         confirm();
-        setState({...state, searchText: selectedKeys[0], searchedColumn: dataIndex});
+        setState({ ...state, searchText: selectedKeys[0], searchedColumn: dataIndex });
     };
 
-    const handleReset = clearFilters =>{
+    const handleReset = clearFilters => {
         clearFilters();
-        setState({...state, searchText: ''})
+        setState({ ...state, searchText: '' })
     }
 
-    const getGenre = (genre) =>{
-        switch (genre){
+    const getGenre = (genre) => {
+        switch (genre) {
             case 0:
                 return "Horror";
             case 1:
@@ -251,6 +253,7 @@ const TopTenMovies2: React.FC = (props: any) => {
         {
             title: 'Number Of Oscars',
             dataIndex: 'numberOfOscars',
+            ...getColumnSearchProps('numberOfOscars'),
             key: 'numberOfOscars'
         }
     ];
@@ -269,7 +272,7 @@ const TopTenMovies2: React.FC = (props: any) => {
         </div>)
     };
 
-    const getTopTenAllTime = () =>{
+    const getTopTenAllTime = () => {
         return (
             <div>
                 <Title level={2}>Top 10: All Time</Title>
@@ -287,9 +290,9 @@ const TopTenMovies2: React.FC = (props: any) => {
     }
 
     const handleYearChange = (value) => {
-        setState({...state, selectedYear: parseInt(value)})
+        setState({ ...state, selectedYear: parseInt(value) })
 
-        const requestOptions ={
+        const requestOptions = {
             method: "GET",
             headers: {
                 "Content-Type": "application/json",
@@ -297,33 +300,33 @@ const TopTenMovies2: React.FC = (props: any) => {
             }
         };
 
-        setState({...state, isLoading: true, isSelectedYear: true});
+        setState({ ...state, isLoading: true, isSelectedYear: true });
 
-        var api = `${serviceConfig.baseURL}/api/Movies/top-`+value;
+        var api = `${serviceConfig.baseURL}/api/Movies/top-` + value;
 
         fetch(api, requestOptions)
-            .then((response) =>{
-                if(!response.ok){
+            .then((response) => {
+                if (!response.ok) {
                     return Promise.reject(response);
                 }
                 return response.json();
             })
             .then((data) => {
-                if(data) {
-                    setState({...state, filteredMoviesByYear: data, isLoading: false});
+                if (data) {
+                    setState({ ...state, filteredMoviesByYear: data, isLoading: false });
                 }
             })
             .catch((response) => {
-                setState({...state, isLoading: false});
+                setState({ ...state, isLoading: false });
                 NotificationManager.error(response.message || response.statusText);
-                setState({...state, submitted: false});
+                setState({ ...state, submitted: false });
             })
     }
 
     const { Option } = Select;
 
     const getOptions = () => {
-        return(
+        return (
             <Select.OptGroup>
                 <Option value="1950">1950</Option>
                 <Option value="1951">1951</Option>
@@ -431,7 +434,7 @@ const TopTenMovies2: React.FC = (props: any) => {
     }
 
     const getTopTenByYear = () => {
-        return(
+        return (
             <div>
                 <Title level={2}>Top 10: {state.selectedYear}</Title>
                 {getSelect()}
@@ -448,8 +451,8 @@ const TopTenMovies2: React.FC = (props: any) => {
         <React.Fragment>
             <Card style={{ margin: 10 }}>
                 <Tabs defaultActiveKey="1" size="large">
-                     <TabPane tab="All Time" key="1">
-                         {getTopTenAllTime()}
+                    <TabPane tab="All Time" key="1">
+                        {getTopTenAllTime()}
                     </TabPane>
                     <TabPane tab="By Year" key="2">
                         {getTopTenByYear()}

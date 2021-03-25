@@ -46,6 +46,7 @@ const Projection: React.FC = (props: any) => {
         description: "",
         genre: 0,
         rating: 0,
+        numberOfOscars: 0,
         projections: [
           {
             id: "",
@@ -57,17 +58,19 @@ const Projection: React.FC = (props: any) => {
             movieTitle: '',
             auditoriumName: '',
             cinemaName: '',
-            movieRating: 0
+            movieRating: 0,
           },
         ],
       },
     ],
-    cinemas: [{ id: "", name: "", addressId: 0,  
-    cityName: "",
-    country: "",
-    latitude: 0,
-    longitude: 0,
-    streetName: "" }],
+    cinemas: [{
+      id: "", name: "", addressId: 0,
+      cityName: "",
+      country: "",
+      latitude: 0,
+      longitude: 0,
+      streetName: ""
+    }],
     auditoriums: [
       {
         id: "",
@@ -91,7 +94,8 @@ const Projection: React.FC = (props: any) => {
         distributer: "",
         description: "",
         genre: 0,
-        rating: 0
+        rating: 0,
+        numberOfOscars: 0,
       },
     ],
     filteredProjections: [
