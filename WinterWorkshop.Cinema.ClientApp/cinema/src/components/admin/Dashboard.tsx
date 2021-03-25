@@ -54,7 +54,7 @@ const Dashboard: React.FC = () => {
           />
           <PrivateRouteAdmin
             path="/dashboard/AllCinemas"
-            component={ShowAllCinemas}
+            component={ShowAllCinemas2}
           />
           <PrivateRouteAdmin
             path="/dashboard/EditCinema/:id"

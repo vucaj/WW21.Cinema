@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { withRouter } from "react-router-dom";
 import { Navbar, Nav, FormControl } from "react-bootstrap";
-import {Form, Button, Input, PageHeader} from 'antd';
+import { Form, Button, Input, PageHeader } from 'antd';
 import "antd/dist/antd.css";
 import { NotificationManager } from "react-notifications";
 import { serviceConfig } from "../appSettings";
@@ -88,7 +88,7 @@ const Header: React.FC = (props: any) => {
     if (logoutButton) {
       logoutButton.style.display = "block";
     }
-    document.getElementById("username")!.style.display = "none";
+    // document.getElementById("username")!.style.display = "none";
   };
 
   const hideLogoutButtonElement = () => {
@@ -114,65 +114,65 @@ const Header: React.FC = (props: any) => {
     };
 
     fetch(
-        `${serviceConfig.baseURL}/api/users/username/${state.username}`,
-        requestOptions
+      `${serviceConfig.baseURL}/api/users/username/${state.username}`,
+      requestOptions
     )
-        .then((response) => {
-          if (!response.ok) {
-            return Promise.reject(response);
+      .then((response) => {
+        if (!response.ok) {
+          return Promise.reject(response);
+        }
+        return response.json();
+      })
+      .then((data) => {
+        setState({ ...state, token: true });
+        var isGuest = false;
+        if (data.userName) {
+          setState({ ...state, shouldHide: false });
+          if (!data.isAdmin && !data.isSuperUser && !data.isUser) {
+            isGuest = true;
           }
-          return response.json();
-        })
-        .then((data) => {
-          setState({ ...state, token: true });
-          var isGuest = false;
-          if (data.userName) {
-            setState({ ...state, shouldHide: false });
-            if (!data.isAdmin && !data.isSuperUser && !data.isUser) {
-              isGuest = true;
-            }
-            getToken(data.isAdmin, data.isSuperUser, data.isUser, isGuest);
-            NotificationManager.success(`Welcome, ${data.firstName}!`);
-          }
-        })
-        .catch((response) => {
-          NotificationManager.error("Username does not exists.");
-          setState({ ...state, submitted: false });
-        });
+          getToken(data.isAdmin, data.isSuperUser, data.isUser, isGuest);
+          NotificationManager.success(`Welcome, ${data.firstName}!`);
+        }
+      })
+      .catch((response) => {
+        NotificationManager.error("Username does not exists.");
+        setState({ ...state, submitted: false });
+      });
   };
 
   const getToken = (
-      IsAdmin: boolean,
-      isSuperUser: boolean,
-      isUser: boolean,
-      isGuest: boolean
+    IsAdmin: boolean,
+    isSuperUser: boolean,
+    isUser: boolean,
+    isGuest: boolean
   ) => {
     const requestOptions = {
       method: "GET",
     };
     fetch(
-        `${serviceConfig.baseURL}/get-token?name=${state.username}&admin=${IsAdmin}&superUser=${isSuperUser}&user=${isUser}&guest=${isGuest}`,
-        requestOptions
+      `${serviceConfig.baseURL}/get-token?name=${state.username}&admin=${IsAdmin}&superUser=${isSuperUser}&user=${isUser}&guest=${isGuest}`,
+      requestOptions
     )
-        .then((response) => {
-          if (!response.ok) {
-            return Promise.reject(response);
-          }
-          return response.json();
-        })
-        .then((data) => {
-          console.log(data.token);
-          if (data.token) {
-            localStorage.setItem("jwt", data.token);
-            setTimeout(() => {
-              window.location.reload();
-            }, 500);
-          }
-        })
-        .catch((response) => {
-          NotificationManager.error(response.message || response.statusText);
-          setState({ ...state, submitted: false });
-        });
+      .then((response) => {
+        if (!response.ok) {
+          return Promise.reject(response);
+        }
+        return response.json();
+      })
+      .then((data) => {
+        console.log(data.token);
+        if (data.token) {
+          localStorage.setItem("jwt", data.token);
+          setTimeout(() => {
+            window.location.reload();
+          }, 500);
+        }
+      })
+      .catch((response) => {
+        NotificationManager.error(response.message || response.statusText);
+        setState({ ...state, submitted: false });
+      });
   };
 
   const getTokenForGuest = () => {
@@ -180,23 +180,23 @@ const Header: React.FC = (props: any) => {
       method: "GET",
     };
     fetch(`${serviceConfig.baseURL}/get-token?guest=true`, requestOptions)
-        .then((response) => {
-          if (!response.ok) {
-            return Promise.reject(response);
-          }
-          return response.json();
-        })
-        .then((data) => {
-          setState({ ...state, shouldHide: true });
-          if (data.token) {
-            localStorage.setItem("jwt", data.token);
-            window.location.reload();
-          }
-        })
-        .catch((response) => {
-          NotificationManager.error(response.message || response.statusText);
-          setState({ ...state, submitted: false });
-        });
+      .then((response) => {
+        if (!response.ok) {
+          return Promise.reject(response);
+        }
+        return response.json();
+      })
+      .then((data) => {
+        setState({ ...state, shouldHide: true });
+        if (data.token) {
+          localStorage.setItem("jwt", data.token);
+          window.location.reload();
+        }
+      })
+      .catch((response) => {
+        NotificationManager.error(response.message || response.statusText);
+        setState({ ...state, submitted: false });
+      });
     state.token = true;
   };
 
@@ -215,21 +215,21 @@ const Header: React.FC = (props: any) => {
 
     var url = serviceConfig.baseURL + '/get-token/' + username;
     fetch(url, requestOptions)
-        .then((response) => {
-          if (!response.ok) {
-            return Promise.reject(response);
-          }
-          return response.json();
-        })
-        .then((data) =>{
-          setState({...state, isLoggedIn: true})
-          localStorage.setItem("jwt", data.token);
-          localStorage.setItem('isLoggedIn', 'true');
-          localStorage.setItem('role', data.role);
-        })
-        .catch((response) => {
-          NotificationManager.error("Username does not exists.");
-        })
+      .then((response) => {
+        if (!response.ok) {
+          return Promise.reject(response);
+        }
+        return response.json();
+      })
+      .then((data) => {
+        setState({ ...state, isLoggedIn: true })
+        localStorage.setItem("jwt", data.token);
+        localStorage.setItem('isLoggedIn', 'true');
+        localStorage.setItem('role', data.role);
+      })
+      .catch((response) => {
+        NotificationManager.error("Username does not exists.");
+      })
   }
 
 
@@ -239,7 +239,7 @@ const Header: React.FC = (props: any) => {
   }
 
   const logout = () => {
-    setState({...state, isLoggedIn: false})
+    setState({ ...state, isLoggedIn: false })
     localStorage.removeItem("jwt");
     localStorage.removeItem('isLoggedIn');
     localStorage.removeItem('role');
@@ -248,43 +248,43 @@ const Header: React.FC = (props: any) => {
 
 
   const getForm = () => {
-    if(state.isLoggedIn || localStorage.getItem('jwt')){
-      return(
-          <Button danger onClick={logout}>
-            Logout
-          </Button>
+    if (state.isLoggedIn || localStorage.getItem('jwt')) {
+      return (
+        <Button danger onClick={logout}>
+          Logout
+        </Button>
       )
     }
-    else if(!state.isLoggedIn || localStorage.getItem('jwt')){
-      return(
-          <Form
-              name="basic"
-              initialValues={{ remember: true }}
-              onFinish={onFinish}
+    else if (!state.isLoggedIn || localStorage.getItem('jwt')) {
+      return (
+        <Form
+          name="basic"
+          initialValues={{ remember: true }}
+          onFinish={onFinish}
+        >
+          <Form.Item
+            name="username"
+            rules={[{ required: true, message: 'Please input your username!' }]}
           >
-            <Form.Item
-                name="username"
-                rules={[{ required: true, message: 'Please input your username!' }]}
-            >
-              <Input style={{width: '15%'}}/>
-            </Form.Item>
+            <Input style={{ width: '15%' }} />
+          </Form.Item>
 
-            <Form.Item>
-              <Button type="primary"  htmlType="submit">
-                Login
+          <Form.Item>
+            <Button type="primary" htmlType="submit">
+              Login
               </Button>
-            </Form.Item>
-          </Form>
+          </Form.Item>
+        </Form>
       )
     }
   }
 
   return (
-      <React.Fragment>
-        <PageHeader>
-          {getForm()}
-        </PageHeader>
-      </React.Fragment>
+    <React.Fragment>
+      <PageHeader>
+        {getForm()}
+      </PageHeader>
+    </React.Fragment>
   );
 };
 
