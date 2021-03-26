@@ -15,6 +15,6 @@ namespace WinterWorkShop.Cinema.Domain.Interfaces
 
         Task<CinemaDomainModel> Create(CinemaDomainModel domainModel);
 
-        Task<DeleteCinemaResultModel> Delete(CinemaDomainModel domainModel);
+        Task<CinemaDomainModel> Delete(Guid id);
     }
 }

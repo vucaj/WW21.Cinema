@@ -98,16 +98,13 @@ namespace WinterWorkShop.Cinema.Domain.Services
             };
         }
 
-        public async Task<DeleteCinemaResultModel> Delete(CinemaDomainModel domainModel)
+        public async Task<CinemaDomainModel> Delete(Guid id)
         {
-            var cinema = await _cinemasRepository.GetByIdAsync(domainModel.Id);
+            Data.Cinema cinema = await _cinemasRepository.GetByIdAsync(id);
+
             if (cinema == null)
             {
-                return new DeleteCinemaResultModel
-                {
-                    isSuccessful = false,
-                    ErrorMessage = Messages.CINEMA_NOT_FOUND
-                };
+                return null;
             }
 
             var auditoria = await _auditoriumsRepository.GetByCinemaId(cinema.Id);
@@ -129,18 +126,12 @@ namespace WinterWorkShop.Cinema.Domain.Services
             _cinemasRepository.Delete(cinema.Id);
             _cinemasRepository.Save();
 
-            return new DeleteCinemaResultModel
+            return new CinemaDomainModel
             {
-                isSuccessful = true,
-                Cinema = new CinemaDomainModel
-                {
-                    Id = cinema.Id,
-                    Name = cinema.Name,
-                    AddressId = cinema.AddressId
-                },
-                ErrorMessage = null
+                Id = cinema.Id,
+                Name = cinema.Name,
+                AddressId = cinema.AddressId
             };
-
         }
     }
 

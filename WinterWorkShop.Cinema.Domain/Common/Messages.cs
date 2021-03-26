@@ -35,6 +35,7 @@
         public const string CINEMA_NOT_FOUND = "The Cinema with given ID cannot be found.";
         public const string CINEMA_INVALID_ADDRESSID = "Cannot create new cinema, cinema with given addressId does not exist.";
         public const string CINEMA_CREATION_ERROR = "Error occured while creating new cinema, please try again.";
+        public const string CINEMA_DOES_NOT_EXIST = "Cinenma does not exist.";
 
         #endregion
 
