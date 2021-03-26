@@ -29,6 +29,7 @@ import TopTenMovies2 from "./MovieActions/TopTenMovies2";
 import Projection2 from "../user/Projection2";
 import ShowAllCinemas2 from "./CinemaActions/ShowAllCinemas2";
 import NewCinema2 from "./CinemaActions/NewCinema2";
+import ShowAllAuditoriums2 from "./AuditoriumActions/ShowAllAuditoriums2";
 
 // higher order component
 
@@ -70,7 +71,7 @@ const Dashboard: React.FC = () => {
           />
           <PrivateRouteAdminAndSuperUser
             path="/dashboard/AllAuditoriums"
-            component={ShowAllAuditoriums}
+            component={ShowAllAuditoriums2}
           />
           <PrivateRouteAdminAndSuperUser
             path="/dashboard/AllProjections"
