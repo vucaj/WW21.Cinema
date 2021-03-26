@@ -56,6 +56,14 @@ const ShowAllAuditoriums2: React.FC = (props:any) => {
         getAuditoriums();
     }, [getAuditoriums]);
 
+    const deleteBtn = (id) => {
+            return (
+                <Button type="primary" style={{ margin: 5 }} onClick={() => removeAuditorium(id)} danger>
+                    DELETE
+                </Button>
+            )
+    }
+
     const fillCardWithData = () => {
         return state.auditoriums.map((auditorium) => {
             return(
@@ -63,10 +71,38 @@ const ShowAllAuditoriums2: React.FC = (props:any) => {
                     <div>
                         <h2><b>Auditorium Name: </b>{auditorium.name}</h2>
                         <p><b>Cinema Id: </b>{auditorium.cinemaId}</p>
+                        {deleteBtn(auditorium.id)}
                     </div>
                 </Card>
             );
         });
+    };
+
+    const removeAuditorium = (id: string) => {
+        const requestOptions = {
+            method: "DELETE",
+            headers: {
+              "Content-Type": "application/json",
+              Authorization: `Bearer ${localStorage.getItem("jwt")}`,
+            },
+        };
+        
+        setState({...state, isLoading:true});
+        fetch(
+            `${serviceConfig.baseURL}/api/Auditoriums/${id}`,
+            requestOptions
+        )
+        .then((response) => {
+            if (!response.ok) {
+                return Promise.reject(response);
+              }
+              NotificationManager.success("Successfully deleted auditorium.");
+              return response.json();
+        }).catch((response) =>{
+            NotificationManager.error(response.message || response.statusText);
+            setState({ ...state, isLoading: false });
+        });
+        setTimeout(() => window.location.reload(), 1000);
     };
 
     const cardData = fillCardWithData();
