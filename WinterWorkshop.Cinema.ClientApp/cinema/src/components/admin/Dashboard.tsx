@@ -44,15 +44,13 @@ const Dashboard: React.FC = () => {
           />
           <Route path="/dashboard/AllMovies" component={ShowAllMovies2} />
           <Route path="/dashboard/TopTenMovies" component={TopTenMovies2} />
-          <Route path="/dashboard/ShowAllCinemas2" component={ShowAllCinemas2} />
-          <Route path="/dashboard/NewCinema2" component={NewCinema2} />
           <PrivateRouteAdminAndSuperUser
             path="/dashboard/EditMovie/:id"
             component={EditMovie}
           />
           <PrivateRouteAdmin
             path="/dashboard/NewCinema"
-            component={NewCinema}
+            component={NewCinema2}
           />
           <Route
             path="/dashboard/AllCinemas"

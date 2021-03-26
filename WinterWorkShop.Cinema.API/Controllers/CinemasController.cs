@@ -46,7 +46,7 @@ namespace WinterWorkShop.Cinema.API.Controllers
         public async Task<ActionResult> CreateCinemaAsync([FromBody] CreateCinemaModel createCinemaModel)
         {
             //TODO: provertiti unetu adresu
-            
+
             if (!ModelState.IsValid)
             {
                 return BadRequest(ModelState);
@@ -90,52 +90,35 @@ namespace WinterWorkShop.Cinema.API.Controllers
             return Created("Cinema//" + createCinema.Id, createCinema);
         }
 
-        [HttpPost]
-        [Route("delete")]
-        public async Task<ActionResult<CinemaDomainModel>> DeleteCinemaAsync([FromBody] DeleteCinemaModel deleteCinemaModel)
+        [HttpDelete]
+        [Route("{id}")]
+        public async Task<ActionResult> Delte(Guid id)
         {
-            if (!ModelState.IsValid)
+            CinemaDomainModel deletedCinema;
+            try
             {
-                return BadRequest(ModelState);
+                deletedCinema = await _cinemaService.Delete(id);
             }
-
-            CinemaDomainResultModel cinema = await _cinemaService.GetByCinemaId(new CinemaDomainModel
+            catch (DbUpdateException e)
             {
-                Id = deleteCinemaModel.Id
-            });
-
-            if (!cinema.IsSuccessful)
-            {
-                ErrorResponseModel errorResponseModel = new ErrorResponseModel
+                ErrorResponseModel errorResponse = new ErrorResponseModel
                 {
-                    ErrorMessage = cinema.ErrorMessage,
+                    ErrorMessage = e.InnerException.Message ?? e.Message,
                     StatusCode = System.Net.HttpStatusCode.BadRequest
                 };
-                
-                return BadRequest(errorResponseModel);
+                return BadRequest(errorResponse);
             }
 
-            CinemaDomainModel cinemaDomainModel = new CinemaDomainModel()
+            if (deletedCinema == null)
             {
-                Id = cinema.Cinema.Id,
-                AddressId = cinema.Cinema.AddressId,
-                Name = cinema.Cinema.Name
-            };
-
-            DeleteCinemaResultModel resultModel = await _cinemaService.Delete(cinemaDomainModel);
-
-            if (!resultModel.isSuccessful)
-            {
-                ErrorResponseModel errorResponseModel = new ErrorResponseModel
+                ErrorResponseModel errorResponse = new ErrorResponseModel
                 {
-                    ErrorMessage = resultModel.ErrorMessage,
-                    StatusCode = System.Net.HttpStatusCode.BadRequest
+                    ErrorMessage = Messages.CINEMA_DOES_NOT_EXIST,
+                    StatusCode = System.Net.HttpStatusCode.InternalServerError
                 };
-                
-                return BadRequest(errorResponseModel);
+                return StatusCode((int)System.Net.HttpStatusCode.InternalServerError, errorResponse);
             }
-
-            return Accepted("Cinema//" + resultModel.Cinema.Id, resultModel.Cinema);
+            return Accepted("cinema//" + deletedCinema.Id, deletedCinema);
         }
     }
 }
