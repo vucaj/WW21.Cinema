@@ -6,7 +6,6 @@ import { serviceConfig } from "../../../appSettings";
 import { NotificationManager } from "react-notifications";
 import { Card, Row, Button } from 'antd';
 import "antd/dist/antd.css";
-import Spinner from "../../Spinner";
 
 interface IState {
     cinemas: ICinema[];
@@ -143,7 +142,6 @@ const ShowAllCinemas2: React.FC = (props: any) => {
         });
     };
 
-
     const cardData = fillCardWithData();
 
     const card = (
@@ -151,8 +149,6 @@ const ShowAllCinemas2: React.FC = (props: any) => {
             {cardData}
         </Card>
     );
-
-    // const showCard = state.isLoading ? <Spinner></Spinner> : card;
 
     return (
         <React.Fragment>
