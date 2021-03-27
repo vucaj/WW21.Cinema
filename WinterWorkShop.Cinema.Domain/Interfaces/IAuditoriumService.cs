@@ -14,8 +14,8 @@ namespace WinterWorkShop.Cinema.Domain.Interfaces
         
         Task<CreateAuditoriumResultModel> CreateAuditorium(AuditoriumDomainModel domainModel, int numberOfRows, int numberOfSeats);
 
-        Task<DeleteAuditoriumResultModel> DeleteAuditorium(AuditoriumDomainModel domainModel);
-
+        // Task<DeleteAuditoriumResultModel> DeleteAuditorium(AuditoriumDomainModel domainModel);
+        Task<AuditoriumDomainModel> DeleteAuditorium(Guid id);
         Task<UpdateAuditoriumResultModel> UpdateAuditorium(AuditoriumDomainModel domainModel);
 
         Task<AuditoriumDomainModel> FindByAuditoriumId(AuditoriumDomainModel domainModel);
