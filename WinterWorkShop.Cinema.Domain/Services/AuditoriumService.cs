@@ -138,7 +138,7 @@ namespace WinterWorkShop.Cinema.Domain.Services
             };
         }
 
-        public async Task<DeleteAuditoriumResultModel> DeleteAuditorium(AuditoriumDomainModel domainModel)
+        /*public async Task<DeleteAuditoriumResultModel> DeleteAuditorium(AuditoriumDomainModel domainModel)
         {
             var cinema = await _cinemasRepository.GetByIdAsync(domainModel.CinemaId);
             if (cinema == null)
@@ -168,10 +168,10 @@ namespace WinterWorkShop.Cinema.Domain.Services
             }
 
             //TODO: i projekcije treba gettovati prvo
-            /*foreach (var projection in auditorium.Projections)
+            *//*foreach (var projection in auditorium.Projections)
             {
                 _projectionsRepository.Delete(projection.Id);
-            }*/
+            }*//*
 
             _auditoriumsRepository.Delete(auditorium.Id);
             
@@ -186,7 +186,7 @@ namespace WinterWorkShop.Cinema.Domain.Services
             };
 
             return resultModel;
-        }
+        }*/
         
         public async Task<IEnumerable<AuditoriumDomainModel>> GetAllByCinemaIdAsync(CinemaDomainModel domainModel)
         {
@@ -248,6 +248,47 @@ namespace WinterWorkShop.Cinema.Domain.Services
                 Name = auditorium.Name
             };
         }
-        
+
+        public async Task<AuditoriumDomainModel> DeleteAuditorium(Guid id)
+        {
+           /* var cinema = await _cinemasRepository.GetByIdAsync(id);
+            if (cinema == null)
+            {
+                return null;
+            } */
+
+            var auditorium = await _auditoriumsRepository.GetByIdAsync(id);
+            if (auditorium == null)
+            {
+                return null;
+            }
+
+            var seats = await _seatsRepository.GetAllByAuditoriumIdAsync(auditorium.Id);
+
+            foreach (var seat in seats)
+            {
+                _seatsRepository.Delete(seat.Id);
+            }
+
+            //TODO: i projekcije treba gettovati prvo
+           /* foreach (var projection in auditorium.Projections)
+            {
+                _projectionsRepository.Delete(projection.Id);
+            }*/
+
+            _auditoriumsRepository.Delete(auditorium.Id);
+
+            _projectionsRepository.Save();
+            _seatsRepository.Save();
+            _auditoriumsRepository.Save();
+
+            return new AuditoriumDomainModel
+            {
+                Id = auditorium.Id,
+                CinemaId = auditorium.CinemaId,
+                Name = auditorium.Name 
+            };
+        }
+
     }
 }

@@ -97,7 +97,7 @@ namespace WinterWorkShop.Cinema.API.Controllers
             return Created("auditoriums//" + createAuditoriumResultModel.Auditorium.Id, createAuditoriumResultModel.Auditorium);
         }
 
-        [HttpPost]
+        /*[HttpPost]
         [Route("delete")]
         public async Task<ActionResult> DeleteAuditorium([FromBody] DeleteAuditoriumModel deleteAuditoriumModel)
         {
@@ -142,7 +142,7 @@ namespace WinterWorkShop.Cinema.API.Controllers
 
             return Ok("Deleted auditorium: " + auditoriumDomainModel.Id);
 
-        }
+        }*/
 
         [HttpPut]
         [Route("update")]
@@ -175,6 +175,35 @@ namespace WinterWorkShop.Cinema.API.Controllers
             return Ok();
         }
         
-        
+        [HttpDelete]
+        [Route("{id}")]
+        public async Task<ActionResult> Delete(Guid id)
+        {
+            AuditoriumDomainModel deletedAudit;
+            try
+            {
+                deletedAudit = await _auditoriumService.DeleteAuditorium(id);
+            }
+            catch (DbUpdateException e)
+            {
+                ErrorResponseModel errorResponse = new ErrorResponseModel
+                {
+                    ErrorMessage = e.InnerException.Message ?? e.Message,
+                    StatusCode = System.Net.HttpStatusCode.BadRequest
+                };
+                return BadRequest(errorResponse);
+            }
+
+            if (deletedAudit == null)
+            {
+                ErrorResponseModel errorResponse = new ErrorResponseModel
+                {
+                    ErrorMessage = Messages.AUDITORIUM_NOT_FOUND,
+                    StatusCode = System.Net.HttpStatusCode.InternalServerError
+                };
+                return StatusCode((int)System.Net.HttpStatusCode.InternalServerError, errorResponse);
+            }
+            return Accepted("auditorium//" + deletedAudit.Id, deletedAudit);
+        }
     }
 }
