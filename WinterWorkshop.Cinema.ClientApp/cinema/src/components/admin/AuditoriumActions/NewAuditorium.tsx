@@ -66,7 +66,7 @@ const NewAuditorium: React.FC = (props: any) => {
       },
     };
 
-    fetch(`${serviceConfig.baseURL}/api/Cinemas/all`, requestOptions)
+    fetch(`${serviceConfig.baseURL}/api/Cinemas/getAll`, requestOptions)
       .then((response) => {
         if (!response.ok) {
           return Promise.reject(response);
@@ -91,7 +91,7 @@ const NewAuditorium: React.FC = (props: any) => {
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { id, value } = e.target;
     setState({ ...state, [id]: value });
-    validate(id, value);
+    //validate(id, value);
   };
 
   const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
@@ -111,51 +111,51 @@ const NewAuditorium: React.FC = (props: any) => {
     }
   };
 
-  const validate = (id: string, value: string | null) => {
-    if (id === "auditName") {
-      if (value === "") {
-        setState({
-          ...state,
-          auditNameError: "Fill in auditorium name",
-          canSubmit: false,
-        });
-      } else {
-        setState({ ...state, auditNameError: "", canSubmit: true });
-      }
-    } else if (id === "numberOfSeats" && value) {
-      const seatsNum = +value;
-      if (seatsNum > 20 || seatsNum < 1) {
-        setState({
-          ...state,
-          numOfSeatsError: "Seats number can be in between 1 and 20.",
-          canSubmit: false,
-        });
-      } else {
-        setState({ ...state, numOfSeatsError: "", canSubmit: true });
-      }
-    } else if (id === "seatRows" && value) {
-      const seatsNum = +value;
-      if (seatsNum > 20 || seatsNum < 1) {
-        setState({
-          ...state,
-          seatRowsError: "Seats number can be in between 1 and 20.",
-          canSubmit: false,
-        });
-      } else {
-        setState({ ...state, seatRowsError: "", canSubmit: true });
-      }
-    } else if (id === "cinemaId") {
-      if (!value) {
-        setState({
-          ...state,
-          cinemaIdError: "Please chose cinema from dropdown list.",
-          canSubmit: false,
-        });
-      } else {
-        setState({ ...state, cinemaIdError: "", canSubmit: true });
-      }
-    }
-  };
+  // const validate = (id: string, value: string | null) => {
+  //   if (id === "auditName") {
+  //     if (value === "") {
+  //       setState({
+  //         ...state,
+  //         auditNameError: "Fill in auditorium name",
+  //         canSubmit: false,
+  //       });
+  //     } else {
+  //       setState({ ...state, auditNameError: "", canSubmit: true });
+  //     }
+  //   } else if (id === "numberOfSeats" && value) {
+  //     const seatsNum = +value;
+  //     if (seatsNum > 20 || seatsNum < 1) {
+  //       setState({
+  //         ...state,
+  //         numOfSeatsError: "Seats number can be in between 1 and 20.",
+  //         canSubmit: false,
+  //       });
+  //     } else {
+  //       setState({ ...state, numOfSeatsError: "", canSubmit: true });
+  //     }
+  //   } else if (id === "seatRows" && value) {
+  //     const seatsNum = +value;
+  //     if (seatsNum > 20 || seatsNum < 1) {
+  //       setState({
+  //         ...state,
+  //         seatRowsError: "Seats number can be in between 1 and 20.",
+  //         canSubmit: false,
+  //       });
+  //     } else {
+  //       setState({ ...state, seatRowsError: "", canSubmit: true });
+  //     }
+  //   } else if (id === "cinemaId") {
+  //     if (!value) {
+  //       setState({
+  //         ...state,
+  //         cinemaIdError: "Please chose cinema from dropdown list.",
+  //         canSubmit: false,
+  //       });
+  //     } else {
+  //       setState({ ...state, cinemaIdError: "", canSubmit: true });
+  //     }
+  //   }
+  // };
 
   const addAuditorium = () => {
     const data = {
@@ -174,7 +174,7 @@ const NewAuditorium: React.FC = (props: any) => {
       body: JSON.stringify(data),
     };
 
-    fetch(`${serviceConfig.baseURL}/api/auditoriums`, requestOptions)
+    fetch(`${serviceConfig.baseURL}/api/Auditoriums/create`, requestOptions)
       .then((response) => {
         if (!response.ok) {
           return Promise.reject(response);
@@ -194,10 +194,10 @@ const NewAuditorium: React.FC = (props: any) => {
   const onCinemaChange = (cinemas: ICinema[]) => {
     if (cinemas[0]) {
       setState({ ...state, cinemaId: cinemas[0].id });
-      validate("cinemaId", cinemas[0].id);
-    } else {
-      validate("cinemaId", null);
-    }
+      //validate("cinemaId", cinemas[0].id);
+    } //else {
+      //validate("cinemaId", null);
+   //}
   };
 
   const renderSeats = (seats, row) => {
