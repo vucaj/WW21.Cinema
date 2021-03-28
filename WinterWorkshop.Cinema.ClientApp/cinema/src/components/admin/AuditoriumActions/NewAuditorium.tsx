@@ -86,7 +86,7 @@ const NewAuditorium: React.FC = (props: any) => {
 
   useEffect(() => {
     getCinemas();
-  }, [getCinemas]);
+  }, []);
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { id, value } = e.target;
@@ -159,7 +159,7 @@ const NewAuditorium: React.FC = (props: any) => {
 
   const addAuditorium = () => {
     const data = {
-      cinemaId: state.cinemaId,
+      cinemaId: +state.cinemaId,
       numberOfSeats: +state.numberOfSeats,
       seatRows: +state.seatRows,
       auditName: state.auditName,
@@ -191,14 +191,14 @@ const NewAuditorium: React.FC = (props: any) => {
       });
   };
 
-  const onCinemaChange = (cinemas: ICinema[]) => {
-    if (cinemas[0]) {
-      setState({ ...state, cinemaId: cinemas[0].id });
+ // const onCinemaChange = (cinemas: ICinema[]) => {
+ //   if (cinemas[0]) {
+  //    setState({ ...state, cinemaId: cinemas[0].id });
       //validate("cinemaId", cinemas[0].id);
-    } //else {
+  //  } //else {
       //validate("cinemaId", null);
    //}
-  };
+//  };
 
   const renderSeats = (seats, row) => {
     let renderedSeats: JSX.Element[] = [];
@@ -240,15 +240,13 @@ const NewAuditorium: React.FC = (props: any) => {
               </FormText>
             </FormGroup>
             <FormGroup>
-              <Typeahead
-                labelKey="name"
+              <FormControl
+                id="cinemaId"
                 className="add-new-form"
-                options={state.cinemas}
+                type="text"
                 placeholder="Choose a cinema..."
-                id="browser"
-                onChange={(e: ICinema[]) => {
-                  onCinemaChange(e);
-                }}
+                value={state.cinemaId.toString()}
+                onChange={handleChange}
               />
               <FormText className="text-danger">{state.cinemaIdError}</FormText>
             </FormGroup>
