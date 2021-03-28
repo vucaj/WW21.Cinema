@@ -91,11 +91,7 @@ const IMDbTop100Movies: React.FC = (props: any) => {
     const getIMDbTop100Movies = () => {
         fetch(apiUrl, requestOptions)
             .then(response => response.text())
-            .then((data) => {
-                if (data) {
-                    setState({ ...state, movies: data, isLoading: false })
-                }
-            })
+            .then(result => console.log(result))
             .catch(error => console.log('error', error));
     }
 
