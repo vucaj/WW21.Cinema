@@ -10,6 +10,7 @@ import "antd/dist/antd.css";
 import { Spinner } from "react-bootstrap";
 import Title from "antd/lib/typography/Title";
 import { Table, Tag, Space, Card } from 'antd';
+import AllMovies from "../../AllMovies";
 
 
 interface IState {
@@ -84,15 +85,31 @@ const IMDbTop100Movies: React.FC = (props: any) => {
         getIMDbTop100Movies()
     }, []);
 
-    var requestOptions = {
-        method: 'GET'
-    };
-
     const getIMDbTop100Movies = () => {
+        const requestOptions = {
+            method: "GET",
+            headers: {
+                "Content-Type": "text/json"
+            },
+        };
+
+        setState({ ...state, isLoading: true });
+
         fetch(apiUrl, requestOptions)
-            .then(response => response.text())
-            .then(result => console.log(result))
-            .catch(error => console.log('error', error));
+            .then((response) => {
+                if (!response.ok) {
+                    return Promise.reject(response);
+                }
+                return response.json();
+            })
+            .then((data) => {
+                setState({ ...state, movies: data, isLoading: false });
+            })
+            .catch((response) => {
+                setState({ ...state, isLoading: false })
+                NotificationManager.error(response.message || response.statusText);
+                setState({ ...state, submitted: false });
+            });
     }
 
     // const getIMDbTop100Movies = () => {
@@ -166,7 +183,7 @@ const IMDbTop100Movies: React.FC = (props: any) => {
     return (
         <React.Fragment>
             <Card style={{ margin: 10 }}>
-                <Title level={2}>Top 100 Movies By IMDb</Title>
+                <Title level={1}>Top 100 Movies By IMDb</Title>
                 <Table
                     columns={columns}
                     dataSource={state.movies}
