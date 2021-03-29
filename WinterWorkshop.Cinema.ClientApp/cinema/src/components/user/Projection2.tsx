@@ -134,9 +134,9 @@ const Projection2: React.FC = (props: any) => {
     })
 
     useEffect(() => {
-        getAllCinemas();
-        getAllAuditoria();
-        getMoviesWithFutureProjections();
+        //getAllCinemas();
+        //getAllAuditoria();
+        //getMoviesWithFutureProjections();
         getAllProjections();
     }, [])
 
@@ -186,9 +186,9 @@ const Projection2: React.FC = (props: any) => {
                 return response.json();
             })
             .then((data) => {
-                if (data) {
-                    setState({ ...state, movies: data, isLoading: false });
-                }
+                console.log(data)
+                setState({ ...state, movies: data.valueOf()});
+                console.log(state.movies)
             })
             .catch((response) => {
                 setState({ ...state, isLoading: false })
