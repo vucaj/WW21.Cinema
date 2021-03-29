@@ -51,6 +51,14 @@ export interface ISeats {
   seatType: number
 }
 
+export interface ISeats2 {
+  id: string;
+  number: number;
+  row: number;
+  seatType: number;
+  isFree: boolean
+}
+
 export interface ITicket {
   id: string,
   seatId: string,

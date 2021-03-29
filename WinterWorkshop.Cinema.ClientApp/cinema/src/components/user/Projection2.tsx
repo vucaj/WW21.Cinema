@@ -336,21 +336,22 @@ const Projection2: React.FC = (props: any) => {
             <br></br>
             <a><b>Ticket price:</b> {record.ticketPrice}</a>
 
-            <div style={{ margin: 0 }}>{getButton(record.id)}</div>
+            <div style={{ margin: 0 }}>{getButton(record.id, record.auditoriumId)}</div>
         </div>)
     };
 
-    const reserveTicketPage = (id) => {
-        const url = '/dashboard/reserveticket/' + id;
+    const reserveTicketPage = (id,id3) => {
+        const url = '/dashboard/reserveticket/projectionId/'+id+'/auditroiumid/'+id3;
         console.log(id);
         window.location.replace(url)
     }
 
-    const getButton = (id) => {
+
+    const getButton = (id,id3) => {
         if(isUser()){
             return(
                 <div>
-                    <Button type='primary' onClick={() => {reserveTicketPage(id)}}>
+                    <Button type='primary' onClick={() => {reserveTicketPage(id,id3)}}>
                         Reserve Ticket
                     </Button>
                 </div>

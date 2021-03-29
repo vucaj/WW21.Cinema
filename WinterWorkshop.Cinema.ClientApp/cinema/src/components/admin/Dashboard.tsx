@@ -51,7 +51,7 @@ const Dashboard: React.FC = () => {
             component={EditMovie}
           />
           <PrivateRouteAdminSuperUserAndUser
-          path='/dashboard/reserveticket/:id'
+          path='/dashboard/reserveticket/projectionId/:projectionId/auditroiumid/:auditoriumId'
           component={ReserveTicket}/>
 
           <PrivateRouteAdmin

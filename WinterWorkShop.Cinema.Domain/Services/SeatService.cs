@@ -14,9 +14,11 @@ namespace WinterWorkShop.Cinema.Domain.Services
     public class SeatService : ISeatService
     {
         private readonly ISeatsRepository _seatRepository;
-        public SeatService(ISeatsRepository seatRepository)
+        private readonly ITicketRepostory _ticketRepostory;
+        public SeatService(ISeatsRepository seatRepository, ITicketRepostory ticketRepostory)
         {
             _seatRepository = seatRepository;
+            _ticketRepostory = ticketRepostory;
         }
         public async Task<IEnumerable<SeatDomainModel>> GetAllAsync()
         {
@@ -43,7 +45,7 @@ namespace WinterWorkShop.Cinema.Domain.Services
             }
 
             var retVal = new List<SeatDomainModel>();
-
+            
             foreach (var seat in seats)
             {
                 retVal.Add(new SeatDomainModel()
