@@ -103,7 +103,6 @@ const IMDbTop100Movies: React.FC = (props: any) => {
                 return response.json();
             })
             .then((data) => {
-                console.log("string", data);
                 setState({ ...state, movies: data.items, isLoading: false });
             })
             .catch((response) => {
