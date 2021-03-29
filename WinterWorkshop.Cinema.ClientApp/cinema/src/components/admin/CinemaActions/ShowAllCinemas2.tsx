@@ -1,13 +1,11 @@
 import React, { useEffect, useState } from "react";
 import { ICinema, ITag } from "../../../models";
 import { toast } from "react-toastify";
-import { NavLink } from "react-router-dom";
 import { isAdmin, isGuest, isSuperUser, isUser } from "../../helpers/authCheck";
 import { serviceConfig } from "../../../appSettings";
 import { NotificationManager } from "react-notifications";
 import { Card, Row, Button } from 'antd';
 import "antd/dist/antd.css";
-import NewAuditorium from "../AuditoriumActions/NewAuditorium";
 
 interface IState {
     cinemas: ICinema[];
