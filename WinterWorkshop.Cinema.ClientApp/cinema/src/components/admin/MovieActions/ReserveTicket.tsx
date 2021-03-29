@@ -292,12 +292,16 @@ const ReserveTicket: React.FC = (props: any) => {
                     <Button style={{margin: 5}} type="primary">
                         Reserve
                     </Button>
-                    <Button style={{margin: 5}} danger>
+                    <Button style={{margin: 5}} onClick={() => clearAll()} danger>
                         Clear All
                     </Button>
                 </div>
             )
         return(<div></div>)
+    }
+
+    const clearAll = () => {
+        setState(prevState => {return {...prevState, selectedSeats: []}})
     }
 
     const getSelectedSeats = () => {
