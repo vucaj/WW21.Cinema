@@ -60,12 +60,12 @@ namespace WinterWorkShop.Cinema.API.Controllers
             return Ok(seatById);
         }
         [HttpGet]
-        [Route("getByAuditId")]
-        public async Task<ActionResult<IEnumerable<SeatDomainModel>>> GetAllByAuditoriumIdAsync([FromBody]AuditoriumDomainModel domainModel)
+        [Route("getByAuditId/{id}")]
+        public async Task<ActionResult<IEnumerable<SeatDomainModel>>> GetAllByAuditoriumIdAsync(Guid id)
         {
             var seatByAuditId = await _seatService.GetAllByAuditoriumIdAsync(new AuditoriumDomainModel 
             {
-                Id = domainModel.Id
+                Id = id
             });
 
             if (seatByAuditId == null)

@@ -10,7 +10,7 @@ namespace WinterWorkShop.Cinema.Domain.Interfaces
     {
         Task<IEnumerable<SeatDomainModel>> GetAllAsync();
         Task<GetSeatResultModel> GetByIdAsync(SeatDomainModel domainModel);
-        Task<IEnumerable<GetSeatResultModel>> GetAllByAuditoriumIdAsync(AuditoriumDomainModel domainModel);
+        Task<IEnumerable<SeatDomainModel>> GetAllByAuditoriumIdAsync(AuditoriumDomainModel domainModel);
         Task<IEnumerable<SeatDomainModel>> GetByAllSeatTypeAsync(SeatDomainModel domainModel);
 
     }

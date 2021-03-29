@@ -12,5 +12,9 @@ namespace WinterWorkShop.Cinema.Domain.Models
 
         public string Name { get; set; }
         
+        public int Row { get; set; }
+        
+        public int Number { get; set; }
+        
     }
 }

@@ -1,12 +1,13 @@
-import { IAuditorium, ICinema, IMovie, IProjection } from "../../models";
-import { NotificationManager } from "react-notifications";
-import React, { useEffect, useState } from "react";
-import { withRouter } from "react-router-dom";
-import { serviceConfig } from "../../appSettings";
+import {Table, Typography, Input, Button, Space, Card} from 'antd';
 import Highlighter from 'react-highlight-words';
-import {Button, Input, Space, Table } from "antd";
+import { SearchOutlined } from '@ant-design/icons';
+import React, { useEffect, useState } from "react";
+import { NotificationManager } from "react-notifications";
 import "antd/dist/antd.css";
-import {SearchOutlined} from "@ant-design/icons";
+import {IAuditorium, ICinema, IMovie, IProjection} from "../../models";
+import {serviceConfig} from "../../appSettings";
+import {withRouter} from "react-router-dom";
+import {isUser} from "../helpers/authCheck";
 
 
 interface IState {
@@ -36,7 +37,7 @@ interface IState {
     name: string;
     searchText: string;
     searchedColumn: string;
-
+    expandedRowKeys: string[];
 }
 
 const Projection2: React.FC = (props: any) => {
@@ -130,7 +131,9 @@ const Projection2: React.FC = (props: any) => {
         selectedDate: false,
         date: new Date(),
         searchText: '',
-        searchedColumn: ''
+        searchedColumn: '',
+        expandedRowKeys: []
+
     })
 
     useEffect(() => {
@@ -161,6 +164,7 @@ const Projection2: React.FC = (props: any) => {
                 if (data) {
                     setState({ ...state, projections: data, isLoading: false });
                 }
+                console.log(data)
             })
             .catch((response) => {
                 setState({ ...state, isLoading: false })
@@ -371,13 +375,112 @@ const Projection2: React.FC = (props: any) => {
 
     ]
 
+    const getGenre = (genre) => {
+        switch (genre) {
+            case 0:
+                return "Horror";
+            case 1:
+                return "Action";
+            case 2:
+                return "Drama";
+            case 3:
+                return "Sci-fi";
+            case 4:
+                return "Crime";
+            case 5:
+                return "Fantasy";
+            case 6:
+                return "Historical";
+            case 7:
+                return "Romance";
+            case 8:
+                return "Western";
+            case 9:
+                return "Thriler";
+            case 10:
+                return "Animated";
+            case 11:
+                return "Adult";
+            case 12:
+                return "Documentary";
+        }
+    }
+
+    const { Title } = Typography;
+
+    const getDescription = (record) => {
+        return (<div>
+            <Title level={4}>{record.movieTitle}</Title>
+            <a><b>Cinema:</b> {getGenre(record.cinemaName)}</a>
+            <br></br>
+            <a><b>Auditorium:</b> {record.auditoriumName}</a>
+            <br></br>
+            <a><b>Rating:</b> {record.movieRating}</a>
+            <br></br>
+            <a><b>Ticket price:</b> {record.ticketPrice}</a>
+
+            <div style={{ margin: 0 }}>{getButton(record.id)}</div>
+        </div>)
+    };
+
+    const getAuditoriumSeats = (id) =>{
+        const requestOptions = {
+            method: "GET",
+            headers: {
+                "Content-Type": "application/json",
+                Authorization: `Bearer ${localStorage.getItem("jwt")}`,
+            },
+        };
+
+        setState({ ...state, isLoading: true });
+        fetch(`${serviceConfig.baseURL}/api/Auditoriums/getAll`, requestOptions)
+            .then((response) => {
+                if (!response.ok) {
+                    return Promise.reject(response)
+                }
+                return response.json()
+            })
+            .then((data) => {
+                if (data) {
+                    setState({ ...state, auditoriums: data, isLoading: false });
+                }
+            })
+            .catch((response) => {
+                NotificationManager.error(response.message || response.statusText);
+                setState({ ...state, isLoading: false });
+            });
+    }
+
+    const reserveTicketPage = (id) => {
+        getAuditoriumById(id)
+    }
+
+    const getButton = (id) => {
+        if(isUser()){
+            return(
+                <div>
+                    <Button type='primary' onClick={() => {reserveTicketPage(id)}}>
+                        Reserve Ticket
+                    </Button>
+                </div>
+            )
+        }
+        return (<div></div>);
+    }
+
     const getTable = () => {
         return (
             <div>
                 <Table
+                    expandable={{
+                        expandedRowRender: projection => <div>{getDescription(projection)}</div>,
+                    }}
                     columns={columns}
                     dataSource={state.projections}
-                    rowKey={projection => projection.id}>
+                    rowKey={projection => projection.id}
+                >
+
+
                 </Table>
             </div>
         )
@@ -386,9 +489,9 @@ const Projection2: React.FC = (props: any) => {
 
     return (
         <React.Fragment>
-            <div>
+            <Card style={{ margin: 10 }}>
                 {getTable()}
-            </div>
+            </Card>
         </React.Fragment>
     );
 }

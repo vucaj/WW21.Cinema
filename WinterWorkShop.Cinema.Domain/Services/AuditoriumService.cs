@@ -245,7 +245,7 @@ namespace WinterWorkShop.Cinema.Domain.Services
             {
                 Id = auditorium.Id,
                 CinemaId = auditorium.CinemaId,
-                Name = auditorium.Name
+                Name = auditorium.Name,
             };
         }
 

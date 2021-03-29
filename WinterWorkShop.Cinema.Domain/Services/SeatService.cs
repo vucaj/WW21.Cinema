@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -31,7 +32,7 @@ namespace WinterWorkShop.Cinema.Domain.Services
         }
 
 
-        public async Task<IEnumerable<GetSeatResultModel>> GetAllByAuditoriumIdAsync(AuditoriumDomainModel domainModel)
+        public async Task<IEnumerable<SeatDomainModel>> GetAllByAuditoriumIdAsync(AuditoriumDomainModel domainModel)
         {
             var seats = await _seatRepository.GetAllByAuditoriumIdAsync(domainModel.Id);
 
@@ -41,19 +42,21 @@ namespace WinterWorkShop.Cinema.Domain.Services
                 return null;
             }
 
-            return seats.Select(seat => new GetSeatResultModel
+            var retVal = new List<SeatDomainModel>();
+
+            foreach (var seat in seats)
             {
-                IsSuccessful = true,
-                ErrorMessage = null,
-                Seat = new SeatDomainModel
+                retVal.Add(new SeatDomainModel()
                 {
-                    Id = seat.Id,
                     AuditoriumId = seat.AuditoriumId,
+                    Id = seat.Id,
                     Number = seat.Number,
                     Row = seat.Row,
                     SeatType = seat.SeatType
-                }
-            });
+                });
+            }
+
+            return retVal;
         }
 
         public async Task<GetSeatResultModel> GetByIdAsync(SeatDomainModel domainModel)

@@ -45,7 +45,24 @@ namespace WinterWorkShop.Cinema.API.Controllers
 
             return Ok(auditoriumDomainModels); 
         }
-        
+
+        [HttpGet]
+        [Route("{id}")]
+        public async Task<ActionResult<AuditoriumDomainModel>> GetById(Guid id)
+        {
+            var auditorium = await _auditoriumService.FindByAuditoriumId(new AuditoriumDomainModel()
+            {
+                Id = id,
+            });
+
+            if (auditorium == null)
+            {
+                return BadRequest();
+            }
+
+            return Ok(auditorium);
+        }
+
         /// Adds a new auditorium
 
         //[Authorize(Roles = "admin")]
