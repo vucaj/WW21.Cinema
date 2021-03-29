@@ -36,7 +36,8 @@ namespace WinterWorkShop.Cinema.API.Controllers
 
             return Ok(ticketDomainModel);
         }
-
+        
+        
         [HttpPost]
         [Route("create")]
         public async Task<ActionResult<IEnumerable<TicketDomainModel>>> CreateTicketAsync(

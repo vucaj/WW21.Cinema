@@ -1,10 +1,10 @@
-import {Table, Typography, Input, Button, Space, Card} from 'antd';
+import {Table, Typography, Input, Button, Space, Card, Modal} from 'antd';
 import Highlighter from 'react-highlight-words';
 import { SearchOutlined } from '@ant-design/icons';
 import React, { useEffect, useState } from "react";
 import { NotificationManager } from "react-notifications";
 import "antd/dist/antd.css";
-import {IAuditorium, ICinema, IMovie, IProjection} from "../../models";
+import {IAuditorium, ICinema, IMovie, IProjection, ISeats} from "../../models";
 import {serviceConfig} from "../../appSettings";
 import {withRouter} from "react-router-dom";
 import {isUser} from "../helpers/authCheck";
@@ -18,6 +18,7 @@ interface IState {
     filteredAuditoriums: IAuditorium[];
     filteredMovies: IMovie[];
     filteredProjections: IProjection[];
+    seats: ISeats[];
     dateTime: string;
     id: string;
     current: boolean;
@@ -38,6 +39,7 @@ interface IState {
     searchText: string;
     searchedColumn: string;
     expandedRowKeys: string[];
+    isModal: boolean;
 }
 
 const Projection2: React.FC = (props: any) => {
@@ -57,6 +59,8 @@ const Projection2: React.FC = (props: any) => {
                 numberOfOscars: 0,
             },
         ],
+        seats:[]
+        ,
         projections: [
             {
                 id: "",
@@ -132,8 +136,8 @@ const Projection2: React.FC = (props: any) => {
         date: new Date(),
         searchText: '',
         searchedColumn: '',
-        expandedRowKeys: []
-
+        expandedRowKeys: [],
+        isModal: false
     })
 
     useEffect(() => {
@@ -164,95 +168,11 @@ const Projection2: React.FC = (props: any) => {
                 if (data) {
                     setState({ ...state, projections: data, isLoading: false });
                 }
-                console.log(data)
+
             })
             .catch((response) => {
                 setState({ ...state, isLoading: false })
                 NotificationManager.error(response.message || response.statusText);
-            });
-    }
-
-    const getMoviesWithFutureProjections = () => {
-        const requestOptions = {
-            method: "GET",
-            headers: {
-                "Content-Type": "application/json",
-                Authorization: `Bearer ${localStorage.getItem("jwt")}`
-            }
-        };
-
-        setState({ ...state, isLoading: true });
-        fetch(`${serviceConfig.baseURL}/api/movies/withFutureProjections`, requestOptions)
-            .then((response) => {
-                if (!response.ok) {
-                    return Promise.reject(response);
-                }
-                return response.json();
-            })
-            .then((data) => {
-                console.log(data)
-                setState({ ...state, movies: data.valueOf()});
-                console.log(state.movies)
-            })
-            .catch((response) => {
-                setState({ ...state, isLoading: false })
-                NotificationManager.error(response.message || response.statusText);
-            });
-    }
-
-    const getAllCinemas = () => {
-        const requestOptions = {
-            method: "GET",
-            headers: {
-                "Content-Type": "application/json",
-                Authorization: `Bearer ${localStorage.getItem("jwt")}`
-            },
-        };
-
-        setState({ ...state, isLoading: true });
-        fetch(`${serviceConfig.baseURL}/api/Cinemas/getAll`, requestOptions)
-            .then((response) => {
-                if (!response.ok) {
-                    return Promise.reject(response);
-                }
-                return response.json();
-            })
-            .then((data) => {
-                if (data) {
-                    setState({ ...state, cinemas: data, isLoading: false });
-                }
-            })
-            .catch((response) => {
-                NotificationManager.error(response.message || response.statusText);
-                setState({ ...state, isLoading: false });
-            });
-    };
-
-    const getAllAuditoria = () => {
-        const requestOptions = {
-            method: "GET",
-            headers: {
-                "Content-Type": "application/json",
-                Authorization: `Bearer ${localStorage.getItem("jwt")}`,
-            },
-        };
-
-        setState({ ...state, isLoading: true });
-        fetch(`${serviceConfig.baseURL}/api/Auditoriums/getAll`, requestOptions)
-            .then((response) => {
-                if (!response.ok) {
-                    return Promise.reject(response)
-                }
-                return response.json()
-            })
-            .then((data) => {
-                if (data) {
-                    setState({ ...state, auditoriums: data, isLoading: false });
-                }
-            })
-            .catch((response) => {
-                NotificationManager.error(response.message || response.statusText);
-                setState({ ...state, isLoading: false });
             });
     }
 
@@ -423,36 +343,10 @@ const Projection2: React.FC = (props: any) => {
         </div>)
     };
 
-    const getAuditoriumSeats = (id) =>{
-        const requestOptions = {
-            method: "GET",
-            headers: {
-                "Content-Type": "application/json",
-                Authorization: `Bearer ${localStorage.getItem("jwt")}`,
-            },
-        };
-
-        setState({ ...state, isLoading: true });
-        fetch(`${serviceConfig.baseURL}/api/Auditoriums/getAll`, requestOptions)
-            .then((response) => {
-                if (!response.ok) {
-                    return Promise.reject(response)
-                }
-                return response.json()
-            })
-            .then((data) => {
-                if (data) {
-                    setState({ ...state, auditoriums: data, isLoading: false });
-                }
-            })
-            .catch((response) => {
-                NotificationManager.error(response.message || response.statusText);
-                setState({ ...state, isLoading: false });
-            });
-    }
-
     const reserveTicketPage = (id) => {
-        getAuditoriumById(id)
+        const url = '/dashboard/reserveticket/' + id;
+        console.log(id);
+        window.location.replace(url)
     }
 
     const getButton = (id) => {
@@ -485,6 +379,8 @@ const Projection2: React.FC = (props: any) => {
             </div>
         )
     }
+
+
 
 
     return (

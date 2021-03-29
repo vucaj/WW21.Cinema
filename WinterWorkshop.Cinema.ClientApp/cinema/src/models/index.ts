@@ -48,6 +48,7 @@ export interface ISeats {
   id: string;
   number: number;
   row: number;
+  seatType: number
 }
 
 export interface ICurrentReservationSeats {

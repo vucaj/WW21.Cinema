@@ -30,6 +30,7 @@ import Projection2 from "../user/Projection2";
 import ShowAllCinemas2 from "./CinemaActions/ShowAllCinemas2";
 import NewCinema2 from "./CinemaActions/NewCinema2";
 import ShowAllAuditoriums2 from "./AuditoriumActions/ShowAllAuditoriums2";
+import ReserveTicket from "./MovieActions/ReserveTicket";
 
 // higher order component
 
@@ -49,6 +50,10 @@ const Dashboard: React.FC = () => {
             path="/dashboard/EditMovie/:id"
             component={EditMovie}
           />
+          <PrivateRouteAdminSuperUserAndUser
+          path='/dashboard/reserveticket/:id'
+          component={ReserveTicket}/>
+
           <PrivateRouteAdmin
             path="/dashboard/NewCinema"
             component={NewCinema2}

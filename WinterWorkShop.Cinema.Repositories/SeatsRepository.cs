@@ -73,7 +73,7 @@ namespace WinterWorkShop.Cinema.Repositories
         {
             List<Seat> allSeats = await _cinemaContext.Seats.ToListAsync();
 
-            List<Seat> filteredSeats = allSeats.Where(x => x.AuditoriumId == auditoriumId).ToList();
+            List<Seat> filteredSeats = allSeats.Where(x => x.AuditoriumId == auditoriumId).OrderBy(x => x.Row).ThenBy(x => x.Number).ToList();
 
             return filteredSeats;
         }
