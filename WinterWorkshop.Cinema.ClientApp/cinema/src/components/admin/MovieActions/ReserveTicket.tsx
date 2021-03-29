@@ -5,10 +5,11 @@ import {IProjection, ISeats2, ITicket} from "../../../models";
 import {serviceConfig} from "../../../appSettings";
 import { NotificationManager } from "react-notifications";
 import {Button, Card, Row, Col, Typography} from 'antd';
+import {forEach} from "react-bootstrap/ElementChildren";
 
 interface IState{
     seats: ISeats2[];
-    projection?: IProjection;
+    projection: IProjection;
     tickets: ITicket[];
     isReady: boolean;
     selectedSeats: ISeats2[];
@@ -28,6 +29,18 @@ const ReserveTicket: React.FC = (props: any) => {
         selectedRow: -1,
         selectedNumberMin: -1,
         selectedNumberMax: -1,
+        projection: {
+            id: 'string',
+            dateTime: 'string',
+            movieId: 'string',
+            auditoirumId: 'string',
+            cinemaId: 'string',
+            ticketPrice: 0,
+            movieTitle: 'string',
+            auditoriumName: 'string',
+            cinemaName: 'string',
+            movieRating: 0
+        }
     },)
 
 
@@ -231,7 +244,7 @@ const ReserveTicket: React.FC = (props: any) => {
             <br></br>
             <a><b>Love:</b> {getLove(state.projection?.ticketPrice)}</a>
             <br></br>
-            <a><b>Rating:</b> {getVip(state.projection?.ticketPrice)}</a>
+            <a><b>VIP:</b> {getVip(state.projection?.ticketPrice)}</a>
         </div>)
     };
 
@@ -254,9 +267,43 @@ const ReserveTicket: React.FC = (props: any) => {
         return test;
     }
 
+    const getTotalPrice = () => {
+        let sum = 0;
+        state.selectedSeats.forEach(s => {
+            if(s.seatType == 0){
+                sum = sum + state.projection.ticketPrice;
+            }
+            else if(s.seatType == 1){
+                sum = sum + getVip(state.projection.ticketPrice);
+            }
+            else{
+                sum = sum + getLove(state.projection.ticketPrice);
+            }
+        })
+
+        return sum;
+    }
+
+    const getButtons = () => {
+        if(state.selectedSeats.length > 0)
+            return (
+                <div>
+                    <Title level={5}>Price: {getTotalPrice()}</Title>
+                    <Button style={{margin: 5}} type="primary">
+                        Reserve
+                    </Button>
+                    <Button style={{margin: 5}} danger>
+                        Clear All
+                    </Button>
+                </div>
+            )
+        return(<div></div>)
+    }
+
     const getSelectedSeats = () => {
         return (<div>
             {getFormatedSelectedSeats()}
+            {getButtons()}
         </div>)
 
     }
