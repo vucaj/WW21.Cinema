@@ -19,7 +19,7 @@ import { ICinema } from "../../../models";
 
 interface IState {
   cinemaId: string;
-  auditName: string;
+  name: string;
   seatRows: number;
   numberOfSeats: number;
   cinemas: ICinema[];
@@ -34,7 +34,7 @@ interface IState {
 const NewAuditorium: React.FC = (props: any) => {
   const [state, setState] = useState<IState>({
     cinemaId: "",
-    auditName: "",
+    name: "",
     seatRows: 0,
     numberOfSeats: 0,
     cinemas: [
@@ -66,7 +66,7 @@ const NewAuditorium: React.FC = (props: any) => {
       },
     };
 
-    fetch(`${serviceConfig.baseURL}/api/Cinemas/all`, requestOptions)
+    fetch(`${serviceConfig.baseURL}/api/Cinemas/getAll`, requestOptions)
       .then((response) => {
         if (!response.ok) {
           return Promise.reject(response);
@@ -86,12 +86,11 @@ const NewAuditorium: React.FC = (props: any) => {
 
   useEffect(() => {
     getCinemas();
-  }, [getCinemas]);
+  }, []);
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { id, value } = e.target;
     setState({ ...state, [id]: value });
-    validate(id, value);
   };
 
   const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
@@ -99,7 +98,7 @@ const NewAuditorium: React.FC = (props: any) => {
 
     setState({ ...state, submitted: true });
     if (
-      state.auditName &&
+      state.name &&
       state.numberOfSeats &&
       state.cinemaId &&
       state.seatRows
@@ -111,58 +110,12 @@ const NewAuditorium: React.FC = (props: any) => {
     }
   };
 
-  const validate = (id: string, value: string | null) => {
-    if (id === "auditName") {
-      if (value === "") {
-        setState({
-          ...state,
-          auditNameError: "Fill in auditorium name",
-          canSubmit: false,
-        });
-      } else {
-        setState({ ...state, auditNameError: "", canSubmit: true });
-      }
-    } else if (id === "numberOfSeats" && value) {
-      const seatsNum = +value;
-      if (seatsNum > 20 || seatsNum < 1) {
-        setState({
-          ...state,
-          numOfSeatsError: "Seats number can be in between 1 and 20.",
-          canSubmit: false,
-        });
-      } else {
-        setState({ ...state, numOfSeatsError: "", canSubmit: true });
-      }
-    } else if (id === "seatRows" && value) {
-      const seatsNum = +value;
-      if (seatsNum > 20 || seatsNum < 1) {
-        setState({
-          ...state,
-          seatRowsError: "Seats number can be in between 1 and 20.",
-          canSubmit: false,
-        });
-      } else {
-        setState({ ...state, seatRowsError: "", canSubmit: true });
-      }
-    } else if (id === "cinemaId") {
-      if (!value) {
-        setState({
-          ...state,
-          cinemaIdError: "Please chose cinema from dropdown list.",
-          canSubmit: false,
-        });
-      } else {
-        setState({ ...state, cinemaIdError: "", canSubmit: true });
-      }
-    }
-  };
-
   const addAuditorium = () => {
     const data = {
       cinemaId: state.cinemaId,
+      name: state.name,
       numberOfSeats: +state.numberOfSeats,
-      seatRows: +state.seatRows,
-      auditName: state.auditName,
+      seatRows: +state.seatRows
     };
 
     const requestOptions = {
@@ -174,7 +127,7 @@ const NewAuditorium: React.FC = (props: any) => {
       body: JSON.stringify(data),
     };
 
-    fetch(`${serviceConfig.baseURL}/api/auditoriums`, requestOptions)
+    fetch(`${serviceConfig.baseURL}/api/Auditoriums/create`, requestOptions)
       .then((response) => {
         if (!response.ok) {
           return Promise.reject(response);
@@ -194,10 +147,7 @@ const NewAuditorium: React.FC = (props: any) => {
   const onCinemaChange = (cinemas: ICinema[]) => {
     if (cinemas[0]) {
       setState({ ...state, cinemaId: cinemas[0].id });
-      validate("cinemaId", cinemas[0].id);
-    } else {
-      validate("cinemaId", null);
-    }
+    } 
   };
 
   const renderSeats = (seats, row) => {
@@ -228,12 +178,13 @@ const NewAuditorium: React.FC = (props: any) => {
           <form onSubmit={handleSubmit}>
             <FormGroup>
               <FormControl
-                id="auditName"
+                id="name"
                 type="text"
                 placeholder="Auditorium Name"
-                value={state.auditName}
+                value={state.name}
                 onChange={handleChange}
                 className="add-new-form"
+                maxLength={30}
               />
               <FormText className="text-danger">
                 {state.auditNameError}
@@ -260,6 +211,8 @@ const NewAuditorium: React.FC = (props: any) => {
                 placeholder="Number Of Rows"
                 value={state.seatRows.toString()}
                 onChange={handleChange}
+                min={1}
+                max={150}
               />
               <FormText className="text-danger">{state.seatRowsError}</FormText>
             </FormGroup>
@@ -271,7 +224,8 @@ const NewAuditorium: React.FC = (props: any) => {
                 placeholder="Number Of Seats"
                 value={state.numberOfSeats.toString()}
                 onChange={handleChange}
-                max="36"
+                min={1}
+                max={150}
               />
               <FormText className="text-danger">
                 {state.numOfSeatsError}
