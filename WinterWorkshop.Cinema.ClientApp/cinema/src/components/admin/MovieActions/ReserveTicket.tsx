@@ -1,13 +1,15 @@
 import React, { useEffect, useState } from "react";
 import "antd/dist/antd.css";
 import {withRouter} from "react-router-dom";
-import {IProjection, ISeats} from "../../../models";
+import {IProjection, ISeats, ITicket} from "../../../models";
 import {serviceConfig} from "../../../appSettings";
 import { NotificationManager } from "react-notifications";
+import { Button } from 'antd';
 
 interface IState{
     seats: ISeats[];
     projection: IProjection;
+    tickets: ITicket[];
 }
 
 const ReserveTicket: React.FC = (props: any) => {
@@ -27,7 +29,8 @@ const ReserveTicket: React.FC = (props: any) => {
             cinemaName: '',
             movieRating: 0
         },
-    })
+        tickets: [],
+    },)
 
     useEffect(() => {
         getProjection(id);
@@ -42,7 +45,6 @@ const ReserveTicket: React.FC = (props: any) => {
             },
         };
 
-        console.log(id)
 
         var url = serviceConfig.baseURL+'/api/seats/getByAuditId/'+ id;
         fetch(url, requestOptions)
@@ -80,10 +82,10 @@ const ReserveTicket: React.FC = (props: any) => {
                 return response.json()
             })
             .then((data) => {
-                console.log(data)
                 if (data) {
                     setState({ ...state, projection: data });
                     getAuditoriumSeats(data.auditoriumId);
+                    getTickets(data.id)
                 }
             })
             .catch((response) => {
@@ -91,9 +93,54 @@ const ReserveTicket: React.FC = (props: any) => {
             });
     }
 
+    const getTickets = (id) =>{
+        const requestOptions = {
+            method: "GET",
+            headers: {
+                "Content-Type": "application/json",
+                Authorization: `Bearer ${localStorage.getItem("jwt")}`,
+            },
+        };
+
+        var url = serviceConfig.baseURL+'/api/tickets/getTicketsByProjection/'+ id;
+        fetch(url, requestOptions)
+            .then((response) => {
+                if (!response.ok) {
+                    return Promise.reject(response)
+                }
+                return response.json()
+            })
+            .then((data) => {
+                if (data) {
+                    setState({ ...state, tickets: data });
+                }
+                console.log(data)
+            })
+            .catch((response) => {
+                NotificationManager.error(response.message || response.statusText);
+            });
+    }
+
+    const getSeatsInAuditorium = () => {
+        {
+            let test = [] as any
+            const seats = state.seats;
+            seats.forEach(s => {
+                if(s.number == 1)
+                    test.push(<br key={s.id+'a'}></br>)
+                test.push(<Button key={s.id.toString()}>{s.row}+{s.number}</Button>)
+            });
+            //console.log(state.seats)
+
+            return test;
+        }
+    }
+
     const getSeats = () => {
         return(
-            <div>{state.projection.auditoirumId}</div>
+            <div>
+                {getSeatsInAuditorium()}
+            </div>
         )
     }
 

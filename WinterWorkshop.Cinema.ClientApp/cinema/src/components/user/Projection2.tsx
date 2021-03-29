@@ -141,9 +141,6 @@ const Projection2: React.FC = (props: any) => {
     })
 
     useEffect(() => {
-        //getAllCinemas();
-        //getAllAuditoria();
-        //getMoviesWithFutureProjections();
         getAllProjections();
     }, [])
 

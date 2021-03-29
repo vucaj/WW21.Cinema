@@ -36,7 +36,20 @@ namespace WinterWorkShop.Cinema.API.Controllers
 
             return Ok(ticketDomainModel);
         }
-        
+
+        [HttpGet]
+        [Route("getTicketsByProjection/{id}")]
+        public async Task<ActionResult<IEnumerable<TicketDomainModel>>> GetTicketsByProjectionId(Guid id)
+        {
+            var ticketDomainModel = await _ticketService.GetByProjectionId(id);
+
+            if (ticketDomainModel == null)
+            {
+                return Ok(new List<TicketDomainModel>());
+            }
+
+            return Ok(ticketDomainModel);
+        }
         
         [HttpPost]
         [Route("create")]

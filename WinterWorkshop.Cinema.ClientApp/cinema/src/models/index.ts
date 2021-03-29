@@ -51,6 +51,13 @@ export interface ISeats {
   seatType: number
 }
 
+export interface ITicket {
+  id: string,
+  seatId: string,
+  userId: string,
+  projectionId: string
+}
+
 export interface ICurrentReservationSeats {
   currentSeatId: string;
 }
