@@ -4,7 +4,7 @@ import {withRouter} from "react-router-dom";
 import {IProjection, ISeats2, ITicket} from "../../../models";
 import {serviceConfig} from "../../../appSettings";
 import { NotificationManager } from "react-notifications";
-import {Button, Card, Row, Col, Typography} from 'antd';
+import {Button, Card, Row, Col, Divider, Typography} from 'antd';
 import {forEach} from "react-bootstrap/ElementChildren";
 
 interface IState{
@@ -232,6 +232,7 @@ const ReserveTicket: React.FC = (props: any) => {
         if(state.selectedSeats.length > 0)
             return (
                 <div>
+                    <Divider />
                     <Title level={5}>Price: {getTotalPrice()}</Title>
                     <Button style={{margin: 5}} disabled={disable()} onClick={() => payment()} type="primary">
                         Reserve & Pay
@@ -358,7 +359,14 @@ const ReserveTicket: React.FC = (props: any) => {
             <Row>
                 <Col span={15}>
                     <Card style={{margin: 10}}>
-                        <Title level={4}>Select Seats</Title>
+                        <Title level={2}>Select Seats</Title>
+                        <Divider />
+                        <Title level={4}>Seat Types:</Title>
+                        <Button disabled type='primary' style={{margin: 10,background:'#D4AF37', color: '#00000'}}>VIP</Button>
+                        <Button disabled type='primary' style={{margin: 10,background:'#99FF99'}}>Regular</Button>
+                        <Button disabled type='primary' style={{margin: 10,background:'#FF5BA5'}}>Love</Button>
+                        <Button disabled type='primary' style={{margin: 10,background:'#FF6666'}}>Taken</Button>
+                        <Divider />
                         {getSeatsInAuditorium()}
                     </Card>
                 </Col>
