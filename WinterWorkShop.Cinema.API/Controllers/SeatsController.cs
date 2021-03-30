@@ -1,6 +1,7 @@
 ﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.Data.Common;
 using System.Linq;
@@ -18,10 +19,12 @@ namespace WinterWorkShop.Cinema.API.Controllers
     public class SeatsController : ControllerBase
     {
         private readonly ISeatService _seatService;
+        private readonly ITicketService _ticketService;
 
-        public SeatsController(ISeatService seatService)
+        public SeatsController(ISeatService seatService, ITicketService ticketService)
         {
             _seatService = seatService;
+            _ticketService = ticketService;
         }
 
         /// <summary>
@@ -60,12 +63,12 @@ namespace WinterWorkShop.Cinema.API.Controllers
             return Ok(seatById);
         }
         [HttpGet]
-        [Route("getByAuditId")]
-        public async Task<ActionResult<IEnumerable<SeatDomainModel>>> GetAllByAuditoriumIdAsync([FromBody]AuditoriumDomainModel domainModel)
+        [Route("getByAuditId/{id}")]
+        public async Task<ActionResult<IEnumerable<SeatDomainModel>>> GetAllByAuditoriumIdAsync(Guid id)
         {
             var seatByAuditId = await _seatService.GetAllByAuditoriumIdAsync(new AuditoriumDomainModel 
             {
-                Id = domainModel.Id
+                Id = id
             });
 
             if (seatByAuditId == null)
@@ -76,6 +79,43 @@ namespace WinterWorkShop.Cinema.API.Controllers
             return Ok(seatByAuditId);
         }
 
+        [HttpGet]
+        [Route("getByAuditIdAndProjectionId/auditId/{auditId}/projectionId/{projId}")]
+        public async Task<ActionResult<IEnumerable<SeatDomainModel>>> GetSeatsByAuditIdAndProjectionId(Guid auditId, Guid projId)
+        {
+            var seatByAuditId = await _seatService.GetAllByAuditoriumIdAsync(new AuditoriumDomainModel()
+            {
+                Id = auditId
+            });
+
+            var tickets = await _ticketService.GetByProjectionId(projId);
+
+            foreach (var seat in seatByAuditId)
+            {
+                if (ticketExist(seat.Id, tickets))
+                {
+                    seat.isFree = false;
+                }
+                else
+                {
+                    seat.isFree = true;
+                }
+            }
+
+            return Ok(seatByAuditId);
+        }
+
+        private Boolean ticketExist(Guid id, IEnumerable<TicketDomainModel> tickets)
+        {
+            foreach (var ticket in tickets)
+            {
+                if (ticket.SeatId == id)
+                    return true;
+            }
+
+            return false;
+        }
+        
         [HttpGet]
         [Route("getBySeatType")]
         public async Task<ActionResult<IEnumerable<SeatDomainModel>>> GetBySeatType([FromBody] SeatDomainModel domainModel )

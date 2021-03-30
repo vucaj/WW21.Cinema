@@ -38,7 +38,8 @@ namespace WinterWorkShop.Cinema.API.Controllers
             }
 
             var role = user.user.Role;
-            var name = user.user.FirstName;
+            var name = user.user.UserName;
+            var userId = user.user.Id;
             
             var jwt = JwtTokenGenerator
                 .Generate(name, role, _configuration["Tokens:Issuer"], _configuration["Tokens:Key"]);
@@ -46,7 +47,8 @@ namespace WinterWorkShop.Cinema.API.Controllers
             LoginDomainModel loginDomainModel = new LoginDomainModel()
             {
                 Token = jwt,
-                Role = role
+                Role = role,
+                UserId = userId
             };
             
             

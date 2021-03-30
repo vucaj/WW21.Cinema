@@ -42,16 +42,16 @@ export const getTokenExp = () => {
 };
 
 export const isAdmin = () => {
-  return getRole() === "admin";
+  return getRole() == "admin";
 };
 export const isSuperUser = () => {
-  return getRole() === "superUser";
+  return getRole() == "superUser";
 };
 
 export const isUser = () => {
-  return getRole() === "user";
+  return getRole() == "user";
 };
 
 export const isGuest = () => {
-  return getRole() === "guest";
+  return getRole() == "guest";
 };

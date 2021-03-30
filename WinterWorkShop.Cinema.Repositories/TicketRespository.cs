@@ -67,7 +67,7 @@ namespace WinterWorkShop.Cinema.Repositories
 
         public async Task<IEnumerable<Ticket>> GetByProjectionId(Guid ProjectionId)
         {
-            var tickets = await _cinemaContext.Tickets.Where(x => x.ProjectionId == ProjectionId).ToListAsync();
+            var tickets = await _cinemaContext.Tickets.Where(x => x.ProjectionId.Equals(ProjectionId)).ToListAsync();
 
             return tickets;
         }
