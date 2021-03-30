@@ -127,11 +127,14 @@ const ShowAllCinemas2: React.FC = (props: any) => {
     }
 
     const redirectBtn = () => {
-        return(
-            <Button type="primary" onClick={() => {props.history.push("NewAuditorium")}}>
-                Add Auditorium
-            </Button>
-        )
+        if (isAdmin()) {
+            return (
+
+                <Button type="primary" onClick={() => { props.history.push("NewAuditorium") }}>
+                    Add Auditorium
+                </Button>
+            )
+        }
     }
 
     const fillCardWithData = () => {
