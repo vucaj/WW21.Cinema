@@ -37,6 +37,12 @@ export const checkRole = () => {
           </NavLink>
         </Row>
         <Row className="justify-content-center mt-2">
+          <NavLink activeClassName="active-link" to="/dashboard/IMDbTop10Movies">
+            <FontAwesomeIcon className="text-primary mr-1" icon={faStar} />
+            Top 10 Movies From IMDb
+          </NavLink>
+        </Row>
+        <Row className="justify-content-center mt-2">
           <NavLink activeClassName="active-link" to="/dashboard/IMDbTop100Movies">
             <FontAwesomeIcon className="text-primary mr-1" icon={faStar} />
             Top 100 Movies From IMDb

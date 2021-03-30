@@ -39,6 +39,19 @@ export interface IIMDbTop100Movies {
   iMDbRatingCount: string;
 }
 
+export interface IIMDbTop10Movies {
+  id: string;
+  rank: string;
+  rankUpDown: string;
+  title: string;
+  fullTitle: string;
+  year: string;
+  image: string;
+  crew: string;
+  iMDbRating: string;
+  iMDbRatingCount: string;
+}
+
 
 export interface ICinema {
   id: string;
