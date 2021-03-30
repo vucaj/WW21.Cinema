@@ -338,7 +338,7 @@ const NewProjection: React.FC = (props: any) => {
               <Space direction="vertical">
 	              <DatePicker
                  onChange={(e) => {
-                  onDateChange(e);
+                  onDateChange(state.date);
                 }} 
                 />
               </Space>
