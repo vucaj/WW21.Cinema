@@ -90,11 +90,11 @@ const NewProjection: React.FC = (props: any) => {
 
   useEffect(() => {
     getProjections();
-    getAuditoriums(cinemaId);
+    getAuditoriums();
     getCinemas();
   }, []);
 
-  const handleChange = (e) => {
+  const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { id, value } = e.target;
     setState({ ...state, [id]: value });
   };
@@ -158,7 +158,7 @@ const NewProjection: React.FC = (props: any) => {
       },
     };
 
-    fetch(`${serviceConfig.baseURL}/api/Movies/current`, requestOptions)
+    fetch(`${serviceConfig.baseURL}/api/Movies/all`, requestOptions)
       .then((response) => {
         if (!response.ok) {
           return Promise.reject(response);
@@ -176,7 +176,7 @@ const NewProjection: React.FC = (props: any) => {
       });
   };
 
-  const getAuditoriums = (cinemaId) => {
+  const getAuditoriums = () => {
     const requestOptions = {
       method: "GET",
       headers: {
@@ -185,7 +185,7 @@ const NewProjection: React.FC = (props: any) => {
       },
     };
 
-    fetch(`${serviceConfig.baseURL}/api/Auditoriums/getByCinemaId/${cinemaId}`, requestOptions)
+    fetch(`${serviceConfig.baseURL}/api/Auditoriums/getAll`, requestOptions)
       .then((response) => {
         if (!response.ok) {
           return Promise.reject(response);
@@ -243,11 +243,9 @@ const NewProjection: React.FC = (props: any) => {
   };
 
   const onCinemaChange = (cinemas: ICinema[]) => {
+    if(cinemas[0]){
     setState({...state, cinemaId: cinemas[0].id});
-  }
-
-  const onDateChange = (date: Date) => {
-    setState({ ...state, dateTime: date.toLocaleDateString() });
+    }
   }
 
   return (
@@ -299,16 +297,19 @@ const NewProjection: React.FC = (props: any) => {
                 {state.cinemaIdError}
               </FormText>
             </FormGroup>
-              <Space direction="vertical" className="add-new-form">
-	              <DatePicker showTime 
-                 onChange={(e) => {
-                  onDateChange(state.date);
-                }} 
-                />
-              </Space>
+            <FormGroup>
+              <FormControl
+              id="dateTime"
+              type="text"
+              placeholder="Date Time - HH:MM:SS MM.DD.YYYY."
+              value={state.dateTime}
+              className="add-new-form"
+              onChange={handleChange}
+              />
               <FormText className="text-danger">
                 {state.dateTimeError}
               </FormText>
+            </FormGroup>
             <FormGroup>
               <FormControl
               id="ticketPrice"
