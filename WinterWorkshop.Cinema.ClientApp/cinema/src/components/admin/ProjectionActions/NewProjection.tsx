@@ -2,6 +2,7 @@ import React, { useEffect, useState } from "react";
 import { withRouter } from "react-router-dom";
 import {
   FormGroup,
+  FormControl,
   Button,
   Container,
   Row,
@@ -11,29 +12,43 @@ import {
 import { NotificationManager } from "react-notifications";
 import { serviceConfig } from "../../../appSettings";
 import { Typeahead } from "react-bootstrap-typeahead";
-import DateTimePicker from "react-datetime-picker";
-import { IAuditorium, IMovie } from "../../../models";
+import { IAuditorium, IMovie, ICinema } from "../../../models";
+import { DatePicker, Space } from "antd";
+import "antd/dist/antd.css";
 
 interface IState {
-  projectionTime: string;
+  dateTime: string;
   movieId: string;
   auditoriumId: string;
-  submitted: boolean;
-  projectionTimeError: string;
+  cinemaId:string;
+  ticketPrice: number;
+  date: Date;
+  ticketPriceError: string;
+  cinemaIdError: string;
+  dateTimeError: string;
   movieIdError: string;
   auditoriumIdError: string;
+
   movies: IMovie[];
   auditoriums: IAuditorium[];
+  cinemas: ICinema[];
+
+  submitted: boolean;
   canSubmit: boolean;
 }
 
 const NewProjection: React.FC = (props: any) => {
   const [state, setState] = useState<IState>({
-    projectionTime: "",
+    date: new Date(),
+    ticketPrice: 0,
+    ticketPriceError: "",
+    dateTime: "",
     movieId: "",
     auditoriumId: "",
+    cinemaId:"",
+    cinemaIdError: "",
     submitted: false,
-    projectionTimeError: "",
+    dateTimeError: "",
     movieIdError: "",
     auditoriumIdError: "",
     movies: [
@@ -57,12 +72,25 @@ const NewProjection: React.FC = (props: any) => {
         name: "",
       },
     ],
+    cinemas: [
+      {
+        id: "",
+        name: "",
+        addressId: 0,
+        cityName: "",
+        country: "",
+        latitude: 0,
+        longitude: 0,
+        streetName: "",
+      },
+    ],
     canSubmit: true,
   });
 
   useEffect(() => {
     getProjections();
     getAuditoriums();
+    getCinemas();
   }, []);
 
   const handleChange = (e) => {
@@ -70,46 +98,46 @@ const NewProjection: React.FC = (props: any) => {
     setState({ ...state, [id]: value });
   };
 
-  const validate = (id, value) => {
-    if (id === "projectionTime") {
-      if (!value) {
-        setState({
-          ...state,
-          projectionTimeError: "Chose projection time",
-          canSubmit: false,
-        });
-      } else {
-        setState({ ...state, projectionTimeError: "", canSubmit: true });
-      }
-    } else if (id === "movieId") {
-      if (!value) {
-        setState({
-          ...state,
-          movieIdError: "Please chose movie from dropdown",
-          canSubmit: false,
-        });
-      } else {
-        setState({ ...state, movieIdError: "", canSubmit: true });
-      }
-    } else if (id === "auditoriumId") {
-      if (!value) {
-        setState({
-          ...state,
-          auditoriumIdError: "Please chose auditorium from dropdown",
-          canSubmit: false,
-        });
-      } else {
-        setState({ ...state, auditoriumIdError: "", canSubmit: true });
-      }
-    }
-  };
+  // const validate = (id, value) => {
+  //   if (id === "projectionTime") {
+  //     if (!value) {
+  //       setState({
+  //         ...state,
+  //         projectionTimeError: "Chose projection time",
+  //         canSubmit: false,
+  //       });
+  //     } else {
+  //       setState({ ...state, projectionTimeError: "", canSubmit: true });
+  //     }
+  //   } else if (id === "movieId") {
+  //     if (!value) {
+  //       setState({
+  //         ...state,
+  //         movieIdError: "Please chose movie from dropdown",
+  //         canSubmit: false,
+  //       });
+  //     } else {
+  //       setState({ ...state, movieIdError: "", canSubmit: true });
+  //     }
+  //   } else if (id === "auditoriumId") {
+  //     if (!value) {
+  //       setState({
+  //         ...state,
+  //         auditoriumIdError: "Please chose auditorium from dropdown",
+  //         canSubmit: false,
+  //       });
+  //     } else {
+  //       setState({ ...state, auditoriumIdError: "", canSubmit: true });
+  //     }
+  //   }
+  // };
 
   const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
 
     setState({ ...state, submitted: true });
 
-    if (state.movieId && state.auditoriumId && state.projectionTime) {
+    if (state.movieId && state.auditoriumId && state.dateTime) {
       addProjection();
     } else {
       NotificationManager.error("Please fill in data");
@@ -120,8 +148,10 @@ const NewProjection: React.FC = (props: any) => {
   const addProjection = () => {
     const data = {
       movieId: state.movieId,
+      cinemaId: state.cinemaId,
       auditoriumId: state.auditoriumId,
-      projectionTime: state.projectionTime,
+      dateTime: state.dateTime,
+      ticketPrice: state.ticketPrice,
     };
 
     const requestOptions = {
@@ -133,7 +163,7 @@ const NewProjection: React.FC = (props: any) => {
       body: JSON.stringify(data),
     };
 
-    fetch(`${serviceConfig.baseURL}/api/projections`, requestOptions)
+    fetch(`${serviceConfig.baseURL}/api/Projections/create`, requestOptions)
       .then((response) => {
         if (!response.ok) {
           return Promise.reject(response);
@@ -142,7 +172,7 @@ const NewProjection: React.FC = (props: any) => {
       })
       .then((result) => {
         NotificationManager.success("New projection added!");
-        props.history.push(`AllProjections`);
+        props.history.push(`Projection`);
       })
       .catch((response) => {
         NotificationManager.error(response.message || response.statusText);
@@ -186,7 +216,7 @@ const NewProjection: React.FC = (props: any) => {
       },
     };
 
-    fetch(`${serviceConfig.baseURL}/api/Auditoriums/all`, requestOptions)
+    fetch(`${serviceConfig.baseURL}/api/Auditoriums/getAll`, requestOptions)
       .then((response) => {
         if (!response.ok) {
           return Promise.reject(response);
@@ -204,26 +234,57 @@ const NewProjection: React.FC = (props: any) => {
       });
   };
 
+  const getCinemas = () => {
+    const requestOptions = {
+      method: "GET",
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${localStorage.getItem("jwt")}`,
+      },
+    };
+
+    fetch(`${serviceConfig.baseURL}/api/Cinemas/getAll`, requestOptions)
+      .then((response) => {
+        if (!response.ok) {
+          return Promise.reject(response);
+        }
+        return response.json();
+      })
+      .then((data) => {
+        if (data) {
+          setState({ ...state, cinemas: data });
+        }
+      })
+      .catch((response) => {
+        NotificationManager.error(response.message || response.statusText);
+        setState({ ...state, submitted: false });
+      });
+  };
+
   const onMovieChange = (movies: IMovie[]) => {
     if (movies[0]) {
       setState({ ...state, movieId: movies[0].id });
-      validate("movieId", movies[0]);
-    } else {
-      validate("movieId", null);
-    }
+     // validate("movieId", movies[0]);
+    } //else {
+    //  validate("movieId", null);
+   // }
   };
 
   const onAuditoriumChange = (auditoriums: IAuditorium[]) => {
     if (auditoriums[0]) {
       setState({ ...state, auditoriumId: auditoriums[0].id });
-      validate("auditoriumId", auditoriums[0]);
-    } else {
-      validate("auditoriumId", null);
-    }
+     // validate("auditoriumId", auditoriums[0]);
+    } //else {
+      //validate("auditoriumId", null);
+   // }
   };
 
+  const onCinemaChange = (cinemas: ICinema[]) => {
+    setState({...state, cinemaId: cinemas[0].id});
+  }
+
   const onDateChange = (date: Date) =>
-    setState({ ...state, projectionTime: date.toLocaleTimeString() });
+    setState({ ...state, dateTime: date.toLocaleTimeString() });
 
   return (
     <Container>
@@ -260,13 +321,42 @@ const NewProjection: React.FC = (props: any) => {
               </FormText>
             </FormGroup>
             <FormGroup>
-              <DateTimePicker
-                className="form-control add-new-form"
-                onChange={onDateChange}
-                value={state.projectionTime}
+              <Typeahead
+                labelKey="name"
+                className="add-new-form"
+                options={state.cinemas}
+                placeholder="Choose cinema..."
+                id="cinema"
+                onChange={(e) => {
+                  onCinemaChange(e);
+                }}
               />
               <FormText className="text-danger">
-                {state.projectionTimeError}
+                {state.cinemaIdError}
+              </FormText>
+            </FormGroup>
+              <Space direction="vertical">
+	              <DatePicker
+                 onChange={(e) => {
+                  onDateChange(e);
+                }} 
+                />
+              </Space>
+              <FormText className="text-danger">
+                {state.dateTimeError}
+              </FormText>
+            <FormGroup>
+              <FormControl
+              id="ticketPrice"
+              type="number"
+              placeholder="Ticket Price"
+              value={state.ticketPrice.toString()}
+              className="add-new-form"
+              onChange={handleChange}
+              min={1}
+              />
+              <FormText className="text-danger">
+                {state.ticketPriceError}
               </FormText>
             </FormGroup>
             <Button
