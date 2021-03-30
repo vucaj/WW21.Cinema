@@ -1,4 +1,4 @@
-import { IIMDbTop100Movies, ITag } from "../../../models";
+import { IIMDbTop10Movies, ITag } from "../../../models";
 import Highlighter from 'react-highlight-words';
 import { SearchOutlined } from '@ant-design/icons';
 import React, { useEffect, useState } from "react";
@@ -11,11 +11,12 @@ import { Spinner } from "react-bootstrap";
 import Title from "antd/lib/typography/Title";
 import { Table, Tag, Space, Card, Input, Button } from 'antd';
 import AllMovies from "../../AllMovies";
+import { moveEmitHelpers } from "typescript";
 import "../../../index.css";
 
 
 interface IState {
-    movies: IIMDbTop100Movies[];
+    movies: IIMDbTop10Movies[];
     title: string;
     year: string;
     id: string;
@@ -35,7 +36,7 @@ interface IState {
     expandedRowKeys: string[];
 }
 
-const IMDbTop100Movies: React.FC = (props: any) => {
+const IMDbTop10Movies: React.FC = (props: any) => {
     const [state, setState] = useState<IState>({
         movies: [
             {
@@ -83,10 +84,10 @@ const IMDbTop100Movies: React.FC = (props: any) => {
     toast.configure();
 
     useEffect(() => {
-        getIMDbTop100Movies()
+        IMDbTop10Movies()
     }, []);
 
-    const getIMDbTop100Movies = () => {
+    const IMDbTop10Movies = () => {
         const requestOptions = {
             method: "GET",
             headers: {
@@ -220,20 +221,22 @@ const IMDbTop100Movies: React.FC = (props: any) => {
         },
     ]
 
+
     return (
         <React.Fragment>
             <Card style={{ margin: 10 }}>
-                <Title level={2}>Top 100 Movies From IMDb</Title>
+                <Title level={2}>Top 10 Movies From IMDb</Title>
                 <Table
                     columns={columns}
                     dataSource={state.movies}
                     rowKey={record => record.id}
+                    pagination={{ disabled: true }}
                 >
 
                 </Table>
             </Card>
-        </React.Fragment>
+        </React.Fragment >
     )
 }
 
-export default IMDbTop100Movies
+export default IMDbTop10Movies
