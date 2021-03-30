@@ -189,7 +189,7 @@ const NewProjection: React.FC = (props: any) => {
       },
     };
 
-    fetch(`${serviceConfig.baseURL}/api/Movies/current`, requestOptions)
+    fetch(`${serviceConfig.baseURL}/api/Movies/all`, requestOptions)
       .then((response) => {
         if (!response.ok) {
           return Promise.reject(response);
@@ -283,8 +283,14 @@ const NewProjection: React.FC = (props: any) => {
     setState({...state, cinemaId: cinemas[0].id});
   }
 
-  const onDateChange = (date: Date) =>
+  const onDateChange = (date: Date) => {
     setState({ ...state, dateTime: date.toLocaleTimeString() });
+  }
+  // const onOk = (value) => {
+  //   console.log('onOk: ', value);
+  // }
+
+ // const { RangePicker } = DatePicker;
 
   return (
     <Container>
@@ -336,11 +342,12 @@ const NewProjection: React.FC = (props: any) => {
               </FormText>
             </FormGroup>
               <Space direction="vertical">
-	              <DatePicker
+	              <DatePicker showTime 
                  onChange={(e) => {
                   onDateChange(state.date);
                 }} 
                 />
+                
               </Space>
               <FormText className="text-danger">
                 {state.dateTimeError}
