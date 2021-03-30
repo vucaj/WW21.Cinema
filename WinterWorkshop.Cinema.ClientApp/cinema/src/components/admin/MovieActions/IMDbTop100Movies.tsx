@@ -74,7 +74,7 @@ const IMDbTop100Movies: React.FC = (props: any) => {
     const apiData = {
         url: 'https://imdb-api.com/API/',
         type: 'MostPopularMovies',
-        apiKey: 'k_l70nyqsj'
+        apiKey: 'k_o2y32k2o'
     }
 
     const { url, type, apiKey } = apiData;
