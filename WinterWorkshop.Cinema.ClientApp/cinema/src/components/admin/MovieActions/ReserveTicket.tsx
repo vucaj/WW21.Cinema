@@ -19,6 +19,10 @@ interface IState{
     shouldDisable: boolean
 }
 
+class CreateTicketModel {
+    SeatId?: string
+}
+
 const ReserveTicket: React.FC = (props: any) => {
     const { projectionId, auditoriumId } = props.match.params;
 
@@ -232,7 +236,7 @@ const ReserveTicket: React.FC = (props: any) => {
                     <Button style={{margin: 5}} disabled={disable()} onClick={() => payment()} type="primary">
                         Reserve & Pay
                     </Button>
-                    <Button style={{margin: 5}} onClick={() => clearAll()} danger>
+                    <Button style={{margin: 5}} disabled={disable()} onClick={() => clearAll()} danger>
                         Clear All
                     </Button>
                 </div>
@@ -271,11 +275,7 @@ const ReserveTicket: React.FC = (props: any) => {
                 return response.json()
             })
             .then((data) => {
-                setState(prevState => {return {...prevState, shouldDisable: false}})
-                clearAll();
-                let jwt = localStorage.getItem('jwt')
-                console.log(jwt)
-                NotificationManager.success(data.message || data.statusText )
+                reserveTickets()
             })
             .catch((response) => {
                 if(response.status == 400)
@@ -283,6 +283,63 @@ const ReserveTicket: React.FC = (props: any) => {
                 else if (response.status == 401)
                     NotificationManager.error('Please login to reserve ticket(s).');
 
+                setState(prevState => {return {...prevState, shouldDisable: false }})
+
+            });
+    }
+
+    const readyData = () => {
+
+        var list: CreateTicketModel[] = [] ;
+
+        state.selectedSeats.forEach(s => {
+            let obj: CreateTicketModel = {}
+            obj.SeatId = s.id;
+
+            list.push(obj)
+        })
+
+        let userId = localStorage.getItem('userId');
+        let projectionId = state.projection.id
+
+
+        let data = {
+            CreateTicketModels: list,
+            UserId: userId,
+            ProjectionId: projectionId
+        }
+
+        let json = JSON.stringify(data)
+        console.log(json)
+
+        return json
+    }
+
+    const reserveTickets = () => {
+        const requestOptions = {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json",
+                Authorization: `Bearer ${localStorage.getItem("jwt")}`,
+            },
+            body: readyData()
+        };
+
+        var url = `${serviceConfig.baseURL}/api/tickets/create`
+        fetch(url, requestOptions)
+            .then((response) => {
+                if (!response.ok) {
+                    return Promise.reject(response)
+                }
+                return response.json()
+            })
+            .then((data) => {
+                setState(prevState => {return {...prevState, shouldDisable: false}})
+                clearAll();
+                NotificationManager.success("Successfully reserved!")
+                getAuditoriumSeatsAndTickets(projectionId, auditoriumId);
+            })
+            .catch((response) => {
                 setState(prevState => {return {...prevState, shouldDisable: false }})
 
             });

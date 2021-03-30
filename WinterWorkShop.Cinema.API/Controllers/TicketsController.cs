@@ -67,9 +67,9 @@ namespace WinterWorkShop.Cinema.API.Controllers
             {
                 TicketDomainModel ticketDomainModel = new TicketDomainModel()
                 {
-                    ProjectionId = tdm.ProjectionId,
+                    ProjectionId = createTicketModel.ProjectionId,
                     SeatId = tdm.SeatId,
-                    UserId = tdm.UserId
+                    UserId = createTicketModel.UserId
                 };
 
                 CreateTicketDomainResultModel createTicketDomainResultModel;
