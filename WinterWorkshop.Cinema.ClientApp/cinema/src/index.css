@@ -20,6 +20,11 @@ code {
   border-radius: 5px;
 }
 
+.Image-Movie-Poster{
+  width: 100px;
+  height: auto;
+}
+
 .form-heading  {
   margin-left: 48px;
   margin-bottom: 20px;

@@ -11,6 +11,7 @@ import { Spinner } from "react-bootstrap";
 import Title from "antd/lib/typography/Title";
 import { Table, Tag, Space, Card, Input, Button } from 'antd';
 import AllMovies from "../../AllMovies";
+import "../../../index.css";
 
 
 interface IState {
@@ -214,7 +215,7 @@ const IMDbTop100Movies: React.FC = (props: any) => {
         {
             title: 'Image',
             dataIndex: 'image',
-            render: theImageURL => <img src={theImageURL} />,
+            render: theImageURL => <img className="Image-Movie-Poster" src={theImageURL} />,
             key: 'image'
         },
     ]
