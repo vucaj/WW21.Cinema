@@ -107,8 +107,34 @@ namespace WinterWorkShop.Cinema.Tests.Services
             Assert.AreEqual(expectedCount, result.Count);
         }
 
+        //Create Address Tests
+        [TestMethod]
+        public void AddressService_CreateAddress_ReturnCreatedAddress()
+        {
+            //Arrange
+            _mockAddressRepository.Setup(x => x.Insert(It.IsAny<Address>())).Returns(_address);
 
+            //Act
+            var resultAction = _addressService.AddAddress(_addressDomainModel).ConfigureAwait(false).GetAwaiter().GetResult();
 
+            //Assert
+            Assert.IsNotNull(resultAction);
+            Assert.AreEqual(_address.Id, resultAction.Address.Id);
+            Assert.IsInstanceOfType(resultAction, typeof(CreateAddressResultModel));
+        }
+
+      /*  [TestMethod]
+        public void AddressService_CreateAddress_ReturnsNull()
+        {
+            //Arrange
+            _mockAddressRepository.Setup(x => x.Insert(It.IsAny<Address>())).Returns(_address);
+
+            //Act
+            var resultAction = _addressService.AddAddress(_addressDomainModel).ConfigureAwait(false).GetAwaiter().GetResult();
+
+            //Assert
+            Assert.IsNull(resultAction);
+        }*/
 
     }
 }
