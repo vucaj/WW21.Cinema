@@ -91,7 +91,21 @@ namespace WinterWorkShop.Cinema.Tests.Services
             Assert.IsInstanceOfType(result[0], typeof(AddressDomainModel));
         }
 
+        [TestMethod]
+        public void AddressService_GetAllAddresses_Return_Empty_List()
+        {
+            //Arrange
+            var expectedCount = 0;
+            List<Address> addresses = new List<Address>();
+            _mockAddressRepository.Setup(x => x.GetAllAsync()).ReturnsAsync(addresses);
 
+            //Act
+            var resultAction = _addressService.GetAllAddressesAsync().ConfigureAwait(false).GetAwaiter().GetResult();
+            var result = resultAction.ToList();
+
+            //Assert
+            Assert.AreEqual(expectedCount, result.Count);
+        }
 
 
 
