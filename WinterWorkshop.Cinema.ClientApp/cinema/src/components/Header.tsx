@@ -54,6 +54,7 @@ const Header: React.FC = (props: any) => {
         localStorage.setItem("jwt", data.token);
         localStorage.setItem('isLoggedIn', 'true');
         localStorage.setItem('role', data.role);
+        localStorage.setItem('userId', data.userId);
         window.location.reload();
       })
       .catch((response) => {
@@ -72,6 +73,7 @@ const Header: React.FC = (props: any) => {
     localStorage.removeItem("jwt");
     localStorage.removeItem('isLoggedIn');
     localStorage.removeItem('role');
+    localStorage.removeItem('userId');
     window.location.reload();
   }
 

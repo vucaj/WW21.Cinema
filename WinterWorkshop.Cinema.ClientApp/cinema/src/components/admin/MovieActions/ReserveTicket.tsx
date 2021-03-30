@@ -109,7 +109,7 @@ const ReserveTicket: React.FC = (props: any) => {
                 NotificationManager.error(response.message || response.statusText);
             });
     }
-    
+
 
     const getSeatsInAuditorium = () => {
         {
@@ -273,6 +273,8 @@ const ReserveTicket: React.FC = (props: any) => {
             .then((data) => {
                 setState(prevState => {return {...prevState, shouldDisable: false}})
                 clearAll();
+                let jwt = localStorage.getItem('jwt')
+                console.log(jwt)
                 NotificationManager.success(data.message || data.statusText )
             })
             .catch((response) => {
