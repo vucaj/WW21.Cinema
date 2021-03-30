@@ -8,7 +8,7 @@ export interface IProjection {
   movieTitle: string;
   auditoriumName: string;
   cinemaName: string;
-  movieRating: number
+  movieRating: number;
 }
 
 export interface IMovie {
@@ -26,6 +26,19 @@ export interface IMovie {
   projections?: IProjection[];
 }
 
+export interface IIMDbTop100Movies {
+  id: string;
+  rank: string;
+  rankUpDown: string;
+  title: string;
+  fullTitle: string;
+  year: string;
+  image: string;
+  crew: string;
+  iMDbRating: string;
+  iMDbRatingCount: string;
+}
+
 
 export interface ICinema {
   id: string;
@@ -35,7 +48,7 @@ export interface ICinema {
   cityName: string;
   country: string;
   latitude: number;
-  longitude: number; 
+  longitude: number;
 }
 
 export interface IAuditorium {
@@ -89,7 +102,7 @@ export interface ITag {
   name: string;
 }
 
-export interface IAddress{
+export interface IAddress {
   id: number;
   cityName: string;
   streetName: string;

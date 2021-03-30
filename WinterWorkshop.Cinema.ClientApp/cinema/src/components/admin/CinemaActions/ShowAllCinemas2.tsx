@@ -126,16 +126,25 @@ const ShowAllCinemas2: React.FC = (props: any) => {
         }
     }
 
+    const redirectBtn = () => {
+        return(
+            <Button type="primary" onClick={() => {props.history.push("NewAuditorium")}}>
+                Add Auditorium
+            </Button>
+        )
+    }
+
     const fillCardWithData = () => {
         return state.cinemas.map((cinema) => {
             return (
                 <Card>
                     <div>
-                        <h1>{cinema.name}</h1>
+                        <h2>{cinema.name}</h2>
                         <p><b>Address:</b> {cinema.streetName}</p>
                         <p><b>City:</b> {cinema.cityName}</p>
                         <p><b>Country:</b> {cinema.country}</p>
                         {deleteBtn(cinema.id)}
+                        {redirectBtn()}
                     </div>
                 </Card>
             );
