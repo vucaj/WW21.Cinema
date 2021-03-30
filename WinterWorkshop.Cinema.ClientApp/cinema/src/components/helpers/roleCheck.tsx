@@ -122,7 +122,7 @@ export const checkRole = () => {
             Projection
           </span>
         </Row>
-        <Row className="justify-content-center mt-2">
+        {/* <Row className="justify-content-center mt-2">
           <NavLink
             className="admin"
             activeClassName="active-link"
@@ -131,7 +131,7 @@ export const checkRole = () => {
             <FontAwesomeIcon className="text-primary mr-1" icon={faList} />
             All Projections
           </NavLink>
-        </Row>
+        </Row> */}
         <Row className="justify-content-center mt-2">
           <NavLink
             className="admin"
@@ -175,7 +175,19 @@ export const checkRole = () => {
             Top 10 Movies
           </NavLink>
         </Row>
-        <Row className="justify-content-center mt-2 adminSuperUser">
+        <Row className="justify-content-center mt-2">
+          <NavLink activeClassName="active-link" to="/dashboard/IMDbTop10Movies">
+            <FontAwesomeIcon className="text-primary mr-1" icon={faStar} />
+            Top 10 Movies From IMDb
+          </NavLink>
+        </Row>
+        <Row className="justify-content-center mt-2">
+          <NavLink activeClassName="active-link" to="/dashboard/IMDbTop100Movies">
+            <FontAwesomeIcon className="text-primary mr-1" icon={faStar} />
+            Top 100 Movies From IMDb
+          </NavLink>
+        </Row>
+        {/* <Row className="justify-content-center mt-2 adminSuperUser">
           <NavLink
             className="admin"
             activeClassName="active-link"
@@ -184,7 +196,7 @@ export const checkRole = () => {
             <FontAwesomeIcon className="text-primary mr-1" icon={faPlus} />
             Add Movie
           </NavLink>
-        </Row>
+        </Row> */}
         <Row className="justify-content-center">
           <span className="fa-2x text-white admin">
             <FontAwesomeIcon
@@ -205,12 +217,31 @@ export const checkRole = () => {
           </NavLink>
         </Row>
         <Row className="justify-content-center">
+          <span className="fa-2x text-white admin">
+            <FontAwesomeIcon
+              className="text-white mr-2 fa-1x"
+              icon={faTicketAlt}
+            />
+            Cinema
+          </span>
+        </Row>
+        <Row className="justify-content-center mt-2">
+          <NavLink
+            className="admin"
+            activeClassName="active-link"
+            to="/dashboard/AllCinemas"
+          >
+            <FontAwesomeIcon className="text-primary mr-1" icon={faList} />
+            All Cinemas
+          </NavLink>
+        </Row>
+        <Row className="justify-content-center">
           <span className="fa-2x text-white">
             <FontAwesomeIcon className="text-white mr-2 fa-1x" icon={faVideo} />
             Projection
           </span>
         </Row>
-        <Row className="justify-content-center mt-2">
+        {/* <Row className="justify-content-center mt-2">
           <NavLink
             className="admin"
             activeClassName="active-link"
@@ -219,8 +250,8 @@ export const checkRole = () => {
             <FontAwesomeIcon className="text-primary mr-1" icon={faList} />
             All Projections
           </NavLink>
-        </Row>
-        <Row className="justify-content-center mt-2">
+        </Row> */}
+        {/* <Row className="justify-content-center mt-2">
           <NavLink
             className="admin"
             activeClassName="active-link"
@@ -229,7 +260,7 @@ export const checkRole = () => {
             <FontAwesomeIcon className="text-primary mr-1" icon={faPlus} />
             Add Projection
           </NavLink>
-        </Row>
+        </Row> */}
         <Row className="justify-content-center mt-2">
           <NavLink activeClassName="active-link" to="/dashboard/Projection">
             <FontAwesomeIcon
@@ -263,6 +294,37 @@ export const checkRole = () => {
             Top 10 Movies
           </NavLink>
         </Row>
+        <Row className="justify-content-center mt-2">
+          <NavLink activeClassName="active-link" to="/dashboard/IMDbTop10Movies">
+            <FontAwesomeIcon className="text-primary mr-1" icon={faStar} />
+            Top 10 Movies From IMDb
+          </NavLink>
+        </Row>
+        <Row className="justify-content-center mt-2">
+          <NavLink activeClassName="active-link" to="/dashboard/IMDbTop100Movies">
+            <FontAwesomeIcon className="text-primary mr-1" icon={faStar} />
+            Top 100 Movies From IMDb
+          </NavLink>
+        </Row>
+        <Row className="justify-content-center">
+          <span className="fa-2x text-white admin">
+            <FontAwesomeIcon
+              className="text-white mr-2 fa-1x"
+              icon={faTicketAlt}
+            />
+            Cinema
+          </span>
+        </Row>
+        <Row className="justify-content-center mt-2">
+          <NavLink
+            className="admin"
+            activeClassName="active-link"
+            to="/dashboard/AllCinemas"
+          >
+            <FontAwesomeIcon className="text-primary mr-1" icon={faList} />
+            All Cinemas
+          </NavLink>
+        </Row>
         <Row className="justify-content-center">
           <span className="fa-2x text-white">
             <FontAwesomeIcon className="text-white mr-2 fa-1x" icon={faVideo} />
@@ -278,12 +340,12 @@ export const checkRole = () => {
             Projections
           </NavLink>
         </Row>
-        <Row className="justify-content-center">
+        {/* <Row className="justify-content-center">
           <span className="fa-2x text-white">
             <FontAwesomeIcon className="text-white mr-2 fa-1x" icon={faVideo} />
             Projection
           </span>
-        </Row>
+        </Row> */}
       </Col>
     );
   } else {
@@ -305,6 +367,37 @@ export const checkRole = () => {
           <NavLink activeClassName="active-link" to="/dashboard/TopTenMovies">
             <FontAwesomeIcon className="text-primary mr-1" icon={faStar} />
             Top 10 Movies
+          </NavLink>
+        </Row>
+        <Row className="justify-content-center mt-2">
+          <NavLink activeClassName="active-link" to="/dashboard/IMDbTop10Movies">
+            <FontAwesomeIcon className="text-primary mr-1" icon={faStar} />
+            Top 10 Movies From IMDb
+          </NavLink>
+        </Row>
+        <Row className="justify-content-center mt-2">
+          <NavLink activeClassName="active-link" to="/dashboard/IMDbTop100Movies">
+            <FontAwesomeIcon className="text-primary mr-1" icon={faStar} />
+            Top 100 Movies From IMDb
+          </NavLink>
+        </Row>
+        <Row className="justify-content-center">
+          <span className="fa-2x text-white admin">
+            <FontAwesomeIcon
+              className="text-white mr-2 fa-1x"
+              icon={faTicketAlt}
+            />
+            Cinema
+          </span>
+        </Row>
+        <Row className="justify-content-center mt-2">
+          <NavLink
+            className="admin"
+            activeClassName="active-link"
+            to="/dashboard/AllCinemas"
+          >
+            <FontAwesomeIcon className="text-primary mr-1" icon={faList} />
+            All Cinemas
           </NavLink>
         </Row>
         <Row className="justify-content-center">
