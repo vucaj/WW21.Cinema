@@ -16,6 +16,7 @@ interface IState{
     selectedRow: number;
     selectedNumberMin: number;
     selectedNumberMax: number;
+    shouldDisable: boolean
 }
 
 const ReserveTicket: React.FC = (props: any) => {
@@ -40,15 +41,15 @@ const ReserveTicket: React.FC = (props: any) => {
             auditoriumName: 'string',
             cinemaName: 'string',
             movieRating: 0
-        }
+        },
+        shouldDisable: false
     },)
 
 
     useEffect(() => {
         getProjection(projectionId);
         getAuditoriumSeatsAndTickets(projectionId, auditoriumId);
-        //getTickets(projectionId)
-        //getAuditoriumSeats(auditoriumId);
+
     }, [])
 
     const getAuditoriumSeatsAndTickets = (projectionId, auditoriumId) => {
@@ -72,7 +73,6 @@ const ReserveTicket: React.FC = (props: any) => {
             .then((data) => {
                 if (data) {
                     setState(prevState => {return { ...prevState, seats: data }});
-                    console.log(data);
                 }
             })
             .catch((response) => {
@@ -80,34 +80,7 @@ const ReserveTicket: React.FC = (props: any) => {
             });
     }
 
-    const getAuditoriumSeats = (id) =>{
-        const requestOptions = {
-            method: "GET",
-            headers: {
-                "Content-Type": "application/json",
-                Authorization: `Bearer ${localStorage.getItem("jwt")}`,
-            },
-        };
 
-
-        var url = serviceConfig.baseURL+'/api/seats/getByAuditId/'+ id;
-        fetch(url, requestOptions)
-            .then((response) => {
-                if (!response.ok) {
-                    return Promise.reject(response)
-                }
-                return response.json()
-            })
-            .then((data) => {
-                console.log('getAuditoirumSeats')
-                if (data) {
-                    setState(prevState => {return { ...prevState, seats: data }});
-                }
-            })
-            .catch((response) => {
-                NotificationManager.error(response.message || response.statusText);
-            });
-    }
 
     const getProjection = (id) =>{
         const requestOptions = {
@@ -127,50 +100,19 @@ const ReserveTicket: React.FC = (props: any) => {
                 return response.json()
             })
             .then((data) => {
-                console.log('getProjection')
                 if (data) {
                     setState( prevState => {return {...prevState, projection: data }});
 
-                    console.log(state)
                 }
             })
             .catch((response) => {
                 NotificationManager.error(response.message || response.statusText);
             });
     }
-
-    const getTickets = (id) =>{
-        const requestOptions = {
-            method: "GET",
-            headers: {
-                "Content-Type": "application/json",
-                Authorization: `Bearer ${localStorage.getItem("jwt")}`,
-            },
-        };
-
-        var url = serviceConfig.baseURL+'/api/tickets/getTicketsByProjection/'+ id;
-        fetch(url, requestOptions)
-            .then((response) => {
-                if (!response.ok) {
-                    return Promise.reject(response)
-                }
-                return response.json()
-            })
-            .then((data) => {
-                console.log('getTickets', data)
-
-                if (data) {
-                    setState(prevState => {return {...prevState, seats: state.seats, tickets: data}});
-                }
-            })
-            .catch((response) => {
-                NotificationManager.error(response.message || response.statusText);
-            });
-    }
+    
 
     const getSeatsInAuditorium = () => {
         {
-            console.log(state)
 
                 let test = [] as any
                 const seats = state.seats;
@@ -207,7 +149,6 @@ const ReserveTicket: React.FC = (props: any) => {
             if(list.length == 0){
                 list.push(s)
                 setState(prevState => {return {...prevState, selectedSeats: list, selectedRow: s.row, selectedNumberMin: s.number, selectedNumberMax: s.number}})
-                console.log(state.selectedSeats);
             }
             else if(s.number > max + 1 || s.number < min -1){
                 NotificationManager.error('Select seat next to already selected!');
@@ -225,7 +166,6 @@ const ReserveTicket: React.FC = (props: any) => {
                     setState(prevState => {return {...prevState, selectedSeats: list, selectedNumberMax: s.number}})
                 else
                     setState(prevState => {return {...prevState, selectedSeats: list, selectedNumberMin: s.number}})
-                console.log(state.selectedSeats);
             }
             else{
                 NotificationManager.error('Select seats from same row!');
@@ -289,8 +229,8 @@ const ReserveTicket: React.FC = (props: any) => {
             return (
                 <div>
                     <Title level={5}>Price: {getTotalPrice()}</Title>
-                    <Button style={{margin: 5}} type="primary">
-                        Reserve
+                    <Button style={{margin: 5}} disabled={disable()} onClick={() => payment()} type="primary">
+                        Reserve & Pay
                     </Button>
                     <Button style={{margin: 5}} onClick={() => clearAll()} danger>
                         Clear All
@@ -300,8 +240,50 @@ const ReserveTicket: React.FC = (props: any) => {
         return(<div></div>)
     }
 
+    const disable = () => {
+        if(state.shouldDisable){
+            return true
+        }
+        return undefined
+    }
+
     const clearAll = () => {
         setState(prevState => {return {...prevState, selectedSeats: []}})
+    }
+
+    const payment = () => {
+        setState(prevState => {return {...prevState, shouldDisable: true}})
+
+        const requestOptions = {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json",
+                Authorization: `Bearer ${localStorage.getItem("jwt")}`,
+            },
+        };
+
+        var url = `${serviceConfig.baseURL}/api/Levi9Payment/`
+        fetch(url, requestOptions)
+            .then((response) => {
+                if (!response.ok) {
+                    return Promise.reject(response)
+                }
+                return response.json()
+            })
+            .then((data) => {
+                setState(prevState => {return {...prevState, shouldDisable: false}})
+                clearAll();
+                NotificationManager.success(data.message || data.statusText )
+            })
+            .catch((response) => {
+                if(response.status == 400)
+                    NotificationManager.error('Error occured. Please try again.');
+                else if (response.status == 401)
+                    NotificationManager.error('Please login to reserve ticket(s).');
+
+                setState(prevState => {return {...prevState, shouldDisable: false }})
+
+            });
     }
 
     const getSelectedSeats = () => {
