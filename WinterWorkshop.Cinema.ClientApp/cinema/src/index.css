@@ -31,6 +31,18 @@ code {
 
 }
 
+.label-nos {
+  position: absolute;
+  margin-left: 355px;
+  margin-top: -15px;
+}
+
+.label-duration {
+  position: absolute;
+  margin-left: 355px;
+  margin-top: -15px;
+}
+
 .search-bar {
   width: 400px;
   border-radius: 5px;

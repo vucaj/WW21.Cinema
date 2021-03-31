@@ -307,11 +307,13 @@ const NewMovie: React.FC = (props: any) => {
                 id="isActive"
                 value={state.isActive.toString()}
                 onChange={handleChange}
+                style={{ marginTop: 10, marginBottom: 30 }}
               >
                 <option value="false">Active</option>
                 <option value="true">Not Active</option>
               </FormControl>
             </FormGroup>
+            <label className="label-nos">Number of Oscars: </label>
             <InputNumber className="add-new-form" style={{ position: "relative", left: 355, marginTop: 10, marginBottom: 10 }} id="numberOfOscars" placeholder="Number of Oscars" min={0} max={20} value={state.numberOfOscars} pattern="[0-9]*" onChange={(numberOfOscars: number) => {
               handleNumberOfOscarsChange(numberOfOscars);
             }} />
@@ -323,8 +325,9 @@ const NewMovie: React.FC = (props: any) => {
               value={state.distributer}
               onChange={handleChange}
               className="add-new-form"
-              style={{ marginTop: 10, marginBottom: 10 }}
+              style={{ marginTop: 10, marginBottom: 30 }}
             />
+            <label className="label-duration">Duration(min): </label>
             <InputNumber id="duration" className="add-new-form" style={{ position: "relative", left: 355, marginTop: 10, marginBottom: 5 }} placeholder="Duration(min)" min={1} max={500} value={state.duration} pattern="[0-9]*" onChange={(duration: number) => {
               handleDurationChange(duration);
             }} />
