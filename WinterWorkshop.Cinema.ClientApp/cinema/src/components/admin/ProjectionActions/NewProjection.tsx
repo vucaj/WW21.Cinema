@@ -20,7 +20,7 @@ interface IState {
   dateTime: string;
   movieId: string;
   auditoriumId: string;
-  cinemaId:string;
+  cinemaId: string;
   ticketPrice: number;
   date: Date;
   ticketPriceError: string;
@@ -45,7 +45,7 @@ const NewProjection: React.FC = (props: any) => {
     dateTime: "",
     movieId: "",
     auditoriumId: "",
-    cinemaId:"",
+    cinemaId: "",
     cinemaIdError: "",
     submitted: false,
     dateTimeError: "",
@@ -167,7 +167,7 @@ const NewProjection: React.FC = (props: any) => {
       })
       .then((data) => {
         if (data) {
-          setState( prevState => {return {...prevState, movies: data }});
+          setState(prevState => { return { ...prevState, movies: data } });
         }
       })
       .catch((response) => {
@@ -194,7 +194,7 @@ const NewProjection: React.FC = (props: any) => {
       })
       .then((data) => {
         if (data) {
-          setState( prevState => {return {...prevState, auditoriums: data }});
+          setState(prevState => { return { ...prevState, auditoriums: data } });
         }
       })
       .catch((response) => {
@@ -221,7 +221,7 @@ const NewProjection: React.FC = (props: any) => {
       })
       .then((data) => {
         if (data) {
-          setState( prevState => {return {...prevState, cinemas: data }});
+          setState(prevState => { return { ...prevState, cinemas: data } });
         }
       })
       .catch((response) => {
@@ -233,18 +233,18 @@ const NewProjection: React.FC = (props: any) => {
   const onMovieChange = (movies: IMovie[]) => {
     if (movies[0]) {
       setState({ ...state, movieId: movies[0].id });
-    } 
+    }
   };
 
   const onAuditoriumChange = (auditoriums: IAuditorium[]) => {
     if (auditoriums[0]) {
       setState({ ...state, auditoriumId: auditoriums[0].id });
-    } 
+    }
   };
 
   const onCinemaChange = (cinemas: ICinema[]) => {
-    if(cinemas[0]){
-    setState({...state, cinemaId: cinemas[0].id});
+    if (cinemas[0]) {
+      setState({ ...state, cinemaId: cinemas[0].id });
     }
   }
 
@@ -299,26 +299,27 @@ const NewProjection: React.FC = (props: any) => {
             </FormGroup>
             <FormGroup>
               <FormControl
-              id="dateTime"
-              type="text"
-              placeholder="Date Time - HH:MM:SS MM.DD.YYYY."
-              value={state.dateTime}
-              className="add-new-form"
-              onChange={handleChange}
+                id="dateTime"
+                type="text"
+                placeholder="Date Time - HH:MM:SS MM.DD.YYYY."
+                value={state.dateTime}
+                className="add-new-form"
+                onChange={handleChange}
               />
               <FormText className="text-danger">
                 {state.dateTimeError}
               </FormText>
             </FormGroup>
+            <label className="label-nos">Ticket Price: </label>
             <FormGroup>
               <FormControl
-              id="ticketPrice"
-              type="number"
-              placeholder="Ticket Price"
-              value={state.ticketPrice.toString()}
-              className="add-new-form"
-              onChange={handleChange}
-              min={1}
+                id="ticketPrice"
+                type="number"
+                placeholder="Ticket Price"
+                value={state.ticketPrice.toString()}
+                className="add-new-form"
+                onChange={handleChange}
+                min={1}
               />
               <FormText className="text-danger">
                 {state.ticketPriceError}
