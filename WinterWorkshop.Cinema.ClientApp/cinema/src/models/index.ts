@@ -39,6 +39,19 @@ export interface IIMDbTop100Movies {
   iMDbRatingCount: string;
 }
 
+export interface IIMDbTop10Movies {
+  id: string;
+  rank: string;
+  rankUpDown: string;
+  title: string;
+  fullTitle: string;
+  year: string;
+  image: string;
+  crew: string;
+  iMDbRating: string;
+  iMDbRatingCount: string;
+}
+
 
 export interface ICinema {
   id: string;
@@ -61,6 +74,22 @@ export interface ISeats {
   id: string;
   number: number;
   row: number;
+  seatType: number
+}
+
+export interface ISeats2 {
+  id: string;
+  number: number;
+  row: number;
+  seatType: number;
+  isFree: boolean
+}
+
+export interface ITicket {
+  id: string,
+  seatId: string,
+  userId: string,
+  projectionId: string
 }
 
 export interface ICurrentReservationSeats {

@@ -436,7 +436,7 @@ const TopTenMovies2: React.FC = (props: any) => {
     const getTopTenByYear = () => {
         return (
             <div>
-                <Title level={2}>Top 10: {state.selectedYear}</Title>
+                <Title level={2}>Top 10: By Year</Title>
                 {getSelect()}
                 {getTable()}
 

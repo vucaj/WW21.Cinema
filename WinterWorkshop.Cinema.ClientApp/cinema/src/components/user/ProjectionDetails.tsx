@@ -59,6 +59,7 @@ const ProjectionDetails: React.FC = () => {
         id: "",
         number: 0,
         row: 0,
+        seatType: 0
       },
     ],
     inciD: 0,

@@ -19,5 +19,7 @@ namespace WinterWorkShop.Cinema.Domain.Models
         public int Number { get; set; }
 
         public SeatType SeatType { get; set; }
+        
+        public Boolean isFree { get; set; }
     }
 }

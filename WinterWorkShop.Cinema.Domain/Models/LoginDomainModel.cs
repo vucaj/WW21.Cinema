@@ -1,4 +1,5 @@
-﻿using WinterWorkShop.Cinema.Data.Enums;
+﻿using System;
+using WinterWorkShop.Cinema.Data.Enums;
 
 namespace WinterWorkShop.Cinema.Domain.Models
 {
@@ -6,5 +7,6 @@ namespace WinterWorkShop.Cinema.Domain.Models
     {
         public string Token { get; set; }
         public UserRole Role { get; set; }
+        public Guid UserId { get; set; }
     }
 }

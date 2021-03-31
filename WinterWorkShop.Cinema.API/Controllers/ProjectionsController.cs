@@ -61,6 +61,20 @@ namespace WinterWorkShop.Cinema.API.Controllers
             return Ok(projectionDomainModels);
         }
 
+        [HttpGet]
+        [Route("getById/{id}")]
+        public async Task<ActionResult<ProjectionDomainModel>> GetById(Guid id)
+        {
+            var projectionDomainModel = await _projectionService.GetById(id);
+
+            if (!projectionDomainModel.IsSuccessful)
+            {
+                return BadRequest();
+            }
+
+            return Ok(projectionDomainModel.Projection);
+        }
+
         /// <summary>
         /// Adds a new projection
         /// </summary>
