@@ -41,7 +41,7 @@ const NewAuditorium: React.FC = (props: any) => {
       {
         id: "",
         name: "",
-        addressId: 0,  
+        addressId: 0,
         cityName: "",
         country: "",
         latitude: 0,
@@ -147,7 +147,7 @@ const NewAuditorium: React.FC = (props: any) => {
   const onCinemaChange = (cinemas: ICinema[]) => {
     if (cinemas[0]) {
       setState({ ...state, cinemaId: cinemas[0].id });
-    } 
+    }
   };
 
   const renderSeats = (seats, row) => {
@@ -203,6 +203,7 @@ const NewAuditorium: React.FC = (props: any) => {
               />
               <FormText className="text-danger">{state.cinemaIdError}</FormText>
             </FormGroup>
+            <label className="label-nos">Number of Rows: </label>
             <FormGroup>
               <FormControl
                 id="seatRows"
@@ -216,6 +217,7 @@ const NewAuditorium: React.FC = (props: any) => {
               />
               <FormText className="text-danger">{state.seatRowsError}</FormText>
             </FormGroup>
+            <label className="label-nos">Number of seats: </label>
             <FormGroup>
               <FormControl
                 id="numberOfSeats"
